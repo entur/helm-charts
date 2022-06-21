@@ -1,0 +1,103 @@
+{{- /* Rules */}}
+{{- $env := .Values.env | required ".Values.common.env is required." -}}
+{{- $app := .Values.app | required ".Values.common.app is required." -}}
+{{- $shortname := .Values.shortname | required ".Values.common.shortname is required." -}}
+{{- $team := .Values.team | required ".Values.common.team is required." -}}
+{{- $image := .Values.container.image | required ".Values.common.container.image is required." -}}
+
+{{- /* YAML Spec */}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    {{- include "labels" . | indent 4 }}
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  replicas: {{ .Values.container.replicas }}
+  template:
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        {{- if .Values.container.prometheus.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "{{ .Values.container.prometheus.path }}"
+        prometheus.io/port: "{{ .Values.service.internalPort }}"
+        {{- end }}
+      labels:
+        {{- include "labels" . | indent 8 }}
+    spec:
+      serviceAccountName: application
+      
+      containers:
+        - name: {{ .Values.app }}
+          image: {{ $image }}
+          imagePullPolicy: Always
+          env:
+            {{- toYaml .Values.container.env | nindent 12 }}
+          envFrom:
+            {{- if .Values.container.envFrom }}
+            {{- toYaml .Values.container.envFrom | nindent 12 }}
+            {{- end }}
+            {{- if (and .Values.configmap.enabled .Values.configmap.toEnv) }}
+            - configMapRef:
+                name: {{ .Release.Name }}
+            {{- end }}
+            {{- if .Values.postgres.enabled }}
+            - secretRef:
+                name: {{ .Values.app }}-psql-credentials
+            {{- end }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP
+          resources:
+            limits:
+              cpu: {{ .Values.container.cpu }}
+              memory: "{{ .Values.container.memory }}Mi"
+            requests:
+              cpu: {{ .Values.container.cpu }}
+              memory: "{{ .Values.container.memory }}Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.container.probes.liveness.path }}
+              port: {{ .Values.service.internalPort }}
+            failureThreshold: {{ .Values.container.probes.liveness.failureThreshold }}
+            periodSeconds: {{ .Values.container.probes.liveness.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.container.probes.readiness.path }}
+              port: {{ .Values.service.internalPort }}
+            failureThreshold: {{ .Values.container.probes.liveness.failureThreshold }}
+            periodSeconds: {{ .Values.container.probes.liveness.periodSeconds }}
+          startupProbe:
+            tcpSocket:
+              port: {{ .Values.service.internalPort }}
+            failureThreshold: {{ .Values.container.probes.startup.failureThreshold }}
+            periodSeconds: {{ .Values.container.probes.startup.periodSeconds }}
+          {{- if .Values.container.volumeMounts }}
+          volumeMounts:
+            {{- toYaml .Values.container.volumeMounts | nindent 12 }}
+          {{- end }}
+        {{- if .Values.postgres.enabled }}
+        {{- include "gcloud_sql_proxy" . | indent 8 }}
+        {{- end }}
+      {{- if .Values.container.volumes }}
+      volumes:
+        {{- toYaml .Values.container.volumes | nindent 8 }}
+      {{- end }}
+      {{- include "topologyspreadconstraints" . | indent 6 }}
+      restartPolicy: Always
+      securityContext:
+        runAsGroup: {{ .Values.container.uid }}
+        runAsNonRoot: true
+        runAsUser: {{ .Values.container.uid }}

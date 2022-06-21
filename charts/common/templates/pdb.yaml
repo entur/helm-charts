@@ -1,0 +1,22 @@
+{{- /* Rules */}}
+{{- $env := .Values.env | required ".Values.common.env is required." -}}
+
+{{- if (or (eq "prd" .Values.env) .Values.container.minAvailable) }}
+  {{- if (and (ne "prd" .Values.env) (eq 1 (int .Values.container.replicas))) }}
+    {{ $checkReplicas := .Values.error | required ".Values.common.container.replicas must be greater than 1 when using minAvailable" }}
+  {{- end }}
+
+  {{- /* Defaults */}}
+  {{- $minAvailable := .Values.container.minAvailable | default "50%" }}
+
+{{- /* YAML Spec */}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  minAvailable: {{ $minAvailable }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+{{- end }}

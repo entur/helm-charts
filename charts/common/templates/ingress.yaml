@@ -1,0 +1,28 @@
+{{- if .Values.ingress.enabled }}
+  {{- /* Rules */}}
+  {{- $checkHost := .Values.ingress.host | required ".Values.common.ingress.host is required." -}}
+  {{- $checkTrafficType := .Values.ingress.trafficType | required ".Values.common.ingress.trafficType is required." -}}
+
+{{- /* YAML Spec */}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik
+  labels:
+    traffic-type: {{ .Values.ingress.trafficType }}
+    {{- include "labels" . | indent 4 }}
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ .Release.Name }}
+                port:
+                  number: {{ .Values.service.externalPort }}
+            pathType: ImplementationSpecific
+{{- end }}

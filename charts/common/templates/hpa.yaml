@@ -1,0 +1,31 @@
+{{- /* Rules */}}
+{{- $env := .Values.env | required ".Values.common.env is required." -}}
+
+{{- if (or (eq "prd" .Values.env) .Values.container.maxReplicas) }}
+  {{- /* Defaults */}}
+  {{- $maxReplicas := .Values.container.maxReplicas | default 10 }}
+  {{- $cpuUtilization := 80 }}
+
+  {{- /* Rules */}}
+  {{- if (eq 1 (int $maxReplicas)) }}
+    {{- required ".Values.common.container.maxReplicas must be more than 1." .Values.error -}}
+  {{- else }}
+
+{{- /* YAML Spec */}}
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "labels" . | indent 4 }}
+spec:
+  maxReplicas: {{ $maxReplicas }}
+  minReplicas: {{ max 2 .Values.container.replicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Release.Name }}
+  targetCPUUtilizationPercentage: {{ $cpuUtilization }}
+{{- end }}
+{{- end }}
