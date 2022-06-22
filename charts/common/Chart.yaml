@@ -1,8 +1,8 @@
 apiVersion: v2
 
 name: common
-description: A Helm chart for basic Entur deployments
+description: A Helm chart for Entur's Kubernetes workloads
 type: application
 
-version: 1.0.0
+version: 1.0.1
 appVersion: "0.0.1"
