@@ -3,6 +3,16 @@ entries:
   common:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2022-06-22T10:03:02.417479704Z"
+    description: A Helm chart for Entur's Kubernetes workloads
+    digest: 2ef8c82f6bdac0880f554d219653b82f62db37e15a5c43c4d317d6f2820ef31a
+    name: common
+    type: application
+    urls:
+    - https://github.com/entur/helm-charts/releases/download/common-1.0.1/common-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2022-06-21T12:21:27.423856806Z"
     description: A Helm chart for basic Entur deployments
     digest: 2df2b63e77398250d3bf0cd075a7b77ab1fee3ca005f397561cbcd94c1233091
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/entur/helm-charts/releases/download/common-1.0.0/common-1.0.0.tgz
     version: 1.0.0
-generated: "2022-06-21T12:21:27.423871207Z"
+generated: "2022-06-22T10:03:02.417486905Z"
