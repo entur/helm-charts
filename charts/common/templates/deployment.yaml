@@ -55,8 +55,16 @@ spec:
               protocol: TCP
           resources:
             limits:
-              cpu: {{ .Values.container.cpu }}
-              memory: "{{ .Values.container.memory }}Mi"
+              {{- if .Values.container.cpuLimit }}
+              cpu: {{ .Values.container.cpuLimit }}
+              {{- else }}
+              cpu: "{{ .Values.container.cpuLimit | default .Values.container.cpu | toString | replace "." "" | int64 | mul 500 }}m" #TODO: fix when mulf is working
+              {{- end }}
+              {{- if .Values.container.memoryLimit }}
+              memory: "{{ .Values.container.memoryLimit }}Mi"
+              {{- else }}
+              memory: "{{ (div (mul .Values.container.memory 6) 5) }}Mi" #TODO: same as above, fix when mulf is working
+              {{- end }}
             requests:
               cpu: {{ .Values.container.cpu }}
               memory: "{{ .Values.container.memory }}Mi"

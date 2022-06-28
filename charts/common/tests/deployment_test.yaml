@@ -45,6 +45,78 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: testsuite
+  - it: cpu limit can be overridden
+    release:
+    set:
+      <<: *values
+      container:
+        image: img
+        cpu: 0.1
+        cpuLimit: 1
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 0.1
+  - it: cpu limit is 5x request for < 0
+    release:
+    set:
+      <<: *values
+      container:
+        image: img
+        cpu: 0.1
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 500m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 0.1
+  - it: cpu limit is 5x request for > 1
+    release:
+    set:
+      <<: *values
+      container:
+        image: img
+        cpu: 2.1
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 10500m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 2.1
+  - it: memory limit is 120 percent of request
+    release:
+    set:
+      <<: *values
+      container:
+        image: img
+        memory: 256
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 307Mi
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 256Mi
+  - it: memory limit can be overridden
+    release:
+    set:
+      <<: *values
+      container:
+        image: img
+        memory: 256
+        memoryLimit: 1024
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 1024Mi
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 256Mi
   - it: must enable prometheus if enabled
     set:
       <<: *values
