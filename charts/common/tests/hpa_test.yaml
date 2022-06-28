@@ -1,0 +1,57 @@
+values: &values
+  env: dev
+  app: testsuite
+  shortname: tstsut 
+  team: common
+  ingress:
+    host: test.dev.entur.io
+    trafficType: public
+
+suite: test hpa
+templates:
+  - hpa.yaml
+tests:
+  - it: must have labels
+    set:
+      <<: *values
+      container:
+        image: img
+        maxReplicas: 5
+    asserts:
+      - isNotEmpty:
+          template: hpa.yaml
+          path: metadata.labels
+  - it: must have minReplicas 2 if not set
+    set:
+      <<: *values
+      container:
+        image: img
+        maxReplicas: 5
+    asserts:
+      - equal:
+          path: spec.minReplicas
+          value: 2
+  - it: uses 80 % as target cpu
+    set:
+      <<: *values
+      container:
+        image: img
+        maxReplicas: 5
+    asserts:
+      - equal:
+          path: spec.targetCPUUtilizationPercentage
+          value: 80
+  - it: must default for prd
+    set:
+      <<: *values
+      env: prd
+      container:
+        replicas: 1 # even if 1, this must be 2
+        image: img
+    asserts:
+      - equal:
+          path: spec.minReplicas
+          value: 2
+      - equal:
+          path: spec.maxReplicas
+          value: 10

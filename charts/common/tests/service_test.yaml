@@ -1,0 +1,33 @@
+values: &values
+  env: dev
+  app: testsuite
+  shortname: tstsut 
+  team: common
+  ingress:
+    host: test.dev.entur.io
+    trafficType: public
+  container:
+    image: img
+    maxReplicas: 5
+
+suite: test service
+templates:
+  - service.yaml
+tests:
+  - it: must have labels
+    set:
+      <<: *values
+    asserts:
+      - isNotEmpty:
+          template: service.yaml
+          path: metadata.labels
+  - it: sane defaults and forwards
+    set:
+      <<: *values
+    asserts:
+      - equal:
+          path: spec.ports[0].port
+          value: 80
+      - equal:
+          path: spec.ports[0].targetPort
+          value: 8080

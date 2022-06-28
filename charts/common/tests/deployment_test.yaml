@@ -1,0 +1,82 @@
+values: &values
+  env: dev
+  app: testsuite
+  shortname: tstsut 
+  team: common
+  ingress:
+    host: test.dev.entur.io
+    trafficType: public
+  container:
+    image: img
+
+suite: test deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: must have labels
+    set:
+      <<: *values
+    asserts:
+      - isNotEmpty:
+          template: deployment.yaml
+          path: metadata.labels
+  - it: must add to env if listed
+    set:
+      <<: *values
+      container:
+        image: img
+        env:
+          - FOO: bar
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[0].FOO
+          value: bar
+  - it: must mount envFrom if configmap toEnv
+    release:
+      name: testsuite
+    set:
+      <<: *values
+      configmap:
+        enabled: true
+        toEnv: true
+        data:
+          FOO: bar
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
+          value: testsuite
+  - it: must enable prometheus if enabled
+    set:
+      <<: *values
+      container:
+        image: img
+        prometheus:
+          enabled: true
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations
+          value:
+            cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+            prometheus.io/scrape: "true"
+            prometheus.io/path: "/actuator/prometheus"
+            prometheus.io/port: "8080"
+  - it: must mount envFrom if postgres enabled
+    set:
+      <<: *values
+      postgres:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: testsuite-psql-credentials
+  - it: must enable sidecar if postgres enabled
+    set:
+      <<: *values
+      postgres:
+        enabled: true
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.containers[1]
+      - equal:
+          path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
+          value: testsuite-psql-connection

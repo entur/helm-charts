@@ -26,6 +26,11 @@ jobs:
         with:
           version: v3.2.1
 
+      - name: Helm Unit Test
+        run: |
+          helm plugin install https://github.com/vbehar/helm3-unittest
+          helm unittest common
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.0
         env:
