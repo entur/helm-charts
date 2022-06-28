@@ -1,0 +1,29 @@
+values: &values
+  env: dev
+  app: testsuite
+  shortname: tstsut 
+  team: common
+  ingress:
+    host: test.dev.entur.io
+    trafficType: public
+  container:
+    image: img
+  configmap:
+    enabled: true
+    data:
+      FOO: bar
+
+suite: test configmap
+templates:
+  - configmap.yaml
+tests:
+  - it: must have labels
+    set:
+      <<: *values
+    asserts:
+      - isNotEmpty:
+          template: configmap.yaml
+          path: metadata.labels
+      - equal:
+          path: data.FOO
+          value: bar

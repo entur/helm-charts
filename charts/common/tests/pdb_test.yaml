@@ -1,0 +1,34 @@
+values: &values
+  app: testsuite
+  shortname: tstsut 
+  team: common
+  ingress:
+    host: test.dev.entur.io
+    trafficType: public
+  container:
+    image: img
+
+suite: test pdb
+templates:
+  - pdb.yaml
+tests:
+  - it: must have labels
+    set:
+      <<: *values
+      env: dev
+      container:
+        image: img
+        replicas: 2
+        minAvailable: 50%
+    asserts:
+      - isNotEmpty:
+          template: pdb.yaml
+          path: metadata.labels
+  - it: must default for prd
+    set:
+      <<: *values
+      env: prd
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
