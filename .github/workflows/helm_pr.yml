@@ -25,4 +25,4 @@ jobs:
       - name: Helm Unit Test
         run: |
           helm plugin install https://github.com/vbehar/helm3-unittest
-          helm unittest common
+          helm unittest charts/common
