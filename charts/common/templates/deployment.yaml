@@ -31,7 +31,7 @@ spec:
         {{- include "labels" . | indent 8 }}
     spec:
       serviceAccountName: application
-      
+
       containers:
         - name: {{ .Values.app }}
           image: {{ $image }}
