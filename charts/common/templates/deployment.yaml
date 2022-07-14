@@ -36,8 +36,11 @@ spec:
         - name: {{ .Values.app }}
           image: {{ $image }}
           imagePullPolicy: Always
+          {{- if .Values.container.env }}
           env:
             {{- toYaml .Values.container.env | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.container.envFrom .Values.configmap.enabled .Values.postgres.enabled }}
           envFrom:
             {{- if .Values.container.envFrom }}
             {{- toYaml .Values.container.envFrom | nindent 12 }}
@@ -50,6 +53,7 @@ spec:
             - secretRef:
                 name: {{ .Values.app }}-psql-credentials
             {{- end }}
+          {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
               protocol: TCP
