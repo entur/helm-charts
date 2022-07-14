@@ -42,7 +42,7 @@ spec:
             {{- if .Values.container.envFrom }}
             {{- toYaml .Values.container.envFrom | nindent 12 }}
             {{- end }}
-            {{- if (and .Values.configmap.enabled .Values.configmap.toEnv) }}
+            {{- if .Values.configmap.enabled }}
             - configMapRef:
                 name: {{ .Release.Name }}
             {{- end }}
