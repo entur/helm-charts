@@ -1,0 +1,20 @@
+app: mytest
+shortname: mytst
+team: team
+
+env: prd
+
+ingress:
+  host: mytest.dev.entur.io
+  trafficType: api
+
+container:
+  image: eu.gcr.io/example:latest
+  cpu: 1
+  memory: 128
+  replicas: 1
+  maxReplicas: 5
+  minAvailable: 50%
+  cpuLimit: 10
+  memoryLimit: 128
+  envFrom: []
