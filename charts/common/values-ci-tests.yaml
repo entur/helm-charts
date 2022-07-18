@@ -9,7 +9,7 @@ ingress:
   trafficType: api
 
 container:
-  image: docker.io/nginx:latest
+  image: nginx
   cpu: 1
   memory: 128
   replicas: 1
