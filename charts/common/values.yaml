@@ -17,6 +17,8 @@ container:
   memory: 16
   uid: 1000
   replicas: 1
+  minAvailable: ""
+  maxReplicas: ""
   envFrom:
     []
     # - secretRef:
