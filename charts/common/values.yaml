@@ -32,11 +32,11 @@ container:
     path: "/actuator/prometheus"
   probes:
     liveness:
-      path: "/actuator/health/liveness"
+      path: "/health"
       failureThreshold: 6
       periodSeconds: 5
     readiness:
-      path: "/actuator/health/readiness"
+      path: "/health"
       failureThreshold: 6
       periodSeconds: 5
     startup:
