@@ -9,7 +9,7 @@ ingress:
   trafficType: api
 
 container:
-  image: nginx
+  image: nginx:1.23-alpine
   cpu: 1
   memory: 128
   replicas: 1
