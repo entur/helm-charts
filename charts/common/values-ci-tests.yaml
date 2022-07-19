@@ -17,3 +17,6 @@ container:
   cpuLimit: 10
   memoryLimit: 128
   envFrom: []
+
+serviceAccount:
+  create: true
