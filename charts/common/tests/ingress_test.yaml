@@ -1,7 +1,7 @@
 values: &values
   env: dev
   app: testsuite
-  shortname: tstsut 
+  shortname: tstsut
   team: common
   ingress:
     host: test.dev.entur.io
@@ -35,7 +35,7 @@ tests:
           value: test.dev.entur.io
       - equal:
           path: metadata.annotations
-          value: 
+          value:
             kubernetes.io/ingress.class: traefik
       - equal:
           path: metadata.labels.traffic-type

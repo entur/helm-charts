@@ -8,7 +8,7 @@ common: {{ .Chart.Version }}
 {{- define "gcloud_sql_proxy" }}
 - name: "{{ .Values.app }}-sql-proxy"
   image: gcr.io/cloudsql-docker/gce-proxy:1.30.1
-  command: 
+  command:
     - "/cloud_sql_proxy"
     - "-verbose=false"
     - "-log_debug_stdout"

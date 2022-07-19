@@ -1,0 +1,12 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  helm:
+    uses: entur/gh-workflows/.github/workflows/release-helm.yml@main
+    with:
+      charts: '["common"]'

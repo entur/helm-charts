@@ -1,25 +1,32 @@
-#app: the-app
-#shortname: theapp
-#team: yourteam
-#env: dev
+# app: the-app
+# shortname: theapp
+# team: yourteam
+# env: dev
+
 ingress:
   enabled: true
-  #host: app.dev.entur.io
-  #trafficType: api
+  # host: app.dev.entur.io
+  # trafficType: api
+
 service:
   externalPort: 80
   internalPort: 8080
+
 container:
   cpu: 0.1
   memory: 16
   uid: 1000
   replicas: 1
-  envFrom: []
-    #- secretRef:
-    #    name: app-psql-credentials
-  env: []
-    #- name: PORT
-    #  value: "{{ .Values.service.internalPort }}"
+  minAvailable: ""
+  maxReplicas: ""
+  envFrom:
+    []
+    # - secretRef:
+    #     name: app-psql-credentials
+  env:
+    []
+    # - name: PORT
+    #   value: "{{ .Values.service.internalPort }}"
   prometheus:
     enabled: false
     path: "/actuator/prometheus"
@@ -35,10 +42,13 @@ container:
     startup:
       failureThreshold: 300
       periodSeconds: 1
+  volumeMounts: {}
+  volumes: {}
+
 postgres:
   enabled: false
   cpu: 0.05
   memory: 16
+
 configmap:
   enabled: false
-

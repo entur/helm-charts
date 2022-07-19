@@ -31,18 +31,21 @@ spec:
         {{- include "labels" . | indent 8 }}
     spec:
       serviceAccountName: application
-      
+
       containers:
         - name: {{ .Values.app }}
           image: {{ $image }}
           imagePullPolicy: Always
+          {{- if .Values.container.env }}
           env:
             {{- toYaml .Values.container.env | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.container.envFrom .Values.configmap.enabled .Values.postgres.enabled }}
           envFrom:
             {{- if .Values.container.envFrom }}
             {{- toYaml .Values.container.envFrom | nindent 12 }}
             {{- end }}
-            {{- if (and .Values.configmap.enabled .Values.configmap.toEnv) }}
+            {{- if .Values.configmap.enabled }}
             - configMapRef:
                 name: {{ .Release.Name }}
             {{- end }}
@@ -50,6 +53,7 @@ spec:
             - secretRef:
                 name: {{ .Values.app }}-psql-credentials
             {{- end }}
+          {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
               protocol: TCP
@@ -58,12 +62,12 @@ spec:
               {{- if .Values.container.cpuLimit }}
               cpu: {{ .Values.container.cpuLimit }}
               {{- else }}
-              cpu: "{{ .Values.container.cpuLimit | default .Values.container.cpu | toString | replace "." "" | int64 | mul 500 }}m" #TODO: fix when mulf is working
+              cpu: "{{ .Values.container.cpuLimit | default .Values.container.cpu | toString | replace "." "" | int64 | mul 500 }}m" # TODO: fix when mulf is working
               {{- end }}
               {{- if .Values.container.memoryLimit }}
               memory: "{{ .Values.container.memoryLimit }}Mi"
               {{- else }}
-              memory: "{{ (div (mul .Values.container.memory 6) 5) }}Mi" #TODO: same as above, fix when mulf is working
+              memory: "{{ (div (mul .Values.container.memory 6) 5) }}Mi" # TODO: same as above, fix when mulf is working
               {{- end }}
             requests:
               cpu: {{ .Values.container.cpu }}

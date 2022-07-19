@@ -1,6 +1,6 @@
 values: &values
   app: testsuite
-  shortname: tstsut 
+  shortname: tstsut
   team: common
   ingress:
     host: test.dev.entur.io
