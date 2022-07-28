@@ -1,0 +1,35 @@
+app: mytest
+shortname: mytst
+team: team
+
+env: dev
+
+ingress:
+  host: mytest.dev.entur.io
+  trafficType: api
+
+service:
+  externalPort: 8080
+  internalPort: 8080
+
+container:
+  image: nginxinc/nginx-unprivileged:latest
+  cpu: 1
+  memory: 128
+  replicas: 1
+  maxReplicas: 2
+  cpuLimit: 10
+  memoryLimit: 128
+  envFrom: []
+  probes:
+    liveness:
+      path: "/"
+      failureThreshold: 6
+      periodSeconds: 5
+    readiness:
+      path: "/"
+      failureThreshold: 6
+      periodSeconds: 5
+
+serviceAccount:
+  create: true
