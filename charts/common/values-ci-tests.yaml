@@ -9,11 +9,11 @@ ingress:
   trafficType: api
 
 service:
-  externalPort: 80
-  internalPort: 80
+  externalPort: 8080
+  internalPort: 8080
 
 container:
-  image: nginx:1.23-alpine
+  image: nginxinc/nginx-unprivileged:latest
   cpu: 1
   memory: 128
   replicas: 1
