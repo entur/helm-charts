@@ -20,6 +20,9 @@ tests:
       - isNotEmpty:
           template: deployment.yaml
           path: metadata.labels
+      - isNotEmpty:
+          template: deployment.yaml
+          path: metadata.labels.environment
   - it: must add to env if listed
     set:
       <<: *values
