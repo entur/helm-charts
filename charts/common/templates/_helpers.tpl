@@ -3,6 +3,7 @@ app: {{ .Release.Name }}
 shortname: {{ .Values.shortname }}
 team: {{ .Values.team }}
 common: {{ .Chart.Version }}
+environment: {{ .Values.env }}
 {{- end }}
 
 {{- define "gcloud_sql_proxy" }}
