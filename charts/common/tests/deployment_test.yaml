@@ -155,3 +155,34 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
           value: testsuite-psql-connection
+  - it: must use 3 replicas if replicas is 3
+    set:
+      <<: *values
+      env: dev
+      replicas: 3
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3
+  - it: must use 1 replica if forceReplica is 1
+    set:
+      <<: *values
+      env: prd
+      container:
+        image: some
+        forceReplicas: 1
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 1
+  - it: must use 3 replica if forceReplica is 3
+    set:
+      <<: *values
+      env: prd
+      container:
+        image: some
+        forceReplicas: 3
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 3

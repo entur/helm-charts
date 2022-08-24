@@ -1,7 +1,9 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 
-{{- if (or (eq "prd" .Values.env) .Values.container.minAvailable) }}
+{{- if .Values.container.forceReplicas }}
+  {{- /* Nothing to do, skip this*/}}
+{{- else if (or (eq "prd" .Values.env) .Values.container.minAvailable) }}
   {{- if (and (ne "prd" .Values.env) (eq 1 (int .Values.container.replicas))) }}
     {{ $checkReplicas := .Values.error | required ".Values.common.container.replicas must be greater than 1 when using minAvailable" }}
   {{- end }}
