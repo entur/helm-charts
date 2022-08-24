@@ -164,7 +164,7 @@ tests:
       - equal:
           path: spec.replicas
           value: 3
-  - it: must use 1 replica if forceReplica is 1
+  - it: must use 1 replica if forceReplicas is 1
     set:
       <<: *values
       env: prd
@@ -175,7 +175,7 @@ tests:
       - equal:
           path: spec.replicas
           value: 1
-  - it: must use 3 replica if forceReplica is 3
+  - it: must use 3 replica if forceReplicas is 3
     set:
       <<: *values
       env: prd

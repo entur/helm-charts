@@ -1,9 +1,7 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 
-{{- if .Values.container.forceReplicas }}
-  {{- /* Nothing to do, skip this*/}}
-{{- else if (or (eq "prd" .Values.env) .Values.container.maxReplicas) }}
+{{- if (and (not .Values.container.forceReplicas) (or (eq "prd" .Values.env) .Values.container.maxReplicas)) }}
   {{- /* Defaults */}}
   {{- $maxReplicas := .Values.container.maxReplicas | default 10 }}
   {{- $cpuUtilization := 80 }}
