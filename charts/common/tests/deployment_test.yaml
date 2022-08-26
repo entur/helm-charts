@@ -77,20 +77,20 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
-  - it: cpu limit is 5x request for 0.8
+  - it: cpu limit is 5x request for 0.75
     release:
     set:
       <<: *values
       container:
         image: img
-        cpu: 0.8
+        cpu: 0.75
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
-          value: 4000m
+          value: 3750m
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.8
+          value: 0.75
   - it: cpu limit is 5x request for 1
     release:
     set:
