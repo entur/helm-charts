@@ -55,3 +55,13 @@ tests:
       - equal:
           path: spec.maxReplicas
           value: 10
+  - it: must not use hpa if forceReplicas is set
+    set:
+      <<: *values
+      env: prd
+      container:
+        image: some
+        forceReplicas: 1
+    asserts:
+      - hasDocuments:
+          count: 0
