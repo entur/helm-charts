@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/entur/helm-charts/compare/common-v1.2.1...common-v1.2.2) (2022-08-26)
+
+
+### Bug Fixes
+
+* mulf hack bug, closes [#7](https://github.com/entur/helm-charts/issues/7) ([#16](https://github.com/entur/helm-charts/issues/16)) ([6a339f1](https://github.com/entur/helm-charts/commit/6a339f1ece522f3cb3ad23a695ed977562587f1a))
+
 ## [1.2.1](https://github.com/entur/helm-charts/compare/common-v1.2.0...common-v1.2.1) (2022-08-26)
 
 
