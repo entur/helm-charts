@@ -63,7 +63,7 @@ spec:
               {{- if .Values.container.cpuLimit }}
               cpu: {{ .Values.container.cpuLimit }}
               {{- else }}
-              cpu: "{{ printf "%.2f" .Values.container.cpu | replace "0." "" | replace "." "" | int64  | mul 50  }}m"
+              cpu: "{{ printf "%.2f" .Values.container.cpu | replace "0." "" | replace "." "" | int64 | mul 50 }}m"
               {{- end }}
               {{- if .Values.container.memoryLimit }}
               memory: "{{ .Values.container.memoryLimit }}Mi"
