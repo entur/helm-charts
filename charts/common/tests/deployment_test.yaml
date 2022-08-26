@@ -63,7 +63,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
-  - it: cpu limit is 5x request for < 0
+  - it: cpu limit is 5x request for 0.1
     release:
     set:
       <<: *values
@@ -77,6 +77,34 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
+  - it: cpu limit is 5x request for 0.75
+    release:
+    set:
+      <<: *values
+      container:
+        image: img
+        cpu: 0.75
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 3750m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 0.75
+  - it: cpu limit is 5x request for 1
+    release:
+    set:
+      <<: *values
+      container:
+        image: img
+        cpu: 1.0
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 5000m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 1
   - it: cpu limit is 5x request for > 1
     release:
     set:
