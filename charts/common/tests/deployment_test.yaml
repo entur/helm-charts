@@ -17,7 +17,11 @@ tests:
     set:
       <<: *values
       labels:
-        version: 1
+        custom: label
+      container:
+        image: img
+        labels:
+          version: 1
     asserts:
       - isNotEmpty:
           template: deployment.yaml
@@ -27,7 +31,10 @@ tests:
           path: metadata.labels.environment
       - isNotEmpty:
           template: deployment.yaml
-          path: metadata.labels.version
+          path: metadata.labels.custom
+      - isNotEmpty:
+          template: deployment.yaml
+          path: spec.template.metadata.labels.version
   - it: must add to env if listed
     set:
       <<: *values

@@ -2,10 +2,12 @@ app: mytest
 shortname: mytst
 team: team
 
+env: dev
+
+# common labels for all resources
 labels:
   custom: label
 
-env: dev
 
 ingress:
   host: mytest.dev.entur.io
@@ -17,6 +19,8 @@ service:
 
 container:
   image: nginxinc/nginx-unprivileged:latest
+  labels:
+    version: 11
   cpu: 1
   memory: 128
   replicas: 1
