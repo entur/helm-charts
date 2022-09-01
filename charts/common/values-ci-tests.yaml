@@ -20,7 +20,7 @@ service:
 container:
   image: nginxinc/nginx-unprivileged:latest
   labels:
-    version: 11
+    version: v1.2.3
   cpu: 1
   memory: 128
   replicas: 1
