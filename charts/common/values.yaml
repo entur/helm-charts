@@ -3,7 +3,7 @@
 # team: yourteam
 # env: dev
 
-labels: []
+labels: {}
 
 ingress:
   enabled: true
@@ -15,7 +15,7 @@ service:
   internalPort: 8080
 
 container:
-  labels: []
+  labels: {}
   cpu: 0.1
   memory: 16
   uid: 1000
