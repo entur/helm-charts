@@ -3,6 +3,8 @@
 # team: yourteam
 # env: dev
 
+labels: []
+
 ingress:
   enabled: true
   # host: app.dev.entur.io
@@ -13,6 +15,7 @@ service:
   internalPort: 8080
 
 container:
+  labels: []
   cpu: 0.1
   memory: 16
   uid: 1000
