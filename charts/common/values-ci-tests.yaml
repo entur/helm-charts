@@ -2,6 +2,9 @@ app: mytest
 shortname: mytst
 team: team
 
+labels:
+  custom: label
+
 env: dev
 
 ingress:
