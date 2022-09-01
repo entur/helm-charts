@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/entur/helm-charts/compare/common-v1.2.2...common-v1.2.3) (2022-09-01)
+
+
+### Bug Fixes
+
+* enable custom values through common.values closes [#11](https://github.com/entur/helm-charts/issues/11) ([#18](https://github.com/entur/helm-charts/issues/18)) ([84101e9](https://github.com/entur/helm-charts/commit/84101e97280dface4129cd9139bd37f3011a5f93))
+
 ## [1.2.2](https://github.com/entur/helm-charts/compare/common-v1.2.1...common-v1.2.2) (2022-08-26)
 
 
