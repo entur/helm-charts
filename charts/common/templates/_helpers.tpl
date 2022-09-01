@@ -4,6 +4,9 @@ shortname: {{ .Values.shortname }}
 team: {{ .Values.team }}
 common: {{ .Chart.Version }}
 environment: {{ .Values.env }}
+{{- if .Values.labels }}
+{{ toYaml .Values.labels }}
+{{- end }}
 {{- end }}
 
 {{- define "gcloud_sql_proxy" }}

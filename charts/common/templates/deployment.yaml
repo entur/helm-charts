@@ -30,6 +30,9 @@ spec:
         {{- end }}
       labels:
         {{- include "labels" . | indent 8 }}
+        {{- if .Values.container.labels }}
+        {{- toYaml .Values.container.labels | nindent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: application
 
