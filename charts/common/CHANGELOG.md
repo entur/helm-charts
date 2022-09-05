@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/entur/helm-charts/compare/common-v1.2.3...common-v1.2.4) (2022-09-05)
+
+
+### Bug Fixes
+
+* enable flag for service, default on ([#21](https://github.com/entur/helm-charts/issues/21)) ([402aa04](https://github.com/entur/helm-charts/commit/402aa04a2e53d2245f179df315794a9cfc471b29))
+
 ## [1.2.3](https://github.com/entur/helm-charts/compare/common-v1.2.2...common-v1.2.3) (2022-09-01)
 
 
