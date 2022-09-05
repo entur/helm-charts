@@ -11,6 +11,7 @@ ingress:
   # trafficType: api
 
 service:
+  enabled: true
   externalPort: 80
   internalPort: 8080
 
