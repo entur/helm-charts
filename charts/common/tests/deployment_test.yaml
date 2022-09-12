@@ -204,7 +204,10 @@ tests:
       - equal:
           path: spec.replicas
           value: 3
-  - it: must use 1 replica if forceReplicas is 1
+      - equal:
+          path: spec.strategy.type
+          value: RollingUpdate
+  - it: must use 1 replica if forceReplicas is 1 and recreate
     set:
       <<: *values
       env: prd
@@ -215,6 +218,9 @@ tests:
       - equal:
           path: spec.replicas
           value: 1
+      - equal:
+          path: spec.strategy.type
+          value: Recreate
   - it: must use 3 replica if forceReplicas is 3
     set:
       <<: *values
@@ -226,3 +232,6 @@ tests:
       - equal:
           path: spec.replicas
           value: 3
+      - equal:
+          path: spec.strategy.type
+          value: RollingUpdate

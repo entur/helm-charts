@@ -19,6 +19,12 @@ spec:
     matchLabels:
       app: {{ .Release.Name }}
   replicas: {{ $replicas }}
+  strategy:
+    {{- if (eq (int .Values.container.forceReplicas) 1) }}
+    type: Recreate
+    {{- else }}
+    type: RollingUpdate
+    {{- end }}
   template:
     metadata:
       annotations:
