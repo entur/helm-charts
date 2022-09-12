@@ -199,7 +199,9 @@ tests:
     set:
       <<: *values
       env: dev
-      replicas: 3
+      container:
+        image: testimg
+        replicas: 3
     asserts:
       - equal:
           path: spec.replicas

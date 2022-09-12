@@ -4,7 +4,7 @@
 {{- $shortname := .Values.shortname | required ".Values.common.shortname is required." -}}
 {{- $team := .Values.team | required ".Values.common.team is required." -}}
 {{- $image := .Values.container.image | required ".Values.common.container.image is required." -}}
-{{- $replicas := .Values.container.forceReplicas | default .Values.replicas -}}
+{{- $replicas := .Values.container.forceReplicas | default .Values.container.replicas -}}
 
 {{- /* YAML Spec */}}
 apiVersion: apps/v1
