@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.5](https://github.com/entur/helm-charts/compare/common-v1.2.4...common-v1.2.5) (2022-09-12)
+
+
+### Bug Fixes
+
+* replicas bug and force 1 must lead to strategy recreate ([#23](https://github.com/entur/helm-charts/issues/23)) ([32ee5bb](https://github.com/entur/helm-charts/commit/32ee5bb543eaeed7f956ba7e98e3e42b3bf71ea2))
+
 ## [1.2.4](https://github.com/entur/helm-charts/compare/common-v1.2.3...common-v1.2.4) (2022-09-05)
 
 
