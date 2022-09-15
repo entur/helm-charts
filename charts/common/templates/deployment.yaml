@@ -95,6 +95,9 @@ spec:
               port: {{ .Values.service.internalPort }}
             failureThreshold: {{ .Values.container.probes.liveness.failureThreshold }}
             periodSeconds: {{ .Values.container.probes.liveness.periodSeconds }}
+            {{- if .Values.container.probes.liveness.initialDelaySeconds }}
+            initialDelaySeconds: {{ .Values.container.probes.liveness.initialDelaySeconds }}
+            {{- end }}
           readinessProbe:
             httpGet:
               path: {{ .Values.container.probes.readiness.path }}
