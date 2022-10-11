@@ -195,6 +195,21 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
           value: testsuite-psql-connection
+  - it: postgres cpu limit can be overridden
+    release:
+    set:
+      <<: *values
+      postgres:
+        enabled: true
+        cpu: 0.1
+        cpuLimit: 1
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].resources.limits.cpu
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[1].resources.requests.cpu
+          value: 0.1
   - it: must use 3 replicas if replicas is 3
     set:
       <<: *values

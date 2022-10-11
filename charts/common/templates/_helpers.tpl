@@ -34,11 +34,7 @@ environment: {{ .Values.env }}
       {{- else }}
       cpu: {{ .Values.postgres.cpu }}
       {{- end }}
-      {{- if .Values.postgres.memoryLimit }}
-      memory: "{{ .Values.postgres.memoryLimit }}Mi"
-      {{- else }}
       memory: "{{ .Values.postgres.memory }}Mi"
-      {{- end }}
     requests:
       cpu: {{ .Values.postgres.cpu }}
       memory: "{{ .Values.postgres.memory }}Mi"
