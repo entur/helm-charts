@@ -29,8 +29,16 @@ environment: {{ .Values.env }}
       type: RuntimeDefault
   resources:
     limits:
+      {{- if .Values.postgres.cpuLimit }}
+      cpu: {{ .Values.postgres.cpuLimit }}
+      {{- else }}
       cpu: {{ .Values.postgres.cpu }}
+      {{- end }}
+      {{- if .Values.postgres.memoryLimit }}
+      memory: "{{ .Values.postgres.memoryLimit }}Mi"
+      {{- else }}
       memory: "{{ .Values.postgres.memory }}Mi"
+      {{- end }}
     requests:
       cpu: {{ .Values.postgres.cpu }}
       memory: "{{ .Values.postgres.memory }}Mi"
