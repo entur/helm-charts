@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.6](https://github.com/entur/helm-charts/compare/common-v1.2.5...common-v1.2.6) (2022-10-11)
+
+
+### Bug Fixes
+
+* Allow setting cloudsqlproxy resource limits via values ([#26](https://github.com/entur/helm-charts/issues/26)) ([31cc0c8](https://github.com/entur/helm-charts/commit/31cc0c87b4b52efc317daedc8e67f8e206a85f73))
+
 ## [1.2.5](https://github.com/entur/helm-charts/compare/common-v1.2.4...common-v1.2.5) (2022-09-12)
 
 
