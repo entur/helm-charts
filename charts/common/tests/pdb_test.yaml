@@ -32,7 +32,7 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "50%"
-  - it: must not use pdb if forceReplicas is set
+  - it: must not use pdb if forceReplicas is set to 1
     set:
       <<: *values
       env: prd
@@ -42,3 +42,13 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+  - it: must use pdb if forceReplicas is set to more than 1
+    set:
+      <<: *values
+      env: prd
+      container:
+        image: some
+        forceReplicas: 2
+    asserts:
+      - hasDocuments:
+          count: 1
