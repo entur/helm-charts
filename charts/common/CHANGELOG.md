@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.7](https://github.com/entur/helm-charts/compare/common-v1.2.6...common-v1.2.7) (2022-10-18)
+
+
+### Bug Fixes
+
+* add pdb for forceReplicas > 1 ([#28](https://github.com/entur/helm-charts/issues/28)) ([5871ef9](https://github.com/entur/helm-charts/commit/5871ef956407dadd15f6c22122352d7da16efd07))
+
 ## [1.2.6](https://github.com/entur/helm-charts/compare/common-v1.2.5...common-v1.2.6) (2022-10-11)
 
 
