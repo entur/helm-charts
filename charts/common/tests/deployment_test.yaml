@@ -46,14 +46,13 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[0].FOO
           value: bar
-  - it: must mount envFrom if configmap toEnv
+  - it: must mount envFrom if configmap is enabled
     release:
       name: testsuite
     set:
       <<: *values
       configmap:
         enabled: true
-        toEnv: true
         data:
           FOO: bar
     asserts:
