@@ -30,7 +30,7 @@ jobs:
       - name: Run helm-docs
         uses: addnab/docker-run-action@v3
         with:
-          image: jnorwood/helm-docs:latest
+          image: jnorwood/helm-docs:v1.11.0
           options: -v ${{ github.workspace }}:/helm-docs
           run: |
             helm-docs
