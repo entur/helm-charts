@@ -23,7 +23,7 @@ Highlighted features:
 | container.cpuLimit | float | `5 x cpu` | Set CPU limit without any unit. 100m is 0.1 |
 | container.env | list | `[]` | Specify `env` entries for your container |
 | container.envFrom | list | `[]` | Attach secrets and configmaps to your `env` |
-| container.forceReplicas | int | `nil` | Force replicas, if set to 1 it will use Recreate strategy |
+| container.forceReplicas | int | `nil` | Force replicas disables autoscaling, if set to 1 it will use Recreate strategy |
 | container.labels | object | `{}` | Add labels to your pods |
 | container.maxReplicas | int | `nil` | Set the maxReplicas for your HPA |
 | container.memory | int | 16 | Set memory without any unit, `Mi` is inferred |
@@ -54,7 +54,7 @@ Highlighted features:
 | service.enabled | bool | `true` | Enable or disable the service |
 | service.externalPort | int | 80 | Set the external port for your service |
 | service.internalPort | int | 8080 | Set the internal port for your service |
-| shortname | string | `nil` | Shortname identifier for GCP 2.0, typically on the form `theapp` |
+| shortname | string | `nil` | `id` for GCP 2.0, typically on the form `theapp` |
 | team | string | `nil` | Your team name, without a `team-` prefix |
 
 ----------------------------------------------

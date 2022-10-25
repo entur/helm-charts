@@ -1,6 +1,6 @@
 # -- Application name, typically on the form `the-application`
 app:
-# -- Shortname identifier for GCP 2.0, typically on the form `theapp`
+# -- `id` for GCP 2.0, typically on the form `theapp`
 shortname:
 # -- Your team name, without a `team-` prefix
 team:
@@ -47,7 +47,7 @@ container:
   # -- Set the target replica count
   # @default -- 1
   replicas: 1
-  # -- (int) Force replicas, if set to 1 it will use Recreate strategy
+  # -- (int) Force replicas disables autoscaling, if set to 1 it will use Recreate strategy
   forceReplicas:
   # -- (string) Set the minimal available replicas, used by PDB
   # @default -- 50%
