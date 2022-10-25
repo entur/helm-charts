@@ -11,11 +11,20 @@ Read more in its updated [README.md](./charts/common/README.md).
 
 ## Development
 
-    # Generate documentation
-    docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
+### Generate documentation
+
+```bash
+docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
+```
         
-    # Install helm chart unit test plugin
-    helm plugin install https://github.com/vbehar/helm3-unittest
+### Install helm chart unit test plugin
+
+```bash
+helm plugin install https://github.com/vbehar/helm3-unittest
+```
         
-    # Run unit tests
-    helm unittest ./charts/common
+### Run unit tests
+
+```bash
+helm unittest ./charts/common
+```
