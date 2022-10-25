@@ -21,3 +21,23 @@ jobs:
     uses: entur/gh-workflows/.github/workflows/pr-tests-helm.yml@main
     with:
       charts: '["common"]'
+
+  check-doc-gen:
+    name: Check documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Run helm-docs
+        uses: addnab/docker-run-action@v3
+        with:
+          image: jnorwood/helm-docs:latest
+          options: -v ${{ github.workspace }}:/helm-docs
+          run: |
+            helm-docs
+      - name: Check uncommitted documentation changes
+        run: |
+          git diff
+          git diff-files --quiet \
+            || (echo "Run 'helm-docs' from https://github.com/norwoodj/helm-docs, commit the changes and push again" \
+            && exit 1)
