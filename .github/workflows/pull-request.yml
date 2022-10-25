@@ -23,7 +23,6 @@ jobs:
       charts: '["common"]'
 
   check-doc-gen:
-    name: Check documentation
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
