@@ -1,58 +1,125 @@
-# app: the-app
-# shortname: theapp
-# team: yourteam
-# env: dev
+# -- Application name, typically on the form `the-application`
+app:
+# -- `id` for GCP 2.0, typically on the form `theapp`
+shortname:
+# -- Your team name, without a `team-` prefix
+team:
+# -- The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd`
+env:
 
+# -- Specify additional labels for every resource
+# @default -- `{ app shortname team common:version environment }`
 labels: {}
 
 ingress:
+  # -- Enable or disable the ingress
   enabled: true
-  # host: app.dev.entur.io
-  # trafficType: api
+  # -- Set the host name, do this in your `values-kub-ent-$env.yaml` files
+  host:
+  # -- Set the traffic type, typically `api` or `public`
+  trafficType:
 
 service:
+  # -- Enable or disable the service
   enabled: true
+  # -- Set the external port for your service
+  # @default -- 80
   externalPort: 80
+  # -- Set the internal port for your service
+  # @default -- 8080
   internalPort: 8080
 
 container:
+  # -- Add labels to your pods
   labels: {}
+  # -- Set CPU without any unit. 100m is 0.1
+  # @default -- 0.1
   cpu: 0.1
+  # -- (float) Set CPU limit without any unit. 100m is 0.1
+  # @default -- `5 x cpu`
+  cpuLimit:
+  # -- Set memory without any unit, `Mi` is inferred
+  # @default -- 16
   memory: 16
+  # -- Set the uid that your user runs with
+  # @default -- 1000
   uid: 1000
+  # -- Set the target replica count
+  # @default -- 1
   replicas: 1
-  minAvailable: ""
-  maxReplicas: ""
+  # -- (int) Force replicas disables autoscaling, if set to 1 it will use Recreate strategy
+  forceReplicas:
+  # -- (string) Set the minimal available replicas, used by PDB
+  # @default -- 50%
+  minAvailable:
+  # -- (int) Set the maxReplicas for your HPA
+  maxReplicas:
+  # -- Attach secrets and configmaps to your `env`
   envFrom:
     []
     # - secretRef:
     #     name: app-psql-credentials
+  # -- Specify `env` entries for your container
   env:
     []
     # - name: PORT
     #   value: "{{ .Values.service.internalPort }}"
   prometheus:
+    # -- Enable or disable Prometheus
     enabled: false
+    # -- Set the path for scraping metrics
+    # @default -- /actuator/prometheus
     path: "/actuator/prometheus"
   probes:
     liveness:
+      # -- Set the path for liveness probe
+      # @default -- /actuator/health/liveness
       path: "/actuator/health/liveness"
+      # -- Set the failure threshold
+      # @default -- 6
       failureThreshold: 6
+      # -- Set the period of checking
+      # @default -- 5
       periodSeconds: 5
     readiness:
+      # -- Set the path for liveness probe
+      # @default -- /actuator/health/liveness
       path: "/actuator/health/readiness"
+      # -- Set the failure threshold
+      # @default -- 6
       failureThreshold: 6
+      # -- Set the period of checking
+      # @default -- 5
       periodSeconds: 5
     startup:
+      # -- Set the failure threshold
+      # @default -- 300
       failureThreshold: 300
+      # -- Set the period of checking
+      # @default -- 1
       periodSeconds: 1
+  # -- Configure volume mounts, accepts kubernetes syntax
   volumeMounts: {}
+  # -- Configure volume, accepts kubernetes syntax
   volumes: {}
 
 postgres:
+  # -- Enable or disable the proxy
+  # @default -- false
   enabled: false
+  # -- Configure cpu request for proxy
+  # @default -- 0.05
   cpu: 0.05
+  # -- (float) Configure cpu limit for proxy
+  cpuLimit:
+  # -- Configure memory request for proxy without units, `Mi` inferred
+  # @default -- 16
   memory: 16
 
 configmap:
+  # -- Enable or disable the configmap
+  # @default -- false
   enabled: false
+  # -- Set data for configmap
+  data: {}
+    # MY_CONFIG: yes
