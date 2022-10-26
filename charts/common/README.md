@@ -54,7 +54,7 @@ Highlighted features:
 | service.enabled | bool | `true` | Enable or disable the service |
 | service.externalPort | int | 80 | Set the external port for your service |
 | service.internalPort | int | 8080 | Set the internal port for your service |
-| shortname | string | `nil` | `id` for GCP 2.0, typically on the form `theapp` |
+| shortname | string | `nil` | `id` for GCP 2.0, typically on the form `theapp`. Max 10 chars |
 | team | string | `nil` | Your team name, without a `team-` prefix |
 
 ----------------------------------------------
