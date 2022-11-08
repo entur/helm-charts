@@ -41,6 +41,9 @@ container:
   # -- Set memory without any unit, `Mi` is inferred
   # @default -- 16
   memory: 16
+  # -- Set memory limit without any unit, `Mi` is inferred
+  # @default -- `1.2 * memory`
+  memoryLimit:
   # -- Set the uid that your user runs with
   # @default -- 1000
   uid: 1000
