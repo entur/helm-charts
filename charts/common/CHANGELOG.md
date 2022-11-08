@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.8](https://github.com/entur/helm-charts/compare/common-v1.2.7...common-v1.2.8) (2022-11-08)
+
+
+### Bug Fixes
+
+* enable grpc from common chart ([#33](https://github.com/entur/helm-charts/issues/33)) ([4645c9f](https://github.com/entur/helm-charts/commit/4645c9f3a6357df81d4083b4dc893cc1afcf65cb))
+
 ## [1.2.7](https://github.com/entur/helm-charts/compare/common-v1.2.6...common-v1.2.7) (2022-10-18)
 
 
