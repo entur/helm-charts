@@ -19,6 +19,9 @@ ingress:
   # -- Set the traffic type, typically `api` or `public`
   trafficType:
 
+# -- Enable gRPC which will add an annotation and use grpc probes
+grpc: false
+
 service:
   # -- Enable or disable the service
   enabled: true
