@@ -39,3 +39,11 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+  - it: adds metadata for gRPC
+    set:
+      <<: *values
+      grpc: true
+    asserts:
+      - isNotEmpty:
+          template: service.yaml
+          path: metadata.annotations

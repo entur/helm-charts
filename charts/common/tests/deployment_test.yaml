@@ -251,3 +251,13 @@ tests:
       - equal:
           path: spec.strategy.type
           value: RollingUpdate
+  - it: must adopt for gRPC
+    set:
+      <<: *values
+      grpc: true
+      container:
+        image: img
+    asserts:
+      - isNotEmpty:
+          template: deployment.yaml
+          path: spec.template.spec.containers[0].livenessProbe.exec.command

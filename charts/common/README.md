@@ -27,6 +27,7 @@ Highlighted features:
 | container.labels | object | `{}` | Add labels to your pods |
 | container.maxReplicas | int | `nil` | Set the maxReplicas for your HPA |
 | container.memory | int | 16 | Set memory without any unit, `Mi` is inferred |
+| container.memoryLimit | string | `1.2 * memory` | Set memory limit without any unit, `Mi` is inferred |
 | container.minAvailable | string | 50% | Set the minimal available replicas, used by PDB |
 | container.probes.liveness.failureThreshold | int | 6 | Set the failure threshold |
 | container.probes.liveness.path | string | /actuator/health/liveness | Set the path for liveness probe |
@@ -43,6 +44,7 @@ Highlighted features:
 | container.volumeMounts | object | `{}` | Configure volume mounts, accepts kubernetes syntax |
 | container.volumes | object | `{}` | Configure volume, accepts kubernetes syntax |
 | env | string | `nil` | The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd` |
+| grpc | bool | `false` | Enable gRPC which will add an annotation and use grpc probes |
 | ingress.enabled | bool | `true` | Enable or disable the ingress |
 | ingress.host | string | `nil` | Set the host name, do this in your `values-kub-ent-$env.yaml` files |
 | ingress.trafficType | string | `nil` | Set the traffic type, typically `api` or `public` |

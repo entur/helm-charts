@@ -5,6 +5,10 @@ metadata:
   labels:
     {{- include "labels" . | indent 4 }}
   name: {{ .Release.Name }}
+  {{- if .Values.grpc }}
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: h2c
+  {{- end }}
   namespace: {{ .Release.Namespace }}
 spec:
   ports:

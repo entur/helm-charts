@@ -89,6 +89,26 @@ spec:
               drop: ["ALL"]
             seccompProfile:
               type: RuntimeDefault
+          {{- if .Values.grpc }}
+          startupProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.service.internalPort }}", "-service=ready"]
+            initialDelaySeconds: 10
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.service.internalPort }}", "-service=ready"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.service.internalPort }}", "-service=health"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+          {{- else }}
           livenessProbe:
             httpGet:
               path: {{ .Values.container.probes.liveness.path }}
@@ -106,6 +126,7 @@ spec:
               port: {{ .Values.service.internalPort }}
             failureThreshold: {{ .Values.container.probes.startup.failureThreshold }}
             periodSeconds: {{ .Values.container.probes.startup.periodSeconds }}
+          {{ end }}
           {{- if .Values.container.volumeMounts }}
           volumeMounts:
             {{- toYaml .Values.container.volumeMounts | nindent 12 }}
