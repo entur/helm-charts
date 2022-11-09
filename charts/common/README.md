@@ -40,7 +40,7 @@ Highlighted features:
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |
 | container.prometheus.path | string | /actuator/prometheus | Set the path for scraping metrics |
 | container.replicas | int | 1 | Set the target replica count |
-| container.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). If set to > 30 it will be used else ignored. |
+| container.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | container.uid | int | 1000 | Set the uid that your user runs with |
 | container.volumeMounts | object | `{}` | Configure volume mounts, accepts kubernetes syntax |
 | container.volumes | object | `{}` | Configure volume, accepts kubernetes syntax |

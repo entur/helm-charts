@@ -261,7 +261,7 @@ tests:
       - isNotEmpty:
           template: deployment.yaml
           path: spec.template.spec.containers[0].livenessProbe.exec.command
-  - it: must use terminationGracePeriodSeconds if gt than 30
+  - it: terminationGracePeriodSeconds use correct value
     set:
       <<: *values
       container:
@@ -271,12 +271,11 @@ tests:
       - equal:
           path: spec.template.spec.terminationGracePeriodSeconds
           value: 60
-  - it: skip use of terminationGracePeriodSeconds if missing or less to 31
+  - it: spec does not contain terminationGracePeriodSeconds if missing from values
     set:
       <<: *values
       container:
         image: img
-        terminationGracePeriodSeconds: 30
     asserts:
       - isEmpty:
           path: spec.template.spec.terminationGracePeriodSeconds
