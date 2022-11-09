@@ -264,7 +264,9 @@ tests:
   - it: must use terminationGracePeriodSeconds if gt than 30
     set:
       <<: *values
-      terminationGracePeriodSeconds: 60
+      container:
+        image: img
+        terminationGracePeriodSeconds: 60
     asserts:
       - equal:
           path: spec.template.spec.terminationGracePeriodSeconds
@@ -272,7 +274,9 @@ tests:
   - it: skip use of terminationGracePeriodSeconds if missing or less to 31
     set:
       <<: *values
-      terminationGracePeriodSeconds: 30
+      container:
+        image: img
+        terminationGracePeriodSeconds: 30
     asserts:
       - isEmpty:
           path: spec.template.spec.terminationGracePeriodSeconds
