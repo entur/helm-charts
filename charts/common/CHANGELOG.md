@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.9](https://github.com/entur/helm-charts/compare/common-v1.2.8...common-v1.2.9) (2022-11-09)
+
+
+### Bug Fixes
+
+* add terminationGracePeriodSeconds ([#37](https://github.com/entur/helm-charts/issues/37)) ([b0950a5](https://github.com/entur/helm-charts/commit/b0950a51f1ea71779dbd840d7beb75bd51f95ec9))
+
 ## [1.2.8](https://github.com/entur/helm-charts/compare/common-v1.2.7...common-v1.2.8) (2022-11-08)
 
 

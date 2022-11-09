@@ -19,5 +19,5 @@ description: >
   * Convention based automatic limit configuration. Cpu is 5x request, and
   memory is +20%.
 type: application
-version: 1.2.8
+version: 1.2.9
 appVersion: 0.0.1
