@@ -108,6 +108,8 @@ container:
   volumeMounts: {}
   # -- Configure volume, accepts kubernetes syntax
   volumes: {}
+  # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
+  terminationGracePeriodSeconds:
 
 postgres:
   # -- Enable or disable the proxy

@@ -1,6 +1,6 @@
 # common
 
-![Version: 1.2.7](https://img.shields.io/badge/Version-1.2.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 1.2.8](https://img.shields.io/badge/Version-1.2.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 A Helm chart for Entur's Kubernetes workloads
 
@@ -40,6 +40,7 @@ Highlighted features:
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |
 | container.prometheus.path | string | /actuator/prometheus | Set the path for scraping metrics |
 | container.replicas | int | 1 | Set the target replica count |
+| container.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | container.uid | int | 1000 | Set the uid that your user runs with |
 | container.volumeMounts | object | `{}` | Configure volume mounts, accepts kubernetes syntax |
 | container.volumes | object | `{}` | Configure volume, accepts kubernetes syntax |

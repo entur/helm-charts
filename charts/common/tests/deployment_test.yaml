@@ -261,3 +261,23 @@ tests:
       - isNotEmpty:
           template: deployment.yaml
           path: spec.template.spec.containers[0].livenessProbe.exec.command
+  - it: terminationGracePeriodSeconds use correct value
+    set:
+      <<: *values
+      container:
+        image: img
+        terminationGracePeriodSeconds: 60
+    asserts:
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 60
+  - it: spec does not contain terminationGracePeriodSeconds if missing from values
+    set:
+      <<: *values
+      container:
+        image: img
+    asserts:
+      - isEmpty:
+          path: spec.template.spec.terminationGracePeriodSeconds
+
+
