@@ -1,0 +1,197 @@
+probes: &probes
+      probes:
+        liveness:
+          path: "/actuator/health/liveness"
+        readiness:
+          path: "/actuator/health/readiness"
+        startup:
+          failureThreshold: 300
+          periodSeconds: 1
+
+values: &values
+  env: dev
+  app: testsuite
+  shortname: tstsut
+  team: common
+  ingress:
+    host: test.dev.entur.io
+    trafficType: public
+  labels:
+    custom: label
+  deployment: 
+    enabled: false
+  cron:
+    enabled: true
+    schedule: "30 04 * ? *"
+    labels:
+      version: 1
+  containers:
+    - name: test
+      image: img
+      env:
+        - FOO: bar
+      <<: *probes
+
+
+suite: test deployment
+templates:
+  - cron.yaml
+tests:
+  - it: must have labels
+    set:
+      <<: *values
+    asserts:
+      - isNotEmpty:
+          template: cron.yaml
+          path: metadata.labels
+      - isNotEmpty:
+          template: cron.yaml
+          path: metadata.labels.environment
+      - isNotEmpty:
+          template: cron.yaml
+          path: metadata.labels.custom
+      - isNotEmpty:
+          template: cron.yaml
+          path: spec.jobTemplate.metadata.labels.common
+  - it: must add to env if listed
+    set:
+      <<: *values
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].env[0].FOO
+          value: bar
+  - it: cpu limit can be overridden
+    release:
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          cpu: 0.1
+          cpuLimit: 1
+          <<: *probes
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          value: 1
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          value: 0.1
+  - it: cpu limit is 5x request for 0.1
+    release:
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          cpu: 0.1
+          <<: *probes
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          value: 500m
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          value: 0.1
+  - it: cpu limit is 5x request for 0.75
+    release:
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          cpu: 0.75
+          <<: *probes
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          value: 3750m
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          value: 0.75
+  - it: cpu limit is 5x request for 1
+    release:
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          cpu: 1.0
+          <<: *probes
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          value: 5000m
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          value: 1
+  - it: cpu limit is 5x request for > 1
+    release:
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          cpu: 2.1
+          <<: *probes
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          value: 10500m
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          value: 2.1
+  - it: memory limit is 120 percent of request
+    release:
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          memory: 256
+          <<: *probes
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.limits.memory
+          value: 307Mi
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.requests.memory
+          value: 256Mi
+  - it: memory limit can be overridden
+    release:
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          memory: 256
+          memoryLimit: 1024
+          <<: *probes
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.limits.memory
+          value: 1024Mi
+      - equal:
+          path: spec.jobTemplate.spec.containers[0].resources.requests.memory
+          value: 256Mi
+  - it: terminationGracePeriodSeconds use correct value
+    set:
+      <<: *values
+      cron:
+        enabled: true
+        schedule: "30 04 * ? *"
+        labels:
+          version: 1
+        terminationGracePeriodSeconds: 60
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.terminationGracePeriodSeconds
+          value: 60
+  - it: spec does not contain terminationGracePeriodSeconds if missing from values
+    set:
+      <<: *values
+    asserts:
+      - isEmpty:
+          path: spec.jobTemplate.spec.terminationGracePeriodSeconds
+
+

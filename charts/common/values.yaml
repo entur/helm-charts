@@ -22,6 +22,10 @@ ingress:
 # -- Enable gRPC which will add an annotation and use grpc probes
 grpc: false
 
+deployment:
+  # -- Enable or disable the deployment
+  enabled: true
+
 service:
   # -- Enable or disable the service
   enabled: true

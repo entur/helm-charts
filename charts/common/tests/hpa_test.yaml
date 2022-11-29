@@ -39,8 +39,8 @@ tests:
         maxReplicas: 5
     asserts:
       - equal:
-          path: spec.targetCPUUtilizationPercentage
-          value: 80
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 100
   - it: must default for prd
     set:
       <<: *values

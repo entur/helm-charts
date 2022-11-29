@@ -1,13 +1,3 @@
-probes: &probes
-      probes:
-        liveness:
-          path: "/actuator/health/liveness"
-        readiness:
-          path: "/actuator/health/readiness"
-        startup:
-          failureThreshold: 300
-          periodSeconds: 1
-
 values: &values
   env: dev
   app: testsuite
@@ -16,18 +6,8 @@ values: &values
   ingress:
     host: test.dev.entur.io
     trafficType: public
-  labels:
-    custom: label
-  deployment:
-    labels:
-      version: 1
-  containers:
-    - name: test
-      image: img
-      env:
-        - FOO: bar
-      <<: *probes
-
+  container:
+    image: img
 
 suite: test deployment
 templates:
@@ -36,6 +16,12 @@ tests:
   - it: must have labels
     set:
       <<: *values
+      labels:
+        custom: label
+      container:
+        image: img
+        labels:
+          version: 1
     asserts:
       - isNotEmpty:
           template: deployment.yaml
@@ -52,20 +38,35 @@ tests:
   - it: must add to env if listed
     set:
       <<: *values
+      container:
+        image: img
+        env:
+          - FOO: bar
     asserts:
       - equal:
           path: spec.template.spec.containers[0].env[0].FOO
           value: bar
+  - it: must mount envFrom if configmap is enabled
+    release:
+      name: testsuite
+    set:
+      <<: *values
+      configmap:
+        enabled: true
+        data:
+          FOO: bar
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
+          value: testsuite
   - it: cpu limit can be overridden
     release:
     set:
       <<: *values
-      containers:
-        - name: test
-          image: img
-          cpu: 0.1
-          cpuLimit: 1
-          <<: *probes
+      container:
+        image: img
+        cpu: 0.1
+        cpuLimit: 1
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
@@ -77,11 +78,9 @@ tests:
     release:
     set:
       <<: *values
-      containers:
-        - name: test
-          image: img
-          cpu: 0.1
-          <<: *probes
+      container:
+        image: img
+        cpu: 0.1
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
@@ -93,11 +92,9 @@ tests:
     release:
     set:
       <<: *values
-      containers:
-        - name: test
-          image: img
-          cpu: 0.75
-          <<: *probes
+      container:
+        image: img
+        cpu: 0.75
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
@@ -109,11 +106,9 @@ tests:
     release:
     set:
       <<: *values
-      containers:
-        - name: test
-          image: img
-          cpu: 1.0
-          <<: *probes
+      container:
+        image: img
+        cpu: 1.0
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
@@ -125,11 +120,9 @@ tests:
     release:
     set:
       <<: *values
-      containers:
-        - name: test
-          image: img
-          cpu: 2.1
-          <<: *probes
+      container:
+        image: img
+        cpu: 2.1
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
@@ -141,11 +134,9 @@ tests:
     release:
     set:
       <<: *values
-      containers:
-        - name: test
-          image: img
-          memory: 256
-          <<: *probes
+      container:
+        image: img
+        memory: 256
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
@@ -157,12 +148,10 @@ tests:
     release:
     set:
       <<: *values
-      containers:
-        - name: test
-          image: img
-          memory: 256
-          memoryLimit: 1024
-          <<: *probes
+      container:
+        image: img
+        memory: 256
+        memoryLimit: 1024
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
@@ -173,10 +162,10 @@ tests:
   - it: must enable prometheus if enabled
     set:
       <<: *values
-      deployment:
+      container:
+        image: img
         prometheus:
           enabled: true
-          path: /actuator/prometheus
     asserts:
       - equal:
           path: spec.template.metadata.annotations
@@ -185,11 +174,47 @@ tests:
             prometheus.io/scrape: "true"
             prometheus.io/path: "/actuator/prometheus"
             prometheus.io/port: "8080"
+  - it: must mount envFrom if postgres enabled
+    set:
+      <<: *values
+      postgres:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: testsuite-psql-credentials
+  - it: must enable sidecar if postgres enabled
+    set:
+      <<: *values
+      postgres:
+        enabled: true
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.containers[1]
+      - equal:
+          path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
+          value: testsuite-psql-connection
+  - it: postgres cpu limit can be overridden
+    release:
+    set:
+      <<: *values
+      postgres:
+        enabled: true
+        cpu: 0.1
+        cpuLimit: 1
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].resources.limits.cpu
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[1].resources.requests.cpu
+          value: 0.1
   - it: must use 3 replicas if replicas is 3
     set:
       <<: *values
       env: dev
-      deployment:
+      container:
+        image: testimg
         replicas: 3
     asserts:
       - equal:
@@ -202,7 +227,8 @@ tests:
     set:
       <<: *values
       env: prd
-      deployment:
+      container:
+        image: some
         forceReplicas: 1
     asserts:
       - equal:
@@ -215,7 +241,8 @@ tests:
     set:
       <<: *values
       env: prd
-      deployment:
+      container:
+        image: some
         forceReplicas: 3
     asserts:
       - equal:
@@ -227,18 +254,9 @@ tests:
   - it: must adopt for gRPC
     set:
       <<: *values
-      containers:
-        - name: test
-          image: img
-          grpc: true
-          probes:
-            liveness:
-              path: "/actuator/health/liveness"
-            readiness:
-              path: "/actuator/health/readiness"
-            startup:
-              failureThreshold: 300
-              periodSeconds: 1
+      grpc: true
+      container:
+        image: img
     asserts:
       - isNotEmpty:
           template: deployment.yaml
@@ -246,7 +264,8 @@ tests:
   - it: terminationGracePeriodSeconds use correct value
     set:
       <<: *values
-      deployment:
+      container:
+        image: img
         terminationGracePeriodSeconds: 60
     asserts:
       - equal:
@@ -255,6 +274,8 @@ tests:
   - it: spec does not contain terminationGracePeriodSeconds if missing from values
     set:
       <<: *values
+      container:
+        image: img
     asserts:
       - isEmpty:
           path: spec.template.spec.terminationGracePeriodSeconds

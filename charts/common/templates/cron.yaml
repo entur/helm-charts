@@ -1,0 +1,71 @@
+{{- /* Rules */}}
+{{- $env := .Values.env | required ".Values.common.env is required." -}}
+{{- $app := .Values.app | required ".Values.common.app is required." -}}
+{{- $shortname := .Values.shortname | required ".Values.common.shortname is required." -}}
+{{- $team := .Values.team | required ".Values.common.team is required." -}}
+
+{{- $containers := .Values.containers | default (list .Values.container) -}}
+{{- $configmap := .Values.configmap -}}
+{{- $postgres := .Values.postgres -}}
+{{- $cronjob := .Values.cron | default (dict
+    "enabled" false
+    "volumes" .Values.container.volumes
+    "labels" .Values.container.labels) -}}
+{{- if $cronjob.enabled -}}
+{{- /* YAML Spec */}}
+apiVersion: apps/v1
+kind: CronJob
+metadata:
+  labels:
+    {{- include "labels" . | indent 4 }}
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  concurrencyPolicy: {{ $cronjob.concurrencyPolicy | default "Forbid" }}
+  failedJobsHistoryLimit: {{ $cronjob.failedJobsHistoryLimit | default 1 }}
+  schedule: {{ $cronjob.schedule | required ".Values.common.cron.schedule is required." }}
+  successfulJobsHistoryLimit: {{ $cronjob.successfulJobsHistoryLimit | default 1 }}
+  suspend: {{ $cronjob.suspend | default false }}
+  jobTemplate:
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      labels:
+        {{- include "labels" . | indent 8 }}
+        {{- if $cronjob.labels }}
+        {{- toYaml $cronjob.labels | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: application
+
+      containers:
+      {{ range $containers }}
+        {{- $image := .image | required ".Values.common.container.image is required." -}}
+        {{- printf "\n        " -}}
+        - name: {{ .name | default $app }}
+          image: {{ $image }}
+          imagePullPolicy: Always
+          {{- include "environment" (dict "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 10 -}}
+          {{- include "resources" . | nindent 10 }}
+          {{- include "securitycontext" . | nindent 10 }}
+          {{- if .volumeMounts }}
+          volumeMounts:
+            {{- toYaml .volumeMounts | nindent 12 }}
+          {{- end }}
+        {{- if $postgres.enabled }}
+          {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if $cronjob.volumes }}
+      volumes:
+        {{- toYaml $cronjob.volumes | nindent 8 }}
+      {{- end }}
+      {{- if .Values.cron.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.cron.terminationGracePeriodSeconds }}
+      {{- end }}
+      restartPolicy: Always
+      securityContext:
+        runAsGroup: {{ .Values.container.uid }}
+        runAsNonRoot: true
+        runAsUser: {{ .Values.container.uid }}
+{{- end -}}
