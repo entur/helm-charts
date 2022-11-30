@@ -25,6 +25,49 @@ grpc: false
 deployment:
   # -- Enable or disable the deployment
   enabled: true
+  # -- Add labels to your pods
+  labels: {}
+  # -- Configure volume, accepts kubernetes syntax
+  volumes: []
+  # -- Prometheus
+  #prometheus: same as container.prometheus stanza
+  # -- Set the target replica count
+  # @default -- container.replicas
+  replicas: 
+  # -- (int) Force replicas disables autoscaling, if set to 1 it will use Recreate strategy
+  forceReplicas:
+  # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
+  terminationGracePeriodSeconds:
+
+cron:
+  # -- Enable or disable the cron job
+  enabled: true
+  # -- Concurrency policy, default `Forbid`
+  # @default -- Forbid
+  concurrencyPolicy:
+  # -- (int) Failed jobs history limit, default 1
+  # @default -- 1
+  failedJobsHistoryLimit:
+  # -- Required crontab schedule `* * * * * *`
+  schedule:
+  # -- (int) Successful jobs history limit, default 1
+  # @default -- 1
+  successfulJobsHistoryLimit:
+  # -- Suspend flag, default `false`
+  # @default -- false
+  suspend:
+  # -- Add labels to your pods
+  labels: {}
+  # -- Configure volume, accepts kubernetes syntax
+  volumes: []
+  # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
+  # @default -- false
+  terminationGracePeriodSeconds:
+
+hpa:
+  #spec:
+    #metrics: ...
+    #behaviour: ...
 
 service:
   # -- Enable or disable the service
@@ -36,7 +79,13 @@ service:
   # @default -- 8080
   internalPort: 8080
 
+# -- Takes a list of `container` entries, you must add a `name` field for each entry
+containers: []
+
 container:
+  # -- Name of container
+  # @default -- .app
+  name:
   # -- Add labels to your pods
   labels: {}
   # -- Set CPU without any unit. 100m is 0.1
@@ -80,6 +129,9 @@ container:
     # -- Set the path for scraping metrics
     # @default -- /actuator/prometheus
     path: "/actuator/prometheus"
+    # -- (int) Set the port for prometheus scraping
+    # @default -- service.internalPort
+    port: 
   probes:
     liveness:
       # -- Set the path for liveness probe
@@ -109,9 +161,9 @@ container:
       # @default -- 1
       periodSeconds: 1
   # -- Configure volume mounts, accepts kubernetes syntax
-  volumeMounts: {}
+  volumeMounts: []
   # -- Configure volume, accepts kubernetes syntax
-  volumes: {}
+  volumes: []
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
 
