@@ -48,7 +48,7 @@ Highlighted features:
 | container.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | containers | list | `[]` | Takes a list of `container` entries, you must add a `name` field for each entry |
 | cron.concurrencyPolicy | string | Forbid | Concurrency policy |
-| cron.enabled | bool | `true` | Enable or disable the cron job |
+| cron.enabled | bool | `false` | Enable or disable the cron job |
 | cron.failedJobsHistoryLimit | int | 1 | Failed jobs history limit |
 | cron.labels | object | `{}` | Add labels to your pods |
 | cron.schedule | string | `nil` | Required crontab schedule `* * * * * *` |

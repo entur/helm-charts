@@ -41,7 +41,7 @@ deployment:
 
 cron:
   # -- Enable or disable the cron job
-  enabled: true
+  enabled: false
   # -- Concurrency policy
   # @default -- Forbid
   concurrencyPolicy:
