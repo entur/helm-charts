@@ -42,18 +42,18 @@ deployment:
 cron:
   # -- Enable or disable the cron job
   enabled: true
-  # -- Concurrency policy, default `Forbid`
+  # -- Concurrency policy
   # @default -- Forbid
   concurrencyPolicy:
-  # -- (int) Failed jobs history limit, default 1
+  # -- (int) Failed jobs history limit
   # @default -- 1
   failedJobsHistoryLimit:
   # -- Required crontab schedule `* * * * * *`
   schedule:
-  # -- (int) Successful jobs history limit, default 1
+  # -- (int) Successful jobs history limit
   # @default -- 1
   successfulJobsHistoryLimit:
-  # -- Suspend flag, default `false`
+  # -- Suspend flag
   # @default -- false
   suspend:
   # -- Add labels to your pods
@@ -68,6 +68,11 @@ hpa:
   #spec:
     #metrics: ...
     #behaviour: ...
+
+pdb:
+  # -- (string) Set minimum available %
+  # @default -- 50%
+  minAvailable:
 
 service:
   # -- Enable or disable the service

@@ -47,13 +47,13 @@ Highlighted features:
 | container.volumeMounts | list | `[]` | Configure volume mounts, accepts kubernetes syntax |
 | container.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | containers | list | `[]` | Takes a list of `container` entries, you must add a `name` field for each entry |
-| cron.concurrencyPolicy | string | Forbid | Concurrency policy, default `Forbid` |
+| cron.concurrencyPolicy | string | Forbid | Concurrency policy |
 | cron.enabled | bool | `true` | Enable or disable the cron job |
-| cron.failedJobsHistoryLimit | int | 1 | Failed jobs history limit, default 1 |
+| cron.failedJobsHistoryLimit | int | 1 | Failed jobs history limit |
 | cron.labels | object | `{}` | Add labels to your pods |
 | cron.schedule | string | `nil` | Required crontab schedule `* * * * * *` |
-| cron.successfulJobsHistoryLimit | int | 1 | Successful jobs history limit, default 1 |
-| cron.suspend | string | false | Suspend flag, default `false` |
+| cron.successfulJobsHistoryLimit | int | 1 | Successful jobs history limit |
+| cron.suspend | string | false | Suspend flag |
 | cron.terminationGracePeriodSeconds | int | false | Override pod terminationGracePeriodSeconds (default 30s). |
 | cron.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | deployment.enabled | bool | `true` | Enable or disable the deployment |
@@ -69,6 +69,7 @@ Highlighted features:
 | ingress.host | string | `nil` | Set the host name, do this in your `values-kub-ent-$env.yaml` files |
 | ingress.trafficType | string | `nil` | Set the traffic type, typically `api` or `public` |
 | labels | object | `{ app shortname team common:version environment }` | Specify additional labels for every resource |
+| pdb.minAvailable | string | 50% | Set minimum available % |
 | postgres.cpu | float | 0.05 | Configure cpu request for proxy |
 | postgres.cpuLimit | float | `nil` | Configure cpu limit for proxy |
 | postgres.enabled | bool | false | Enable or disable the proxy |
