@@ -7,10 +7,7 @@
 {{- $containers := .Values.containers | default (list .Values.container) -}}
 {{- $configmap := .Values.configmap -}}
 {{- $postgres := .Values.postgres -}}
-{{- $cronjob := .Values.cron | default (dict
-    "enabled" false
-    "volumes" .Values.container.volumes
-    "labels" .Values.container.labels) -}}
+{{- $cronjob := .Values.cron -}}
 {{- if $cronjob.enabled -}}
 {{- /* YAML Spec */}}
 apiVersion: apps/v1
