@@ -71,9 +71,16 @@ tests:
       env: prd
       hpa:
         spec:
-          metrics: []
+          metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 200
     asserts:
       - isNotEmpty:
           path: spec.scaleTargetRef
-      - isEmpty:
-          path: spec.metrics
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 200

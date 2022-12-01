@@ -20,11 +20,14 @@ ingress:
   trafficType:
   # rules: # k8s spec for ingress rules
 
-# -- Specify a list of `ingress` stanzas
-ingresses: [] # list of ingress specs
+# -- Specify a list of `ingress` specs
+ingresses: []
 
 # -- Enable gRPC which will add an annotation and use grpc probes
 grpc: false
+
+# -- Specify a list of `deployment` specs
+deployments: []
 
 deployment:
   # -- Enable or disable the deployment
