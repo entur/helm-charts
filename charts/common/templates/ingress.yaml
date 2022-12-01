@@ -34,6 +34,9 @@ spec:
                   number: {{ $externalPort }}
             pathType: ImplementationSpecific
     {{- end }}
----
+
+# Must manually print newlines for unittest, do not remove
+{{ print "\n---\n" }}
+
 {{- end }}
 {{- end }}

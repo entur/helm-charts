@@ -65,3 +65,15 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+  - it: must have scaleTargetRef even if spec is given
+    set:
+      <<: *values
+      env: prd
+      hpa:
+        spec:
+          metrics: []
+    asserts:
+      - isNotEmpty:
+          path: spec.scaleTargetRef
+      - isEmpty:
+          path: spec.metrics

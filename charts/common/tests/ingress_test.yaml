@@ -121,20 +121,21 @@ tests:
                           number: 666
                     pathType: ImplementationSpecific
     asserts:
+      - hasDocuments:
+          count: 2
       - equal:
           path: spec.rules[0].http.paths[0].backend.service.port.number
           value: 777
-        template: ingress.yaml
-        documentIndex: 1
+        documentIndex: 0
       - equal:
           path: spec.rules[0].host
           value: good.io
-        documentIndex: 1
+        documentIndex: 0
       - equal:
           path: spec.rules[0].http.paths[0].backend.service.port.number
           value: 666
-        documentIndex: 0
+        documentIndex: 1
       - equal:
           path: spec.rules[0].host
           value: bad.io
-        documentIndex: 0
+        documentIndex: 1

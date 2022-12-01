@@ -20,7 +20,8 @@ ingress:
   trafficType:
   # rules: # k8s spec for ingress rules
 
-#ingresses: [] # list of ingress specs
+# -- Specify a list of `ingress` stanzas
+ingresses: [] # list of ingress specs
 
 # -- Enable gRPC which will add an annotation and use grpc probes
 grpc: false
@@ -68,7 +69,8 @@ cron:
   terminationGracePeriodSeconds:
 
 hpa:
-  #spec:
+  # -- Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas.
+  spec:
     #metrics: ...
     #behaviour: ...
 

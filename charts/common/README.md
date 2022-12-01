@@ -64,10 +64,11 @@ Highlighted features:
 | deployment.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | env | string | `nil` | The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd` |
 | grpc | bool | `false` | Enable gRPC which will add an annotation and use grpc probes |
-| hpa | string | `nil` |  |
+| hpa.spec | string | `nil` | Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas. |
 | ingress.enabled | bool | `true` | Enable or disable the ingress |
 | ingress.host | string | `nil` | Set the host name, do this in your `values-kub-ent-$env.yaml` files |
 | ingress.trafficType | string | `nil` | Set the traffic type, typically `api` or `public` |
+| ingresses | list | `[]` | Specify a list of `ingress` stanzas |
 | labels | object | `{ app shortname team common:version environment }` | Specify additional labels for every resource |
 | pdb.minAvailable | string | 50% | Set minimum available % |
 | postgres.cpu | float | 0.05 | Configure cpu request for proxy |
