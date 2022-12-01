@@ -1,28 +1,39 @@
-{{- if .Values.ingress.enabled }}
+{{- if or .Values.ingresses .Values.ingress.enabled }}
   {{- /* Rules */}}
-  {{- $checkHost := .Values.ingress.host | required ".Values.common.ingress.host is required." -}}
-  {{- $checkTrafficType := .Values.ingress.trafficType | required ".Values.common.ingress.trafficType is required." -}}
+  {{- $externalPort :=  .Values.service.externalPort  -}}
+  {{- $chart := . -}}
+  {{- $releaseName := .Release.Name -}}
+  {{- $releaseNamespace := .Release.Namespace -}}
+  {{- $ingresses := .Values.ingresses | default (list .Values.ingress) -}}
 
 {{- /* YAML Spec */}}
+{{ range $ingresses }}
+{{- $checkTrafficType := .trafficType | required "ingress.trafficType is required." -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
   labels:
-    traffic-type: {{ .Values.ingress.trafficType }}
-    {{- include "labels" . | indent 4 }}
-  name: {{ .Release.Name }}
-  namespace: {{ .Release.Namespace }}
+    traffic-type: {{ .trafficType }}
+    {{- include "labels" $chart | indent 4 }}
+  name: {{ .name | default $releaseName }}
+  namespace: {{ $releaseNamespace }}
 spec:
   rules:
-    - host: {{ .Values.ingress.host }}
+    {{- if .rules -}}
+    {{ toYaml .rules | nindent 4 }}
+    {{- else }}
+    - host: {{ .host | required ".Values.common.ingress.host is required." }}
       http:
         paths:
           - backend:
               service:
-                name: {{ .Release.Name }}
+                name: {{ $releaseName }}
                 port:
-                  number: {{ .Values.service.externalPort }}
+                  number: {{ $externalPort }}
             pathType: ImplementationSpecific
+    {{- end }}
+---
+{{- end }}
 {{- end }}

@@ -18,6 +18,9 @@ ingress:
   host:
   # -- Set the traffic type, typically `api` or `public`
   trafficType:
+  # rules: # k8s spec for ingress rules
+
+#ingresses: [] # list of ingress specs
 
 # -- Enable gRPC which will add an annotation and use grpc probes
 grpc: false

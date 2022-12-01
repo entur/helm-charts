@@ -48,3 +48,93 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+  - it: can be custom
+    set:
+      <<: *values
+      ingress:
+        enabled: true
+        trafficType: public
+        rules:
+          - host: good.io
+            http:
+              paths:
+                - backend:
+                    service:
+                      name: something
+                      port:
+                        number: 777
+                  pathType: ImplementationSpecific
+          - host: bad.io
+            http:
+              paths:
+                - backend:
+                    service:
+                      name: something
+                      port:
+                        number: 666
+                  pathType: ImplementationSpecific
+    asserts:
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.port.number
+          value: 777
+      - equal:
+          path: spec.rules[0].host
+          value: good.io
+      - equal:
+          path: spec.rules[1].http.paths[0].backend.service.port.number
+          value: 666
+      - equal:
+          path: spec.rules[1].host
+          value: bad.io
+  - it: can be multiple custom
+    set:
+      env: dev
+      app: testsuite
+      shortname: tstsut
+      team: common
+      service:
+        externalPort: 8080
+        internalPort: 8080
+      container:
+        image: img
+      ingresses:
+        - trafficType: public
+          rules:
+            - host: good.io
+              http:
+                paths:
+                  - backend:
+                      service:
+                        name: something
+                        port:
+                          number: 777
+                    pathType: ImplementationSpecific
+        - trafficType: api
+          rules:
+            - host: bad.io
+              http:
+                paths:
+                  - backend:
+                      service:
+                        name: something
+                        port:
+                          number: 666
+                    pathType: ImplementationSpecific
+    asserts:
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.port.number
+          value: 777
+        template: ingress.yaml
+        documentIndex: 1
+      - equal:
+          path: spec.rules[0].host
+          value: good.io
+        documentIndex: 1
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.port.number
+          value: 666
+        documentIndex: 0
+      - equal:
+          path: spec.rules[0].host
+          value: bad.io
+        documentIndex: 0
