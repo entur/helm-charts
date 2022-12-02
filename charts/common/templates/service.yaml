@@ -12,10 +12,14 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   ports:
+  {{- if .Values.service.ports }}
+  {{- toYaml .Values.service.ports | nindent 4 }}
+  {{- else }}
   - name: http
     port: {{ .Values.service.externalPort }}
     protocol: TCP
     targetPort: {{ .Values.service.internalPort }}
+  {{- end }}
   selector:
     app: {{ .Release.Name }}
   type: ClusterIP

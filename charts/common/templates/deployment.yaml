@@ -3,9 +3,20 @@
 {{- $app := .Values.app | required ".Values.common.app is required." -}}
 {{- $shortname := .Values.shortname | required ".Values.common.shortname is required." -}}
 {{- $team := .Values.team | required ".Values.common.team is required." -}}
-{{- $image := .Values.container.image | required ".Values.common.container.image is required." -}}
-{{- $replicas := .Values.container.forceReplicas | default .Values.container.replicas -}}
 
+{{- $containers := .Values.containers | default (list .Values.container) -}}
+{{- $configmap := .Values.configmap -}}
+{{- $postgres := .Values.postgres -}}
+{{- $internalPort := .Values.service.internalPort -}}
+{{- $grpc := .Values.grpc -}}
+{{- $labels := .Values.deployment.labels | default .Values.container.labels }}
+{{- $volumes := .Values.deployment.volumes | default .Values.container.volumes }}
+{{- $enabled := .Values.deployment.enabled | default .Values.container.enabled }}
+{{- $prometheus := .Values.deployment.prometheus | default .Values.container.prometheus }}
+{{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
+{{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
+{{- $terminationGracePeriodSeconds := .Values.deployment.terminationGracePeriodSeconds | default .Values.container.terminationGracePeriodSeconds }}
+{{- if $enabled }}
 {{- /* YAML Spec */}}
 apiVersion: apps/v1
 kind: Deployment
@@ -18,9 +29,13 @@ spec:
   selector:
     matchLabels:
       app: {{ .Release.Name }}
+  {{- if $forceReplicas }}
+  replicas: {{ $forceReplicas }}
+  {{- else }}
   replicas: {{ $replicas }}
+  {{- end }}
   strategy:
-    {{- if (eq (int .Values.container.forceReplicas) 1) }}
+    {{- if (eq (int $forceReplicas) 1) }}
     type: Recreate
     {{- else }}
     type: RollingUpdate
@@ -29,121 +44,60 @@ spec:
     metadata:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        {{- if .Values.container.prometheus.enabled }}
+        {{- if (($prometheus).enabled) }}
         prometheus.io/scrape: "true"
-        prometheus.io/path: "{{ .Values.container.prometheus.path }}"
-        prometheus.io/port: "{{ .Values.service.internalPort }}"
+        prometheus.io/path: "{{ $prometheus.path }}"
+        prometheus.io/port: "{{ $prometheus.port | default .Values.service.internalPort | required "Must set deployment.prometheus.port" }}"
         {{- end }}
       labels:
         {{- include "labels" . | indent 8 }}
-        {{- if .Values.container.labels }}
-        {{- toYaml .Values.container.labels | nindent 8 }}
+        {{- if $labels }}
+        {{- toYaml $labels | nindent 8 }}
         {{- end }}
     spec:
       serviceAccountName: application
 
       containers:
-        - name: {{ .Values.app }}
+      {{ range $containers }}
+        {{- $image := .image | required ".Values.common.container.image is required." -}}
+        {{- printf "\n        " -}}
+        - name: {{ .name | default $app }}
           image: {{ $image }}
           imagePullPolicy: Always
-          {{- if .Values.container.env }}
-          env:
-            {{- toYaml .Values.container.env | nindent 12 }}
-          {{- end }}
-          {{- if or .Values.container.envFrom .Values.configmap.enabled .Values.postgres.enabled }}
-          envFrom:
-            {{- if .Values.container.envFrom }}
-            {{- toYaml .Values.container.envFrom | nindent 12 }}
-            {{- end }}
-            {{- if .Values.configmap.enabled }}
-            - configMapRef:
-                name: {{ .Release.Name }}
-            {{- end }}
-            {{- if .Values.postgres.enabled }}
-            - secretRef:
-                name: {{ .Values.app }}-psql-credentials
-            {{- end }}
-          {{- end }}
+          {{- include "environment" (dict "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 10 -}}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            {{- if .ports }}
+              {{- toYaml .ports | nindent 12 }}
+            {{- else }}
+            - containerPort: {{ $internalPort }}
               protocol: TCP
-          resources:
-            limits:
-              {{- if .Values.container.cpuLimit }}
-              cpu: {{ .Values.container.cpuLimit }}
-              {{- else }}
-              cpu: "{{ printf "%.2f" .Values.container.cpu | replace "0." "" | replace "." "" | int64 | mul 50 }}m"
-              {{- end }}
-              {{- if .Values.container.memoryLimit }}
-              memory: "{{ .Values.container.memoryLimit }}Mi"
-              {{- else }}
-              memory: "{{ (div (mul .Values.container.memory 6) 5) }}Mi" # TODO: same as above, fix when mulf is working
-              {{- end }}
-            requests:
-              cpu: {{ .Values.container.cpu | float64 }}
-              memory: "{{ .Values.container.memory }}Mi"
-          securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            capabilities:
-              drop: ["ALL"]
-            seccompProfile:
-              type: RuntimeDefault
-          {{- if .Values.grpc }}
-          startupProbe:
-            exec:
-              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.service.internalPort }}", "-service=ready"]
-            initialDelaySeconds: 10
-            failureThreshold: 30
-            periodSeconds: 10
-          readinessProbe:
-            exec:
-              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.service.internalPort }}", "-service=ready"]
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            timeoutSeconds: 5
-          livenessProbe:
-            exec:
-              command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.service.internalPort }}", "-service=health"]
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            timeoutSeconds: 5
+            {{- end }}
+          {{- include "resources" . | nindent 10 }}
+          {{- include "securitycontext" . | nindent 10 }}
+          {{- if or $grpc .grpc }}
+            {{- include "grpcprobes" (dict "internalPort" $internalPort) | nindent 10 -}}
           {{- else }}
-          livenessProbe:
-            httpGet:
-              path: {{ .Values.container.probes.liveness.path }}
-              port: {{ .Values.service.internalPort }}
-            failureThreshold: {{ .Values.container.probes.liveness.failureThreshold }}
-            periodSeconds: {{ .Values.container.probes.liveness.periodSeconds }}
-          readinessProbe:
-            httpGet:
-              path: {{ .Values.container.probes.readiness.path }}
-              port: {{ .Values.service.internalPort }}
-            failureThreshold: {{ .Values.container.probes.liveness.failureThreshold }}
-            periodSeconds: {{ .Values.container.probes.liveness.periodSeconds }}
-          startupProbe:
-            tcpSocket:
-              port: {{ .Values.service.internalPort }}
-            failureThreshold: {{ .Values.container.probes.startup.failureThreshold }}
-            periodSeconds: {{ .Values.container.probes.startup.periodSeconds }}
+            {{- include "probes" (dict "internalPort" $internalPort "probes" .probes) | nindent 10 -}}
           {{ end }}
-          {{- if .Values.container.volumeMounts }}
+          {{- if .volumeMounts }}
           volumeMounts:
-            {{- toYaml .Values.container.volumeMounts | nindent 12 }}
+            {{- toYaml .volumeMounts | nindent 12 }}
           {{- end }}
-        {{- if .Values.postgres.enabled }}
-        {{- include "gcloud_sql_proxy" . | indent 8 }}
+        {{- if $postgres.enabled }}
+          {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 8 }}
         {{- end }}
-      {{- if .Values.container.volumes }}
+      {{- end }}
+      {{- if $volumes }}
       volumes:
-        {{- toYaml .Values.container.volumes | nindent 8 }}
+        {{- toYaml $volumes | nindent 8 }}
       {{- end }}
       {{- include "topologyspreadconstraints" . | indent 6 }}
-      {{- if .Values.container.terminationGracePeriodSeconds }}
-      terminationGracePeriodSeconds: {{ .Values.container.terminationGracePeriodSeconds }}
+      {{- if $terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ $terminationGracePeriodSeconds }}
       {{- end }}
       restartPolicy: Always
       securityContext:
         runAsGroup: {{ .Values.container.uid }}
         runAsNonRoot: true
         runAsUser: {{ .Values.container.uid }}
+{{- end }}

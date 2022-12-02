@@ -6,9 +6,6 @@
     {{ $checkReplicas := .Values.error | required ".Values.common.container.replicas must be greater than 1 when using minAvailable" }}
   {{- end }}
 
-  {{- /* Defaults */}}
-  {{- $minAvailable := .Values.container.minAvailable | default "50%" }}
-
 {{- /* YAML Spec */}}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -18,7 +15,13 @@ metadata:
   labels:
     {{- include "labels" . | indent 4 }}
 spec:
-  minAvailable: {{ $minAvailable }}
+  {{- if ((.Values.pdb).minAvailable) }}
+  minAvailable: {{ .Values.pdb.minAvailable }}
+  {{- else if ((.Values.container).minAvailable) }}
+  minAvailable: {{ .Values.container.minAvailable }}
+  {{- else }}
+  minAvailable: 50%
+  {{- end }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}

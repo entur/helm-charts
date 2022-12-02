@@ -39,8 +39,8 @@ tests:
         maxReplicas: 5
     asserts:
       - equal:
-          path: spec.targetCPUUtilizationPercentage
-          value: 80
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 100
   - it: must default for prd
     set:
       <<: *values
@@ -65,3 +65,22 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+  - it: must have scaleTargetRef even if spec is given
+    set:
+      <<: *values
+      env: prd
+      hpa:
+        spec:
+          metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 200
+    asserts:
+      - isNotEmpty:
+          path: spec.scaleTargetRef
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 200
