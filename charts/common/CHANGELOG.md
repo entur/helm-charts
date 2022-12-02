@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/entur/helm-charts/compare/common-v1.2.9...common-v1.3.0) (2022-12-02)
+
+
+### Features
+
+* multiple ports, multiple deployments, override pdb and hpa ([#40](https://github.com/entur/helm-charts/issues/40)) ([409ddb2](https://github.com/entur/helm-charts/commit/409ddb2ab84e9a5404e427b59d67e09af08e57b2))
+
 ## [1.2.9](https://github.com/entur/helm-charts/compare/common-v1.2.8...common-v1.2.9) (2022-11-09)
 
 
