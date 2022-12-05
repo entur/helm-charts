@@ -69,7 +69,7 @@ envFrom:
   {{- end }}
   {{- if .postgres.enabled }}
   - secretRef:
-      name: {{ .Release.Name }}-psql-credentials
+      name: {{ .app }}-psql-credentials
   {{- end }}
 {{- end }}
 {{ end }}
