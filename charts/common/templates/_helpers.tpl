@@ -65,7 +65,7 @@ envFrom:
   {{- end }}
   {{- if .configmap.enabled }}
   - configMapRef:
-      name: {{ .Release.Name }}
+      name: {{ .releaseName }}
   {{- end }}
   {{- if .postgres.enabled }}
   - secretRef:
