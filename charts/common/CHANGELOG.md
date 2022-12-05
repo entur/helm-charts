@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/entur/helm-charts/compare/common-v1.3.0...common-v1.3.1) (2022-12-05)
+
+
+### Bug Fixes
+
+* apply seccomprofile on pods ([#43](https://github.com/entur/helm-charts/issues/43)) ([4f4989f](https://github.com/entur/helm-charts/commit/4f4989f5da955ad816b870a09e83ca25f4867fff))
+
 ## [1.3.0](https://github.com/entur/helm-charts/compare/common-v1.2.9...common-v1.3.0) (2022-12-02)
 
 
