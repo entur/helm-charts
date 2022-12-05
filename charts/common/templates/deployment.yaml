@@ -100,4 +100,6 @@ spec:
         runAsGroup: {{ .Values.container.uid }}
         runAsNonRoot: true
         runAsUser: {{ .Values.container.uid }}
+        seccompProfile:
+          type: RuntimeDefault
 {{- end }}
