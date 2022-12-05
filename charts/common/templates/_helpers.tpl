@@ -125,7 +125,7 @@ livenessProbe:
     - "-term_timeout=30s"
   envFrom:
   - configMapRef:
-      name: {{ .Release.Name }}-psql-connection
+      name: {{ .app }}-psql-connection
   securityContext:
     runAsNonRoot: true
     allowPrivilegeEscalation: false
