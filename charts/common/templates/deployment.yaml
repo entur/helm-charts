@@ -4,6 +4,7 @@
 {{- $shortname := .Values.shortname | required ".Values.common.shortname is required." -}}
 {{- $team := .Values.team | required ".Values.common.team is required." -}}
 
+{{- $releaseName := .Release.Name -}}
 {{- $containers := .Values.containers | default (list .Values.container) -}}
 {{- $configmap := .Values.configmap -}}
 {{- $postgres := .Values.postgres -}}
@@ -64,7 +65,7 @@ spec:
         - name: {{ .name | default $app }}
           image: {{ $image }}
           imagePullPolicy: Always
-          {{- include "environment" (dict "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 10 -}}
+          {{- include "environment" (dict "releaseName" $releaseName "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 10 -}}
           ports:
             {{- if .ports }}
               {{- toYaml .ports | nindent 12 }}
