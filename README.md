@@ -10,7 +10,9 @@ The common helm chart is a quick and easy way to get an application ready for de
 Read more in its updated [README.md](./charts/common/README.md).
 
 #### Use [common](./charts/common/README.md)
-```
+Add to Chart.yaml:
+
+```yaml
 dependencies:
   - name: common
     version: 1.3.1
