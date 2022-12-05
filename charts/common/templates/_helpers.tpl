@@ -69,7 +69,7 @@ envFrom:
   {{- end }}
   {{- if .postgres.enabled }}
   - secretRef:
-      name: {{ .app }}-psql-credentials
+      name: {{ .Release.Name }}-psql-credentials
   {{- end }}
 {{- end }}
 {{ end }}
@@ -125,7 +125,7 @@ livenessProbe:
     - "-term_timeout=30s"
   envFrom:
   - configMapRef:
-      name: {{ .app }}-psql-connection
+      name: {{ .Release.Name }}-psql-connection
   securityContext:
     runAsNonRoot: true
     allowPrivilegeEscalation: false
