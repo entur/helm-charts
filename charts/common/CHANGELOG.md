@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/entur/helm-charts/compare/common-v1.3.1...common-v1.3.2) (2022-12-06)
+
+
+### Bug Fixes
+
+* configmapRef should use release-name ([#46](https://github.com/entur/helm-charts/issues/46)) ([eb711bd](https://github.com/entur/helm-charts/commit/eb711bd1ba95581cfad9e3f5f773bedd5b9163bc))
+
 ## [1.3.1](https://github.com/entur/helm-charts/compare/common-v1.3.0...common-v1.3.1) (2022-12-05)
 
 
