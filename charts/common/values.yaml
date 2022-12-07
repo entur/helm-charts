@@ -101,6 +101,10 @@ container:
   name:
   # -- Add labels to your pods
   labels: {}
+  # -- Add command that will run in the pod. Accepts Kubernetes syntax.
+  command:
+  # -- Add arguments that will be passed to the command. Accepts Kubernetes syntax.
+  args:
   # -- Set CPU without any unit. 100m is 0.1
   # @default -- 0.1
   cpu: 0.1
@@ -179,10 +183,6 @@ container:
   volumes: []
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
-  # -- Add command that will run in the pod. Accepts Kubernetes syntax.
-  command:
-  # -- Add arguments that will be passed to the command. Accepts Kubernetes syntax.
-  args:
 
 postgres:
   # -- Enable or disable the proxy
