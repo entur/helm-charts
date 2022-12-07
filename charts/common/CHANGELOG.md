@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/entur/helm-charts/compare/common-v1.3.2...common-v1.3.3) (2022-12-07)
+
+
+### Bug Fixes
+
+* allow override of postgres credentials and connection ([#49](https://github.com/entur/helm-charts/issues/49)) ([ef0b05b](https://github.com/entur/helm-charts/commit/ef0b05b49fed7ea48b8e1d5e31bc5e350e81c102))
+
 ## [1.3.2](https://github.com/entur/helm-charts/compare/common-v1.3.1...common-v1.3.2) (2022-12-06)
 
 
