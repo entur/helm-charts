@@ -179,6 +179,10 @@ container:
   volumes: []
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
+  # -- Add command that will run in the pod. Accepts Kubernetes syntax.
+  command:
+  # -- Add arguments that will be passed to the command. Accepts Kubernetes syntax.
+  args:
 
 postgres:
   # -- Enable or disable the proxy
