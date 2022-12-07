@@ -65,6 +65,12 @@ spec:
         - name: {{ .name | default $app }}
           image: {{ $image }}
           imagePullPolicy: Always
+          {{- if .command -}}
+            command: {{ .Values.common.container.command }}
+           {{- end }}
+           {{- if .args -}}
+            args: {{ .Values.common.container.args }}
+           {{- end }}
           {{- include "environment" (dict "releaseName" $releaseName "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 10 -}}
           ports:
             {{- if .ports }}
