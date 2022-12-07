@@ -258,5 +258,25 @@ tests:
     asserts:
       - isEmpty:
           path: spec.template.spec.terminationGracePeriodSeconds
+  - it: override credentialsSecret
+    set:
+      <<: *values
+      postgres:
+        enabled: true
+        credentialsSecret: my-secret 
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: my-secret
+  - it: override connectionConfig
+    set:
+      <<: *values
+      postgres:
+        enabled: true
+        connectionConfig: my-config 
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
+          value: my-config
 
 
