@@ -278,5 +278,33 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
           value: my-config
-
-
+  - it: command use correct value
+    set:
+      <<: *values
+      containers:
+        command: ["/bin/sh"]
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers.command
+          value: ["/bin/sh"]
+  - it: spec does not contain command if missing from values
+    set:
+      <<: *values
+    asserts:
+      - isEmpty:
+          path: spec.jobTemplate.spec.containers.command
+  - it: args use correct value
+    set:
+      <<: *values
+      containers:
+        args: ["-c", "gcloud sql export"]
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.containers.args
+          value: ["-c", "gcloud sql export"]
+  - it: spec does not contain args if missing from values
+    set:
+      <<: *values
+    asserts:
+      - isEmpty:
+          path: spec.jobTemplate.spec.containers.args
