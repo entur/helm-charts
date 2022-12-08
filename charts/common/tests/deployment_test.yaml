@@ -285,14 +285,14 @@ tests:
         command: ["/bin/sh"]
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers.command
+          path: spec.template.spec.containers[0].command
           value: ["/bin/sh"]
   - it: spec does not contain command if missing from values
     set:
       <<: *values
     asserts:
       - isEmpty:
-          path: spec.jobTemplate.spec.containers.command
+          path: spec.template.spec.containers[0].command
   - it: args use correct value
     set:
       <<: *values
@@ -300,11 +300,11 @@ tests:
         args: ["-c", "gcloud sql export"]
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers.args
+          path: spec.template.spec.containers[0].args
           value: ["-c", "gcloud sql export"]
   - it: spec does not contain args if missing from values
     set:
       <<: *values
     asserts:
       - isEmpty:
-          path: spec.jobTemplate.spec.containers.args
+          path: spec.template.spec.containers[0].args
