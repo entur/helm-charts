@@ -43,6 +43,12 @@ spec:
         - name: {{ .name | default $app }}
           image: {{ $image }}
           imagePullPolicy: Always
+          {{- if .command }}
+          command: {{ .command }}
+          {{- end }}
+          {{- if .args }}
+          args: {{ toYaml .args | nindent 10 }}
+          {{- end }}
           {{- include "environment" (dict "releaseName" $releaseName "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 10 -}}
           {{- include "resources" . | nindent 10 }}
           {{- include "securitycontext" . | nindent 10 }}
