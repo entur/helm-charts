@@ -101,9 +101,9 @@ container:
   name:
   # -- Add labels to your pods
   labels: {}
-  # -- Add command that will run in the pod. Accepts Kubernetes syntax.
+  # -- Optionally set the command that will run in the pod. If not set, the entrypoint for the container-image is used (recommended for most Java-apps).
   command:
-  # -- Add arguments that will be passed to the command. Accepts Kubernetes syntax.
+  # -- Optionally set the arguments that will be passed to the command, e.g. ["arg1","arg2"].
   args:
   # -- Set CPU without any unit. 100m is 0.1
   # @default -- 0.1

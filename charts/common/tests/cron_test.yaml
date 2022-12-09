@@ -27,7 +27,7 @@ values: &values
       version: 1
   containers:
     - name: test
-      image: img      
+      image: img
       env:
         - FOO: bar
       <<: *probes
