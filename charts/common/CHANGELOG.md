@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/entur/helm-charts/compare/common-v1.3.3...common-v1.4.0) (2022-12-09)
+
+
+### Features
+
+* Add support for running command with arguments in containers ([#51](https://github.com/entur/helm-charts/issues/51)) ([8479bed](https://github.com/entur/helm-charts/commit/8479bed8eed5d660545591ea510d889bb69edd75))
+
 ## [1.3.3](https://github.com/entur/helm-charts/compare/common-v1.3.2...common-v1.3.3) (2022-12-07)
 
 
