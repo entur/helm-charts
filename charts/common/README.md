@@ -19,8 +19,8 @@ Highlighted features:
 | app | string | `nil` | Application name, typically on the form `the-application` |
 | configmap.data | object | `{}` | Set data for configmap |
 | configmap.enabled | bool | false | Enable or disable the configmap |
-| container.args | string | `nil` | Add arguments that will be passed to the command. Accepts Kubernetes syntax. |
-| container.command | string | `nil` | Add command that will run in the pod. Accepts Kubernetes syntax. |
+| container.args | string | `nil` | Optionally set the arguments that will be passed to the command, e.g. ["arg1","arg2"]. |
+| container.command | string | `nil` | Optionally set the command that will run in the pod. If not set, the entrypoint for the container-image is used (recommended for most Java-apps). |
 | container.cpu | float | 0.1 | Set CPU without any unit. 100m is 0.1 |
 | container.cpuLimit | float | `5 x cpu` | Set CPU limit without any unit. 100m is 0.1 |
 | container.env | list | `[]` | Specify `env` entries for your container |
