@@ -282,7 +282,10 @@ tests:
     set:
       <<: *values
       containers:
-        command: ["/bin/sh"]
+        - name: test
+          image: img
+          command: ["/bin/sh"]
+          <<: *probes
     asserts:
       - equal:
           path: spec.template.spec.containers[0].command
@@ -297,7 +300,10 @@ tests:
     set:
       <<: *values
       containers:
-        args: ["-c", "gcloud sql export"]
+        - name: test
+          image: img
+          args: ["-c", "gcloud sql export"]
+          <<: *probes
     asserts:
       - equal:
           path: spec.template.spec.containers[0].args
