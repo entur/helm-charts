@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/entur/helm-charts/compare/common-v1.4.0...common-v1.4.1) (2022-12-09)
+
+
+### Bug Fixes
+
+* apply cron fix ([#54](https://github.com/entur/helm-charts/issues/54)) ([5836709](https://github.com/entur/helm-charts/commit/58367097d5558281172f987765c072a9d7696227))
+
 ## [1.4.0](https://github.com/entur/helm-charts/compare/common-v1.3.3...common-v1.4.0) (2022-12-09)
 
 
