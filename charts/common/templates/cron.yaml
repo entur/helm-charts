@@ -34,42 +34,42 @@ spec:
         {{- toYaml $cronjob.labels | nindent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: application
-
-      containers:
-      {{ range $containers }}
-        {{- $image := .image | required ".Values.common.container.image is required." -}}
-        {{- printf "\n        " -}}
-        - name: {{ .name | default $app }}
-          image: {{ $image }}
-          imagePullPolicy: Always
-          {{- if .command }}
-          command: {{ .command }}
+      template:
+        serviceAccountName: application
+        containers:
+        {{ range $containers }}
+          {{- $image := .image | required ".Values.common.container.image is required." -}}
+          {{- printf "\n        " -}}
+          - name: {{ .name | default $app }}
+            image: {{ $image }}
+            imagePullPolicy: Always
+            {{- if .command }}
+            command: {{ .command }}
+            {{- end }}
+            {{- if .args }}
+            args: {{ toYaml .args | nindent 10 }}
+            {{- end }}
+            {{- include "environment" (dict "releaseName" $releaseName "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 10 -}}
+            {{- include "resources" . | nindent 10 }}
+            {{- include "securitycontext" . | nindent 10 }}
+            {{- if .volumeMounts }}
+            volumeMounts:
+              {{- toYaml .volumeMounts | nindent 12 }}
+            {{- end }}
+          {{- if $postgres.enabled }}
+            {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 8 }}
           {{- end }}
-          {{- if .args }}
-          args: {{ toYaml .args | nindent 10 }}
-          {{- end }}
-          {{- include "environment" (dict "releaseName" $releaseName "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 10 -}}
-          {{- include "resources" . | nindent 10 }}
-          {{- include "securitycontext" . | nindent 10 }}
-          {{- if .volumeMounts }}
-          volumeMounts:
-            {{- toYaml .volumeMounts | nindent 12 }}
-          {{- end }}
-        {{- if $postgres.enabled }}
-          {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 8 }}
         {{- end }}
-      {{- end }}
-      {{- if $cronjob.volumes }}
-      volumes:
-        {{- toYaml $cronjob.volumes | nindent 8 }}
-      {{- end }}
-      {{- if .Values.cron.terminationGracePeriodSeconds }}
-      terminationGracePeriodSeconds: {{ .Values.cron.terminationGracePeriodSeconds }}
-      {{- end }}
-      restartPolicy: Always
-      securityContext:
-        runAsGroup: {{ .Values.container.uid }}
-        runAsNonRoot: true
-        runAsUser: {{ .Values.container.uid }}
+        {{- if $cronjob.volumes }}
+        volumes:
+          {{- toYaml $cronjob.volumes | nindent 8 }}
+        {{- end }}
+        {{- if .Values.cron.terminationGracePeriodSeconds }}
+        terminationGracePeriodSeconds: {{ .Values.cron.terminationGracePeriodSeconds }}
+        {{- end }}
+        restartPolicy: Always
+        securityContext:
+          runAsGroup: {{ .Values.container.uid }}
+          runAsNonRoot: true
+          runAsUser: {{ .Values.container.uid }}
 {{- end -}}
