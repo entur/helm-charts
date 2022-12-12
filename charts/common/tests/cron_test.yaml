@@ -33,7 +33,7 @@ values: &values
       <<: *probes
 
 
-suite: test deployment
+suite: test cron
 templates:
   - cron.yaml
 tests:
@@ -57,8 +57,8 @@ tests:
     set:
       <<: *values
     asserts:
-      - equal:
-          path: spec.jobTemplate.spec.containers[0].env[0].FOO
+      - equal:      
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[0].FOO
           value: bar
   - it: cpu limit can be overridden
     release:
@@ -72,10 +72,10 @@ tests:
           <<: *probes
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
           value: 1
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
   - it: cpu limit is 5x request for 0.1
     release:
@@ -88,10 +88,10 @@ tests:
           <<: *probes
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
           value: 500m
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
   - it: cpu limit is 5x request for 0.75
     release:
@@ -104,10 +104,10 @@ tests:
           <<: *probes
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
           value: 3750m
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
           value: 0.75
   - it: cpu limit is 5x request for 1
     release:
@@ -120,10 +120,10 @@ tests:
           <<: *probes
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
           value: 5000m
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
           value: 1
   - it: cpu limit is 5x request for > 1
     release:
@@ -136,10 +136,10 @@ tests:
           <<: *probes
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.limits.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
           value: 10500m
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.requests.cpu
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
           value: 2.1
   - it: memory limit is 120 percent of request
     release:
@@ -152,10 +152,10 @@ tests:
           <<: *probes
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.limits.memory
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.memory
           value: 307Mi
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.requests.memory
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.memory
           value: 256Mi
   - it: memory limit can be overridden
     release:
@@ -169,10 +169,10 @@ tests:
           <<: *probes
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.limits.memory
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.memory
           value: 1024Mi
       - equal:
-          path: spec.jobTemplate.spec.containers[0].resources.requests.memory
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.memory
           value: 256Mi
   - it: terminationGracePeriodSeconds use correct value
     set:
@@ -185,14 +185,14 @@ tests:
         terminationGracePeriodSeconds: 60
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.terminationGracePeriodSeconds
+          path: spec.jobTemplate.spec.template.spec.terminationGracePeriodSeconds
           value: 60
   - it: spec does not contain terminationGracePeriodSeconds if missing from values
     set:
       <<: *values
     asserts:
       - isEmpty:
-          path: spec.jobTemplate.spec.terminationGracePeriodSeconds
+          path: spec.jobTemplate.spec.template.spec.terminationGracePeriodSeconds
   - it: command use correct value
     set:
       <<: *values
@@ -202,14 +202,14 @@ tests:
           command: ["/bin/sh"]
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers[0].command
+          path: spec.jobTemplate.spec.template.spec.containers[0].command
           value: ["/bin/sh"]
   - it: spec does not contain command if missing from values
     set:
       <<: *values
     asserts:
       - isEmpty:
-          path: spec.jobTemplate.spec.containers[0].command
+          path: spec.jobTemplate.spec.template.spec.containers[0].command
   - it: args use correct value
     set:
       <<: *values
@@ -219,11 +219,11 @@ tests:
           args: ["-c", "gcloud sql export"]
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.containers[0].args
+          path: spec.jobTemplate.spec.template.spec.containers[0].args
           value: ["-c", "gcloud sql export"]
   - it: spec does not contain args if missing from values
     set:
       <<: *values
     asserts:
       - isEmpty:
-          path: spec.jobTemplate.spec.containers[0].args
+          path: spec.jobTemplate.spec.template.spec.containers[0].args
