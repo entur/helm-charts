@@ -192,7 +192,7 @@ postgres:
   # @default -- 0.05
   cpu: 0.05
   # -- (float) Configure cpu limit for proxy
-  cpuLimit:
+  cpuLimit: 0.3
   # -- Configure memory request for proxy without units, `Mi` inferred
   # @default -- 16
   memory: 16
