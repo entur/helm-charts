@@ -40,7 +40,7 @@ spec:
           containers:
           {{ range $containers }}
             {{- $image := .image | required ".Values.common.container.image is required." -}}
-            {{- printf "\n        " -}}
+            {{- printf "\n            " -}}
             - name: {{ .name | default $app }}
               image: {{ $image }}
               imagePullPolicy: Always
@@ -48,22 +48,22 @@ spec:
               command: {{ .command }}
               {{- end }}
               {{- if .args }}
-              args: {{ toYaml .args | nindent 10 }}
+              args: {{ toYaml .args | nindent 14 }}
               {{- end }}
-              {{- include "environment" (dict "releaseName" $releaseName "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 10 -}}
-              {{- include "resources" . | nindent 10 }}
-              {{- include "securitycontext" . | nindent 10 }}
+              {{- include "environment" (dict "releaseName" $releaseName "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 14 -}}
+              {{- include "resources" . | nindent 14 }}
+              {{- include "securitycontext" . | nindent 14 }}
               {{- if .volumeMounts }}
               volumeMounts:
-                {{- toYaml .volumeMounts | nindent 12 }}
+                {{- toYaml .volumeMounts | nindent 16 }}
               {{- end }}
             {{- if $postgres.enabled }}
-              {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 8 }}
+              {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 12 }}
             {{- end }}
           {{- end }}
           {{- if $cronjob.volumes }}
           volumes:
-            {{- toYaml $cronjob.volumes | nindent 8 }}
+            {{- toYaml $cronjob.volumes | nindent 12 }}
           {{- end }}
           {{- if .Values.cron.terminationGracePeriodSeconds }}
           terminationGracePeriodSeconds: {{ .Values.cron.terminationGracePeriodSeconds }}
