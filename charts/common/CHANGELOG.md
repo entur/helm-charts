@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/entur/helm-charts/compare/common-v1.4.1...common-v1.4.2) (2022-12-16)
+
+
+### Bug Fixes
+
+* Add missing template block in CronJob template ([#56](https://github.com/entur/helm-charts/issues/56)) ([0ed3b82](https://github.com/entur/helm-charts/commit/0ed3b828c8c9d452d0032c3e67d7edda92d676f1))
+
 ## [1.4.1](https://github.com/entur/helm-charts/compare/common-v1.4.0...common-v1.4.1) (2022-12-09)
 
 
