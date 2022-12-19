@@ -25,6 +25,12 @@ Update version in Chart.yaml and run `helm dependency update`
 
 ## Development
 
+### Render example values files
+
+```bash
+helm template charts/common -f example/values-minimal.yaml
+```
+
 ### Generate documentation
 
 ```bash

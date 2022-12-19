@@ -154,6 +154,11 @@ container:
       # -- Set the path for liveness probe
       # @default -- /actuator/health/liveness
       path: "/actuator/health/liveness"
+      # -- Set the initial delay for the probe
+      initialDelaySeconds: 0
+      # -- Set the success threshold
+      # @default -- 1
+      successThreshold: 1
       # -- Set the failure threshold
       # @default -- 6
       failureThreshold: 6
@@ -164,6 +169,11 @@ container:
       # -- Set the path for liveness probe
       # @default -- /actuator/health/liveness
       path: "/actuator/health/readiness"
+      # -- Set the initial delay for the probe
+      initialDelaySeconds: 0
+      # -- Set the success threshold
+      # @default -- 1
+      successThreshold: 1
       # -- Set the failure threshold
       # @default -- 6
       failureThreshold: 6
@@ -183,6 +193,8 @@ container:
   volumes: []
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
+  # -- Set pod lifecycle handlers
+  lifecycle: {}
 
 postgres:
   # -- Enable or disable the proxy
