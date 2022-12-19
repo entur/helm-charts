@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/entur/helm-charts/compare/common-v1.4.2...common-v1.5.0) (2022-12-19)
+
+
+### Features
+
+* Expose probe properties initialDelaySeconds and successThreshold and container lifecycle. ([#59](https://github.com/entur/helm-charts/issues/59)) ([5b26947](https://github.com/entur/helm-charts/commit/5b26947438c7a55063413c970f3c378b4a3b255f))
+
 ## [1.4.2](https://github.com/entur/helm-charts/compare/common-v1.4.1...common-v1.4.2) (2022-12-16)
 
 
