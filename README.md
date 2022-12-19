@@ -29,6 +29,7 @@ Update version in Chart.yaml and run `helm dependency update`
 
 ```bash
 helm template charts/common -f example/values-minimal.yaml
+helm template charts/common -f example/values-cron.yaml
 ```
 
 ### Generate documentation

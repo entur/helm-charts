@@ -1,0 +1,21 @@
+app: my-app
+shortname: myapp
+team: mat
+env: dev
+
+ingress:
+  enabled: false
+
+service:
+  enabled: false
+
+cron:
+  enabled: true
+  schedule: 0 * * * * *
+
+deployment:
+  enabled: false
+
+container:
+  name: my-app
+  image: theimage
