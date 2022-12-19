@@ -243,6 +243,37 @@ tests:
       - isNotEmpty:
           template: deployment.yaml
           path: spec.template.spec.containers[0].livenessProbe.exec.command
+  - it: must be able to override initialDelay and successThreshold for probes
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          probes:
+            liveness:
+              path: "/actuator/health/liveness"
+              initialDelaySeconds: 1
+              successThreshold: 11
+            readiness:
+              path: "/actuator/health/readiness"
+              initialDelaySeconds: 2
+              successThreshold: 12
+            startup:
+              failureThreshold: 300
+              periodSeconds: 1
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.initialDelaySeconds
+          value: 2
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.successThreshold
+          value: 11
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.successThreshold
+          value: 12
   - it: terminationGracePeriodSeconds use correct value
     set:
       <<: *values
@@ -314,3 +345,20 @@ tests:
     asserts:
       - isEmpty:
           path: spec.template.spec.containers[0].args
+  - it: set lifecycle hooks
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          args: ["-c", "gcloud sql export"]
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - echo
+          <<: *probes
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command[0]
+          value: echo

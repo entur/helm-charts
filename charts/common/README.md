@@ -27,17 +27,22 @@ Highlighted features:
 | container.envFrom | list | `[]` | Attach secrets and configmaps to your `env` |
 | container.forceReplicas | int | `nil` | Force replicas disables autoscaling, if set to 1 it will use Recreate strategy |
 | container.labels | object | `{}` | Add labels to your pods |
+| container.lifecycle | object | `{}` | Set pod lifecycle handlers |
 | container.maxReplicas | int | `nil` | Set the maxReplicas for your HPA |
 | container.memory | int | 16 | Set memory without any unit, `Mi` is inferred |
 | container.memoryLimit | string | `1.2 * memory` | Set memory limit without any unit, `Mi` is inferred |
 | container.minAvailable | string | 50% | Set the minimal available replicas, used by PDB |
 | container.name | string | .app | Name of container |
 | container.probes.liveness.failureThreshold | int | 6 | Set the failure threshold |
+| container.probes.liveness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
 | container.probes.liveness.path | string | /actuator/health/liveness | Set the path for liveness probe |
 | container.probes.liveness.periodSeconds | int | 5 | Set the period of checking |
+| container.probes.liveness.successThreshold | int | 1 | Set the success threshold |
 | container.probes.readiness.failureThreshold | int | 6 | Set the failure threshold |
+| container.probes.readiness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
 | container.probes.readiness.path | string | /actuator/health/liveness | Set the path for liveness probe |
 | container.probes.readiness.periodSeconds | int | 5 | Set the period of checking |
+| container.probes.readiness.successThreshold | int | 1 | Set the success threshold |
 | container.probes.startup.failureThreshold | int | 300 | Set the failure threshold |
 | container.probes.startup.periodSeconds | int | 1 | Set the period of checking |
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |

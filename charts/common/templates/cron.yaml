@@ -57,6 +57,10 @@ spec:
               volumeMounts:
                 {{- toYaml .volumeMounts | nindent 16 }}
               {{- end }}
+              {{- if .lifecycle }}
+              lifecycle:
+                {{- toYaml .lifecycle | nindent 16 }}
+              {{- end }}
             {{- if $postgres.enabled }}
               {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 12 }}
             {{- end }}
