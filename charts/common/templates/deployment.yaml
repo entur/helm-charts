@@ -17,6 +17,8 @@
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
 {{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
 {{- $terminationGracePeriodSeconds := .Values.deployment.terminationGracePeriodSeconds | default .Values.container.terminationGracePeriodSeconds }}
+{{- $maxSurge := .Values.deployment.maxSurge | default "25%" }}
+{{- $maxUnavailable := .Values.deployment.maxUnavailable | default "25%" }}
 {{- if $enabled }}
 {{- /* YAML Spec */}}
 apiVersion: apps/v1
@@ -40,6 +42,9 @@ spec:
     type: Recreate
     {{- else }}
     type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ $maxSurge }}
+      maxUnavailable: {{ $maxUnavailable }}
     {{- end }}
   template:
     metadata:
