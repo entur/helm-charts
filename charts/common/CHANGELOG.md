@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/entur/helm-charts/compare/common-v1.5.0...common-v1.6.0) (2022-12-20)
+
+
+### Features
+
+* Add support for setting maxUnavailable and maxSurge for rolling updates ([#66](https://github.com/entur/helm-charts/issues/66)) ([47c0cec](https://github.com/entur/helm-charts/commit/47c0cece9e95f08184f08ef8c0fe21ff4d3b2426))
+
 ## [1.5.0](https://github.com/entur/helm-charts/compare/common-v1.4.2...common-v1.5.0) (2022-12-19)
 
 
