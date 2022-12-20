@@ -220,3 +220,4 @@ configmap:
   # -- Set data for configmap
   data: {}
     # MY_CONFIG: yes
+
