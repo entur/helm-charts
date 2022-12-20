@@ -66,6 +66,8 @@ Highlighted features:
 | deployment.enabled | bool | `true` | Enable or disable the deployment |
 | deployment.forceReplicas | int | `nil` | Force replicas disables autoscaling, if set to 1 it will use Recreate strategy |
 | deployment.labels | object | `{}` | Add labels to your pods |
+| deployment.maxSurge | string | `nil` | Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas. |
+| deployment.maxUnavailable | string | `nil` | Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas. |
 | deployment.replicas | string | container.replicas | Set the target replica count |
 | deployment.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | deployment.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
