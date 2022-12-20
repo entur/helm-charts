@@ -21,7 +21,7 @@ dependencies:
 
 #### Update [common](./charts/common/README.md)  
 
-Update version in Chart.yaml and run `helm dependency update`
+Update version in Chart.yaml and run `helm dependency update`.
 
 ## Development
 
