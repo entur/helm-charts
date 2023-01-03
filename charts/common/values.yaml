@@ -49,7 +49,7 @@ deployment:
   maxSurge:
   # -- Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas.
   maxUnavailable:
-  # -- (int) Override pod serviceAccountName (default application).
+  # -- Override pod serviceAccountName (default application).
   # @default -- application
   serviceAccountName:
 
