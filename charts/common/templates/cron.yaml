@@ -72,7 +72,7 @@ spec:
           {{- if .Values.cron.terminationGracePeriodSeconds }}
           terminationGracePeriodSeconds: {{ .Values.cron.terminationGracePeriodSeconds }}
           {{- end }}
-          restartPolicy: Always
+          restartPolicy: {{ .Values.cron.restartPolicy | required ".Values.common.cron.restartPolicy is required." }}
           securityContext:
             runAsGroup: {{ .Values.container.uid }}
             runAsNonRoot: true
