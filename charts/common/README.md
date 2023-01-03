@@ -58,7 +58,9 @@ Highlighted features:
 | cron.enabled | bool | `false` | Enable or disable the cron job |
 | cron.failedJobsHistoryLimit | int | 1 | Failed jobs history limit |
 | cron.labels | object | `{}` | Add labels to your pods |
+| cron.restartPolicy | string | OnFailure | Override pod restartPolicy (default OnFailure). |
 | cron.schedule | string | `nil` | Required crontab schedule `* * * * * *` |
+| cron.serviceAccountName | string | application | Override pod serviceAccountName (default application). |
 | cron.successfulJobsHistoryLimit | int | 1 | Successful jobs history limit |
 | cron.suspend | string | false | Suspend flag |
 | cron.terminationGracePeriodSeconds | int | false | Override pod terminationGracePeriodSeconds (default 30s). |
@@ -69,6 +71,7 @@ Highlighted features:
 | deployment.maxSurge | string | `nil` | Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas. |
 | deployment.maxUnavailable | string | `nil` | Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas. |
 | deployment.replicas | string | container.replicas | Set the target replica count |
+| deployment.serviceAccountName | string | application | Override pod serviceAccountName (default application). |
 | deployment.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | deployment.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | deployments | list | `[]` | Specify a list of `deployment` specs |
