@@ -233,8 +233,6 @@ tests:
       cron:
         enabled: true
         schedule: "30 04 * ? *"
-        labels:
-          version: 1        
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.restartPolicy
@@ -244,7 +242,7 @@ tests:
       <<: *values
       cron:
         enabled: true
-        schedule: "30 04 * ? *"    
+        schedule: "30 04 * ? *"
         restartPolicy: Never
     asserts:
       - equal:
@@ -255,7 +253,7 @@ tests:
       <<: *values
       cron:
         enabled: true
-        schedule: "30 04 * ? *"      
+        schedule: "30 04 * ? *"
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.serviceAccountName
@@ -265,7 +263,7 @@ tests:
       <<: *values
       cron:
         enabled: true
-        schedule: "30 04 * ? *"        
+        schedule: "30 04 * ? *"
         serviceAccountName: myaccount
     asserts:
       - equal:

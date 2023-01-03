@@ -362,3 +362,19 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].lifecycle.preStop.exec.command[0]
           value: echo
+  - it: serviceAccountName use correct default value
+    set:
+      <<: *values
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: application
+  - it: serviceAccountName use correct value when overridden
+    set:
+      <<: *values
+      deployment:
+        serviceAccountName: myaccount
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: myaccount
