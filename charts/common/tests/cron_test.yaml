@@ -244,11 +244,30 @@ tests:
       <<: *values
       cron:
         enabled: true
-        schedule: "30 04 * ? *"
-        labels:
-          version: 1
+        schedule: "30 04 * ? *"    
         restartPolicy: Never
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.restartPolicy
           value: Never
+  - it: serviceAccountName use correct default value
+    set:
+      <<: *values
+      cron:
+        enabled: true
+        schedule: "30 04 * ? *"      
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.serviceAccountName
+          value: application
+  - it: serviceAccountName use correct value when overridden
+    set:
+      <<: *values
+      cron:
+        enabled: true
+        schedule: "30 04 * ? *"        
+        serviceAccountName: myaccount
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.serviceAccountName
+          value: myaccount
