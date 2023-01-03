@@ -227,3 +227,28 @@ tests:
     asserts:
       - isEmpty:
           path: spec.jobTemplate.spec.template.spec.containers[0].args
+  - it: restartPolicy use correct default value
+    set:
+      <<: *values
+      cron:
+        enabled: true
+        schedule: "30 04 * ? *"
+        labels:
+          version: 1        
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.restartPolicy
+          value: OnFailure
+  - it: restartPolicy use correct value when overridden
+    set:
+      <<: *values
+      cron:
+        enabled: true
+        schedule: "30 04 * ? *"
+        labels:
+          version: 1
+        restartPolicy: Never
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.restartPolicy
+          value: Never
