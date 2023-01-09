@@ -49,6 +49,9 @@ deployment:
   maxSurge:
   # -- Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas.
   maxUnavailable:
+  # -- Override pod serviceAccountName (default application).
+  # @default -- application
+  serviceAccountName:
 
 cron:
   # -- Enable or disable the cron job
@@ -74,6 +77,12 @@ cron:
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   # @default -- false
   terminationGracePeriodSeconds:
+  # -- Override pod restartPolicy (default OnFailure).
+  # @default -- OnFailure
+  restartPolicy:
+  # -- Override pod serviceAccountName (default application).
+  # @default -- application
+  serviceAccountName:
 
 hpa:
   # -- Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas.

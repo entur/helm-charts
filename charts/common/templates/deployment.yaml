@@ -61,7 +61,7 @@ spec:
         {{- toYaml $labels | nindent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: application
+      serviceAccountName: {{ .Values.deployment.serviceAccountName | default "application" }}
 
       containers:
       {{ range $containers }}

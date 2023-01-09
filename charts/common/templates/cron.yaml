@@ -36,7 +36,7 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: application
+          serviceAccountName: {{ .Values.cron.serviceAccountName | default "application" }}
           containers:
           {{ range $containers }}
             {{- $image := .image | required ".Values.common.container.image is required." -}}
@@ -72,7 +72,7 @@ spec:
           {{- if .Values.cron.terminationGracePeriodSeconds }}
           terminationGracePeriodSeconds: {{ .Values.cron.terminationGracePeriodSeconds }}
           {{- end }}
-          restartPolicy: Always
+          restartPolicy: {{ .Values.cron.restartPolicy | default "OnFailure" }}
           securityContext:
             runAsGroup: {{ .Values.container.uid }}
             runAsNonRoot: true
