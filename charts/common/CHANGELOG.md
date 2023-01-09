@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/entur/helm-charts/compare/common-v1.6.0...common-v1.7.0) (2023-01-09)
+
+
+### Features
+
+* Make serviceAccountName overridable for Deployment and CronJob resources ([#70](https://github.com/entur/helm-charts/issues/70)) ([61b7f11](https://github.com/entur/helm-charts/commit/61b7f11e8086d34cad961b6f40b7447739cebfad))
+
 ## [1.6.0](https://github.com/entur/helm-charts/compare/common-v1.5.0...common-v1.6.0) (2022-12-20)
 
 
