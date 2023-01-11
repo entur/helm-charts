@@ -1,5 +1,9 @@
+{{- define "name" -}}
+{{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
+{{- end -}}
+
 {{- define "labels" }}
-app: {{ .Release.Name }}
+app: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
 shortname: {{ .Values.shortname }}
 team: {{ .Values.team }}
 common: {{ .Chart.Version }}
@@ -26,13 +30,13 @@ topologySpreadConstraints:
     whenUnsatisfiable: ScheduleAnyway
     labelSelector:
       matchLabels:
-        app: {{ .Release.Name }}
+        app: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
   - maxSkew: 5
     topologyKey: "topology.kubernetes.io/zone"
     whenUnsatisfiable: ScheduleAnyway
     labelSelector:
       matchLabels:
-        app: {{ .Release.Name }}
+        app: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
 {{- end }}
 
 {{- define "resources" }}
@@ -83,14 +87,18 @@ livenessProbe:
   httpGet:
     path: {{ .probes.liveness.path }}
     port: {{ .probes.liveness.port | default .internalPort }}
+  initialDelaySeconds: {{ .probes.liveness.initialDelaySeconds | default 0 }}
+  successThreshold: {{ .probes.liveness.successThreshold | default 1 }}
   failureThreshold: {{ .probes.liveness.failureThreshold | default 6 }}
   periodSeconds: {{ .probes.liveness.periodSeconds | default 5 }}
 readinessProbe:
   httpGet:
     path: {{ .probes.readiness.path }}
     port: {{ .probes.readiness.port | default .internalPort }}
-  failureThreshold: {{ .probes.liveness.failureThreshold | default 6 }}
-  periodSeconds: {{ .probes.liveness.periodSeconds | default 5 }}
+  initialDelaySeconds: {{ .probes.readiness.initialDelaySeconds | default 0 }}
+  successThreshold: {{ .probes.readiness.successThreshold | default 1 }}
+  failureThreshold: {{ .probes.readiness.failureThreshold | default 6 }}
+  periodSeconds: {{ .probes.readiness.periodSeconds | default 5 }}
 startupProbe:
   tcpSocket:
     port: {{ .probes.startup.port | default .internalPort }}

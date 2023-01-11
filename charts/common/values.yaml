@@ -6,6 +6,8 @@ shortname:
 team:
 # -- The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd`
 env:
+# -- Override release name, useful for multiple deployments
+releaseName:
 
 # -- Specify additional labels for every resource
 # @default -- `{ app shortname team common:version environment }`
@@ -45,6 +47,13 @@ deployment:
   forceReplicas:
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
+  # -- Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas.
+  maxSurge:
+  # -- Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas.
+  maxUnavailable:
+  # -- Override pod serviceAccountName (default application).
+  # @default -- application
+  serviceAccountName:
 
 cron:
   # -- Enable or disable the cron job
@@ -70,6 +79,12 @@ cron:
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   # @default -- false
   terminationGracePeriodSeconds:
+  # -- Override pod restartPolicy (default OnFailure).
+  # @default -- OnFailure
+  restartPolicy:
+  # -- Override pod serviceAccountName (default application).
+  # @default -- application
+  serviceAccountName:
 
 hpa:
   # -- Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas.
@@ -154,6 +169,11 @@ container:
       # -- Set the path for liveness probe
       # @default -- /actuator/health/liveness
       path: "/actuator/health/liveness"
+      # -- Set the initial delay for the probe
+      initialDelaySeconds: 0
+      # -- Set the success threshold
+      # @default -- 1
+      successThreshold: 1
       # -- Set the failure threshold
       # @default -- 6
       failureThreshold: 6
@@ -164,6 +184,11 @@ container:
       # -- Set the path for liveness probe
       # @default -- /actuator/health/liveness
       path: "/actuator/health/readiness"
+      # -- Set the initial delay for the probe
+      initialDelaySeconds: 0
+      # -- Set the success threshold
+      # @default -- 1
+      successThreshold: 1
       # -- Set the failure threshold
       # @default -- 6
       failureThreshold: 6
@@ -183,6 +208,8 @@ container:
   volumes: []
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
+  # -- Set pod lifecycle handlers
+  lifecycle: {}
 
 postgres:
   # -- Enable or disable the proxy
@@ -204,3 +231,4 @@ configmap:
   # -- Set data for configmap
   data: {}
     # MY_CONFIG: yes
+

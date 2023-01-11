@@ -1,5 +1,6 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
+{{- $releaseName := include "name" . -}}
 
 {{- if (and (not (eq (int .Values.container.forceReplicas) 1)) (or (eq "prd" .Values.env) .Values.container.minAvailable) )}}
   {{- if (and (ne "prd" .Values.env) (eq 1 (int .Values.container.replicas))) }}
@@ -10,7 +11,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ $releaseName }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "labels" . | indent 4 }}
@@ -24,5 +25,5 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: {{ $releaseName }}
 {{- end }}

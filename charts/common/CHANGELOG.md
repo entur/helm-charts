@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.8.0](https://github.com/entur/helm-charts/compare/common-v1.7.0...common-v1.8.0) (2023-01-11)
+
+
+### Features
+
+* enable releaseName override ([#72](https://github.com/entur/helm-charts/issues/72)) ([31930d0](https://github.com/entur/helm-charts/commit/31930d0aa5d02da35a5e3becb3151eb161a473d6))
+
+## [1.7.0](https://github.com/entur/helm-charts/compare/common-v1.6.0...common-v1.7.0) (2023-01-09)
+
+
+### Features
+
+* Make serviceAccountName overridable for Deployment and CronJob resources ([#70](https://github.com/entur/helm-charts/issues/70)) ([61b7f11](https://github.com/entur/helm-charts/commit/61b7f11e8086d34cad961b6f40b7447739cebfad))
+
+## [1.6.0](https://github.com/entur/helm-charts/compare/common-v1.5.0...common-v1.6.0) (2022-12-20)
+
+
+### Features
+
+* Add support for setting maxUnavailable and maxSurge for rolling updates ([#66](https://github.com/entur/helm-charts/issues/66)) ([47c0cec](https://github.com/entur/helm-charts/commit/47c0cece9e95f08184f08ef8c0fe21ff4d3b2426))
+
+## [1.5.0](https://github.com/entur/helm-charts/compare/common-v1.4.2...common-v1.5.0) (2022-12-19)
+
+
+### Features
+
+* Expose probe properties initialDelaySeconds and successThreshold and container lifecycle. ([#59](https://github.com/entur/helm-charts/issues/59)) ([5b26947](https://github.com/entur/helm-charts/commit/5b26947438c7a55063413c970f3c378b4a3b255f))
+
+## [1.4.2](https://github.com/entur/helm-charts/compare/common-v1.4.1...common-v1.4.2) (2022-12-16)
+
+
+### Bug Fixes
+
+* Add missing template block in CronJob template ([#56](https://github.com/entur/helm-charts/issues/56)) ([0ed3b82](https://github.com/entur/helm-charts/commit/0ed3b828c8c9d452d0032c3e67d7edda92d676f1))
+
 ## [1.4.1](https://github.com/entur/helm-charts/compare/common-v1.4.0...common-v1.4.1) (2022-12-09)
 
 

@@ -1,6 +1,6 @@
 # common
 
-![Version: 1.4.1](https://img.shields.io/badge/Version-1.4.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 1.8.0](https://img.shields.io/badge/Version-1.8.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 A Helm chart for Entur's Kubernetes workloads
 
@@ -27,17 +27,22 @@ Highlighted features:
 | container.envFrom | list | `[]` | Attach secrets and configmaps to your `env` |
 | container.forceReplicas | int | `nil` | Force replicas disables autoscaling, if set to 1 it will use Recreate strategy |
 | container.labels | object | `{}` | Add labels to your pods |
+| container.lifecycle | object | `{}` | Set pod lifecycle handlers |
 | container.maxReplicas | int | `nil` | Set the maxReplicas for your HPA |
 | container.memory | int | 16 | Set memory without any unit, `Mi` is inferred |
 | container.memoryLimit | string | `1.2 * memory` | Set memory limit without any unit, `Mi` is inferred |
 | container.minAvailable | string | 50% | Set the minimal available replicas, used by PDB |
 | container.name | string | .app | Name of container |
 | container.probes.liveness.failureThreshold | int | 6 | Set the failure threshold |
+| container.probes.liveness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
 | container.probes.liveness.path | string | /actuator/health/liveness | Set the path for liveness probe |
 | container.probes.liveness.periodSeconds | int | 5 | Set the period of checking |
+| container.probes.liveness.successThreshold | int | 1 | Set the success threshold |
 | container.probes.readiness.failureThreshold | int | 6 | Set the failure threshold |
+| container.probes.readiness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
 | container.probes.readiness.path | string | /actuator/health/liveness | Set the path for liveness probe |
 | container.probes.readiness.periodSeconds | int | 5 | Set the period of checking |
+| container.probes.readiness.successThreshold | int | 1 | Set the success threshold |
 | container.probes.startup.failureThreshold | int | 300 | Set the failure threshold |
 | container.probes.startup.periodSeconds | int | 1 | Set the period of checking |
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |
@@ -53,7 +58,9 @@ Highlighted features:
 | cron.enabled | bool | `false` | Enable or disable the cron job |
 | cron.failedJobsHistoryLimit | int | 1 | Failed jobs history limit |
 | cron.labels | object | `{}` | Add labels to your pods |
+| cron.restartPolicy | string | OnFailure | Override pod restartPolicy (default OnFailure). |
 | cron.schedule | string | `nil` | Required crontab schedule `* * * * * *` |
+| cron.serviceAccountName | string | application | Override pod serviceAccountName (default application). |
 | cron.successfulJobsHistoryLimit | int | 1 | Successful jobs history limit |
 | cron.suspend | string | false | Suspend flag |
 | cron.terminationGracePeriodSeconds | int | false | Override pod terminationGracePeriodSeconds (default 30s). |
@@ -61,7 +68,10 @@ Highlighted features:
 | deployment.enabled | bool | `true` | Enable or disable the deployment |
 | deployment.forceReplicas | int | `nil` | Force replicas disables autoscaling, if set to 1 it will use Recreate strategy |
 | deployment.labels | object | `{}` | Add labels to your pods |
+| deployment.maxSurge | string | `nil` | Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas. |
+| deployment.maxUnavailable | string | `nil` | Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas. |
 | deployment.replicas | string | container.replicas | Set the target replica count |
+| deployment.serviceAccountName | string | application | Override pod serviceAccountName (default application). |
 | deployment.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | deployment.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | deployments | list | `[]` | Specify a list of `deployment` specs |
@@ -78,6 +88,7 @@ Highlighted features:
 | postgres.cpuLimit | float | `nil` | Configure cpu limit for proxy |
 | postgres.enabled | bool | false | Enable or disable the proxy |
 | postgres.memory | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
+| releaseName | string | `nil` | Override release name, useful for multiple deployments |
 | service.enabled | bool | `true` | Enable or disable the service |
 | service.externalPort | int | 80 | Set the external port for your service |
 | service.internalPort | int | 8080 | Set the internal port for your service |
