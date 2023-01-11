@@ -30,13 +30,13 @@ topologySpreadConstraints:
     whenUnsatisfiable: ScheduleAnyway
     labelSelector:
       matchLabels:
-        app: {{ .Release.Name }}
+        app: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
   - maxSkew: 5
     topologyKey: "topology.kubernetes.io/zone"
     whenUnsatisfiable: ScheduleAnyway
     labelSelector:
       matchLabels:
-        app: {{ .Release.Name }}
+        app: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
 {{- end }}
 
 {{- define "resources" }}
