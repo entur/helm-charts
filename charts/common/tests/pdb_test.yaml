@@ -52,3 +52,12 @@ tests:
     asserts:
       - hasDocuments:
           count: 1
+  - it: can override release name
+    set:
+      <<: *values
+      env: prd
+      releaseName: override
+    asserts:
+      - equal:
+          path: metadata.name
+          value: override

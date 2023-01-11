@@ -88,6 +88,7 @@ Highlighted features:
 | postgres.cpuLimit | float | `nil` | Configure cpu limit for proxy |
 | postgres.enabled | bool | false | Enable or disable the proxy |
 | postgres.memory | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
+| releaseName | string | `nil` | Override release name, useful for multiple deployments |
 | service.enabled | bool | `true` | Enable or disable the service |
 | service.externalPort | int | 80 | Set the external port for your service |
 | service.internalPort | int | 8080 | Set the internal port for your service |

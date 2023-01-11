@@ -269,3 +269,11 @@ tests:
       - equal:
           path: spec.jobTemplate.spec.template.spec.serviceAccountName
           value: myaccount
+  - it: can override release name
+    set:
+      <<: *values
+      releaseName: override
+    asserts:
+      - equal:
+          path: metadata.name
+          value: override

@@ -27,3 +27,11 @@ tests:
       - equal:
           path: data.FOO
           value: bar
+  - it: can override release name
+    set:
+      <<: *values
+      releaseName: override
+    asserts:
+      - equal:
+          path: metadata.name
+          value: override
