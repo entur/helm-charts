@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/entur/helm-charts/compare/common-v1.7.0...common-v1.8.0) (2023-01-11)
+
+
+### Features
+
+* enable releaseName override ([#72](https://github.com/entur/helm-charts/issues/72)) ([31930d0](https://github.com/entur/helm-charts/commit/31930d0aa5d02da35a5e3becb3151eb161a473d6))
+
 ## [1.7.0](https://github.com/entur/helm-charts/compare/common-v1.6.0...common-v1.7.0) (2023-01-09)
 
 
