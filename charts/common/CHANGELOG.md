@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/entur/helm-charts/compare/common-v1.8.0...common-v1.8.1) (2023-01-11)
+
+
+### Bug Fixes
+
+* set cpuLimit 0.3 for sql sidecar ([#57](https://github.com/entur/helm-charts/issues/57)) ([2858deb](https://github.com/entur/helm-charts/commit/2858deb8f7c0475d1c1f91015747c1e2044241dd))
+
 ## [1.8.0](https://github.com/entur/helm-charts/compare/common-v1.7.0...common-v1.8.0) (2023-01-11)
 
 
