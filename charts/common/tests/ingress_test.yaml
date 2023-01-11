@@ -139,3 +139,11 @@ tests:
           path: spec.rules[0].host
           value: bad.io
         documentIndex: 1
+  - it: can override release name
+    set:
+      <<: *values
+      releaseName: override
+    asserts:
+      - equal:
+          path: metadata.name
+          value: override

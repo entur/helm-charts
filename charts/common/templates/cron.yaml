@@ -4,7 +4,7 @@
 {{- $shortname := .Values.shortname | required ".Values.common.shortname is required." -}}
 {{- $team := .Values.team | required ".Values.common.team is required." -}}
 
-{{- $releaseName := .Release.Name -}}
+{{- $releaseName := include "name" . -}}
 {{- $containers := .Values.containers | default (list .Values.container) -}}
 {{- $configmap := .Values.configmap -}}
 {{- $postgres := .Values.postgres -}}
@@ -16,7 +16,7 @@ kind: CronJob
 metadata:
   labels:
     {{- include "labels" . | indent 4 }}
-  name: {{ .Release.Name }}
+  name: {{ $releaseName }}
   namespace: {{ .Release.Namespace }}
 spec:
   concurrencyPolicy: {{ $cronjob.concurrencyPolicy | default "Forbid" }}

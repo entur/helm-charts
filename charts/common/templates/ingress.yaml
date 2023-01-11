@@ -2,7 +2,7 @@
   {{- /* Rules */}}
   {{- $externalPort :=  .Values.service.externalPort  -}}
   {{- $chart := . -}}
-  {{- $releaseName := .Release.Name -}}
+  {{- $releaseName := include "name" . -}}
   {{- $releaseNamespace := .Release.Namespace -}}
   {{- $ingresses := .Values.ingresses | default (list .Values.ingress) -}}
 

@@ -1,5 +1,6 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
+{{- $releaseName := include "name" . -}}
 
 {{- if (and (not .Values.container.forceReplicas) (or (eq "prd" .Values.env) .Values.container.maxReplicas)) }}
   {{- /* Defaults */}}
@@ -15,7 +16,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ $releaseName }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "labels" . | indent 4 }}
@@ -36,6 +37,6 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ .Release.Name }}
+    name: {{ $releaseName }}
 {{- end }}
 {{- end }}
