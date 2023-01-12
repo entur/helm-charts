@@ -223,6 +223,10 @@ postgres:
   # -- Configure memory request for proxy without units, `Mi` inferred
   # @default -- 16
   memory: 16
+  # -- Override name for connection configmap. This must at least contain `INSTANCES`.
+  connectionConfig: 
+  # -- Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`.
+  credentialsSecret:
 
 configmap:
   # -- Enable or disable the configmap
