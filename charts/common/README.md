@@ -84,8 +84,10 @@ Highlighted features:
 | ingresses | list | `[]` | Specify a list of `ingress` specs |
 | labels | object | `{ app shortname team common:version environment }` | Specify additional labels for every resource |
 | pdb.minAvailable | string | 50% | Set minimum available % |
+| postgres.connectionConfig | string | `nil` | Override name for connection configmap. This must at least contain `INSTANCES`. |
 | postgres.cpu | float | 0.05 | Configure cpu request for proxy |
 | postgres.cpuLimit | float | `0.3` | Configure cpu limit for proxy |
+| postgres.credentialsSecret | string | `nil` | Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`. |
 | postgres.enabled | bool | false | Enable or disable the proxy |
 | postgres.memory | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
 | releaseName | string | `nil` | Override release name, useful for multiple deployments |
