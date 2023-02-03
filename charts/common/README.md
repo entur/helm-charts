@@ -33,6 +33,7 @@ Highlighted features:
 | container.memoryLimit | string | `1.2 * memory` | Set memory limit without any unit, `Mi` is inferred |
 | container.minAvailable | string | 50% | Set the minimal available replicas, used by PDB |
 | container.name | string | .app | Name of container |
+| container.probes.enabled | bool | `true` | Enable or disable probes |
 | container.probes.liveness.failureThreshold | int | 6 | Set the failure threshold |
 | container.probes.liveness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
 | container.probes.liveness.path | string | /actuator/health/liveness | Set the path for liveness probe |

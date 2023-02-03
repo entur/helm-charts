@@ -386,3 +386,17 @@ tests:
       - equal:
           path: metadata.name
           value: override
+  - it: can disable probes  
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          env:
+            - FOO: bar
+          probes:
+            enabled: false
+    asserts:
+      - isEmpty:
+          template: deployment.yaml
+          path: spec.template.spec.containers[0].livenessProbe

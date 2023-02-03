@@ -165,6 +165,8 @@ container:
     # @default -- service.internalPort
     port: 
   probes:
+    # -- Enable or disable probes
+    enabled: true
     liveness:
       # -- Set the path for liveness probe
       # @default -- /actuator/health/liveness
