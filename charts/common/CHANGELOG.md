@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.2](https://github.com/entur/helm-charts/compare/common-v1.8.1...common-v1.8.2) (2023-02-09)
+
+
+### Bug Fixes
+
+* container.probes.enabled flag ([#78](https://github.com/entur/helm-charts/issues/78)) ([ffc313b](https://github.com/entur/helm-charts/commit/ffc313b141630cf417ef8f7b542b500ce523c0ac))
+
 ## [1.8.1](https://github.com/entur/helm-charts/compare/common-v1.8.0...common-v1.8.1) (2023-01-11)
 
 
