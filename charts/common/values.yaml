@@ -43,13 +43,21 @@ deployment:
   # -- Set the target replica count
   # @default -- container.replicas
   replicas: 
+  # -- Set the max replica count
+  # @default -- 10
+  maxReplicas: 
   # -- (int) Force replicas disables autoscaling, if set to 1 it will use Recreate strategy
   forceReplicas:
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
+  # -- (string) Set minimum available %
+  # @default -- 50%
+  minAvailable:
   # -- Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas.
+  # @default -- 25%
   maxSurge:
   # -- Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas.
+  # @default -- 25%
   maxUnavailable:
   # -- Override pod serviceAccountName (default application).
   # @default -- application

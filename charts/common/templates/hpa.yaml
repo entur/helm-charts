@@ -1,12 +1,12 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 {{- $releaseName := include "name" . -}}
+{{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
+{{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
+{{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas | default 10 }}
+{{- $cpuUtilization := 100 }}
 
-{{- if (and (not .Values.container.forceReplicas) (or (eq "prd" .Values.env) .Values.container.maxReplicas)) }}
-  {{- /* Defaults */}}
-  {{- $maxReplicas := .Values.container.maxReplicas | default 10 }}
-  {{- $cpuUtilization := 100 }}
-
+{{- if (and (not $forceReplicas) (or (eq "prd" .Values.env) $maxReplicas)) }}
   {{- /* Rules */}}
   {{- if (eq 1 (int $maxReplicas)) }}
     {{- required ".Values.common.container.maxReplicas must be more than 1." .Values.error -}}
@@ -32,7 +32,7 @@ spec:
         type: Utilization
         averageUtilization: {{ $cpuUtilization }}
   maxReplicas: {{ $maxReplicas }}
-  minReplicas: {{ max 2 .Values.container.replicas }}
+  minReplicas: {{ max 2 $replicas }}
   {{- end }}
   scaleTargetRef:
     apiVersion: apps/v1

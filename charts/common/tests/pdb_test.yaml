@@ -32,6 +32,42 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "50%"
+  - it: use minAvailable from container if not set on pdb
+    set:
+      <<: *values
+      env: prd
+      container:
+        minAvailable: 25%
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "25%"
+  - it: use minAvailable from deployment if not set on pdb or container
+    set:
+      <<: *values
+      env: prd
+      deployment:
+        minAvailable: 25%
+      container: {}
+      containers:
+        - image: app
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "25%"
+  - it: use minAvailable from pdb if not set on pdb or container
+    set:
+      <<: *values
+      env: prd
+      pdb:
+        minAvailable: 25%
+      container: {}
+      containers:
+        - image: app
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "25%"
   - it: must not use pdb if forceReplicas is set to 1
     set:
       <<: *values
@@ -42,6 +78,17 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+  - it: must not use pdb if forceReplicas is set to 1 on deployment
+    set:
+      <<: *values
+      env: prd
+      deployment:
+        forceReplicas: 1
+      containers:
+        - image: some
+    asserts:
+      - hasDocuments:
+          count: 0
   - it: must use pdb if forceReplicas is set to more than 1
     set:
       <<: *values
@@ -49,6 +96,17 @@ tests:
       container:
         image: some
         forceReplicas: 2
+    asserts:
+      - hasDocuments:
+          count: 1
+  - it: must use pdb if forceReplicas is set to more than 1 on deployment
+    set:
+      <<: *values
+      env: prd
+      deployment:
+        forceReplicas: 2
+      containers:
+        - image: some
     asserts:
       - hasDocuments:
           count: 1
