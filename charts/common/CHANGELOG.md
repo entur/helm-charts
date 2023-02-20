@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.4](https://github.com/entur/helm-charts/compare/common-v1.8.3...common-v1.8.4) (2023-02-20)
+
+
+### Bug Fixes
+
+* use maxReplicas, forceReplicas, minAvailable from deployment if set there ([#83](https://github.com/entur/helm-charts/issues/83)) ([d077a12](https://github.com/entur/helm-charts/commit/d077a12ee2753e99b86be078db4b39d2a7d1e812))
+
 ## [1.8.3](https://github.com/entur/helm-charts/compare/common-v1.8.2...common-v1.8.3) (2023-02-20)
 
 
