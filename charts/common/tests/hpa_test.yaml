@@ -21,6 +21,14 @@ tests:
       - isNotEmpty:
           template: hpa.yaml
           path: metadata.labels
+  - it: default off
+    set:
+      <<: *values
+      container:
+        image: img
+    asserts:
+      - hasDocuments:
+          count: 0
   - it: must have minReplicas 2 if not set
     set:
       <<: *values

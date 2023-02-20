@@ -3,7 +3,7 @@
 {{- $releaseName := include "name" . -}}
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
 {{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
-{{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas | default 10 }}
+{{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas }}
 {{- $cpuUtilization := 100 }}
 
 {{- if (and (not $forceReplicas) (or (eq "prd" .Values.env) $maxReplicas)) }}
@@ -31,7 +31,7 @@ spec:
       target:
         type: Utilization
         averageUtilization: {{ $cpuUtilization }}
-  maxReplicas: {{ $maxReplicas }}
+  maxReplicas: {{ $maxReplicas | default 10 }}
   minReplicas: {{ max 2 $replicas }}
   {{- end }}
   scaleTargetRef:
