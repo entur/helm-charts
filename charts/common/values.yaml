@@ -106,6 +106,8 @@ service:
   # -- Set the internal port for your service
   # @default -- 8080
   internalPort: 8080
+  # -- Optionally set annotations for the service
+  annotations: {}
 
 # -- Takes a list of `container` entries, you must add a `name` field for each entry
 containers: []
