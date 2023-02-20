@@ -6,9 +6,12 @@ metadata:
   labels:
     {{- include "labels" . | indent 4 }}
   name: {{ $releaseName }}
-  {{- if .Values.grpc }}
   annotations:
+  {{- if .Values.grpc }}
     traefik.ingress.kubernetes.io/service.serversscheme: h2c
+  {{- end }}
+  {{- if .Values.service.annotations }}
+    {{- toYaml .Values.service.annotations | nindent 4 }}
   {{- end }}
   namespace: {{ .Release.Namespace }}
 spec:
