@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.5](https://github.com/entur/helm-charts/compare/common-v1.8.4...common-v1.8.5) (2023-02-20)
+
+
+### Bug Fixes
+
+* not always enable hpa ([#86](https://github.com/entur/helm-charts/issues/86)) ([cdc9997](https://github.com/entur/helm-charts/commit/cdc9997114c2d4b1c099c20c8c1a26aae0faa80f))
+
 ## [1.8.4](https://github.com/entur/helm-charts/compare/common-v1.8.3...common-v1.8.4) (2023-02-20)
 
 
