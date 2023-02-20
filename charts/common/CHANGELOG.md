@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.3](https://github.com/entur/helm-charts/compare/common-v1.8.2...common-v1.8.3) (2023-02-20)
+
+
+### Bug Fixes
+
+* add annotations to service, needed for internal-http2 ([#80](https://github.com/entur/helm-charts/issues/80)) ([2c56751](https://github.com/entur/helm-charts/commit/2c567513c273d5d5e4d971ae781c71eb6043a7d2))
+
 ## [1.8.2](https://github.com/entur/helm-charts/compare/common-v1.8.1...common-v1.8.2) (2023-02-09)
 
 
