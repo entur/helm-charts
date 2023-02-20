@@ -55,6 +55,19 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "25%"
+  - it: use minAvailable from pdb if not set on pdb or container
+    set:
+      <<: *values
+      env: prd
+      pdb:
+        minAvailable: 25%
+      container: {}
+      containers:
+        - image: app
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "25%"
   - it: must not use pdb if forceReplicas is set to 1
     set:
       <<: *values
