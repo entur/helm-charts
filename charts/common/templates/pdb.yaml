@@ -1,8 +1,10 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 {{- $releaseName := include "name" . -}}
+{{- $minAvailable := .Values.deployment.minAvailable | default .Values.container.minAvailable }}
+{{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
 
-{{- if (and (not (eq (int .Values.container.forceReplicas) 1)) (or (eq "prd" .Values.env) .Values.container.minAvailable) )}}
+{{- if (and (not (eq (int $forceReplicas) 1)) (or (eq "prd" .Values.env) $minAvailable) )}}
   {{- if (and (ne "prd" .Values.env) (eq 1 (int .Values.container.replicas))) }}
     {{ $checkReplicas := .Values.error | required ".Values.common.container.replicas must be greater than 1 when using minAvailable" }}
   {{- end }}
@@ -18,10 +20,8 @@ metadata:
 spec:
   {{- if ((.Values.pdb).minAvailable) }}
   minAvailable: {{ .Values.pdb.minAvailable }}
-  {{- else if ((.Values.container).minAvailable) }}
-  minAvailable: {{ .Values.container.minAvailable }}
   {{- else }}
-  minAvailable: 50%
+  minAvailable: {{ $minAvailable | default "50%" }}
   {{- end }}
   selector:
     matchLabels:
