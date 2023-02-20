@@ -3,6 +3,21 @@ entries:
   common:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2023-02-20T13:36:15.185247825Z"
+    description: 'A Helm chart for Entur''s Kubernetes workloads  Highlighted features:  *
+      Defaults typically match a properly configured Spring Boot project * Automatic
+      HA with HPA and PDB in `prd` * Enforces explicit setting of important aspecs
+      such as traffic type * Rule based safety net, a chart that breaks business rules
+      will fail with a helpful message * Convention based automatic limit configuration.
+      Cpu is 5x request, and memory is +20%. '
+    digest: d453ba512174c7f298e0c5aee2ca78e26f65b593f3ea42e3d26a15a8ea1e983e
+    name: common
+    type: application
+    urls:
+    - https://entur.github.io/helm-charts/archive/common-1.8.5.tgz
+    version: 1.8.5
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2023-02-20T11:04:19.59336014Z"
     description: 'A Helm chart for Entur''s Kubernetes workloads  Highlighted features:  *
       Defaults typically match a properly configured Spring Boot project * Automatic
@@ -376,4 +391,4 @@ entries:
     urls:
     - https://github.com/entur/helm-charts/releases/download/common-1.0.0/common-1.0.0.tgz
     version: 1.0.0
-generated: "2023-02-20T11:04:19.591780329Z"
+generated: "2023-02-20T13:36:15.182149341Z"
