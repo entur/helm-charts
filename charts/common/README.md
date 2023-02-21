@@ -93,6 +93,7 @@ Highlighted features:
 | postgres.credentialsSecret | string | `nil` | Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`. |
 | postgres.enabled | bool | false | Enable or disable the proxy |
 | postgres.memory | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
+| postgres.memoryLimit | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
 | releaseName | string | `nil` | Override release name, useful for multiple deployments |
 | service.annotations | object | `{}` | Optionally set annotations for the service |
 | service.enabled | bool | `true` | Enable or disable the service |
