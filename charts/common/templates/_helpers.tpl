@@ -129,11 +129,12 @@ livenessProbe:
 
 {{- define "gcloud_sql_proxy" }}
 - name: "{{ .app }}-sql-proxy"
-  image: gcr.io/cloudsql-docker/gce-proxy:1.30.1
+  image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
   command:
     - "/cloud_sql_proxy"
     - "-verbose=false"
-    - "-log_debug_stdout"
+    - "-log_debug_stdout=true"
+    - "-structured_logs=true"
     - "-term_timeout=30s"
   envFrom:
   - configMapRef:
@@ -156,7 +157,11 @@ livenessProbe:
       {{- else }}
       cpu: {{ .postgres.cpu }}
       {{- end }}
+      {{- if .postgres.memoryLimt }}
+      memory: "{{ .postgres.memoryLimit }}Mi"
+      {{- else }}
       memory: "{{ .postgres.memory }}Mi"
+      {{- end }}
     requests:
       cpu: {{ .postgres.cpu }}
       memory: "{{ .postgres.memory }}Mi"
