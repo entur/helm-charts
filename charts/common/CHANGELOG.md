@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/entur/helm-charts/compare/common-v1.8.5...common-v1.9.0) (2023-02-24)
+
+
+### Features
+
+* Cloud sql proxy update and memoryLimit option ([#88](https://github.com/entur/helm-charts/issues/88)) ([b1ce15f](https://github.com/entur/helm-charts/commit/b1ce15fadd066637dcc11561a70283c87241f8f5))
+
 ## [1.8.5](https://github.com/entur/helm-charts/compare/common-v1.8.4...common-v1.8.5) (2023-02-20)
 
 
