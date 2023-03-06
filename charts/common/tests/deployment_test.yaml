@@ -400,3 +400,20 @@ tests:
       - isEmpty:
           template: deployment.yaml
           path: spec.template.spec.containers[0].livenessProbe
+  - it: can override probes  
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          env:
+            - FOO: bar
+          probes:
+            spec:
+              livenessProbe:
+                tcpSocket:
+                  port: admin
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.tcpSocket.port
+          value: admin
