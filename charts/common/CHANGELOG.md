@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/entur/helm-charts/compare/common-v1.9.0...common-v1.10.0) (2023-03-06)
+
+
+### Features
+
+* ability to override probes with probes.spec using k8s yaml ([#90](https://github.com/entur/helm-charts/issues/90)) ([af2394a](https://github.com/entur/helm-charts/commit/af2394a81828c32c5d18e2a8322c07b6262202d9))
+
 ## [1.9.0](https://github.com/entur/helm-charts/compare/common-v1.8.5...common-v1.9.0) (2023-02-24)
 
 
