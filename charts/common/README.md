@@ -44,6 +44,7 @@ Highlighted features:
 | container.probes.readiness.path | string | /actuator/health/liveness | Set the path for liveness probe |
 | container.probes.readiness.periodSeconds | int | 5 | Set the period of checking |
 | container.probes.readiness.successThreshold | int | 1 | Set the success threshold |
+| container.probes.spec | string | `nil` | Override with k8s spec for custom probes |
 | container.probes.startup.failureThreshold | int | 300 | Set the failure threshold |
 | container.probes.startup.periodSeconds | int | 1 | Set the period of checking |
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |

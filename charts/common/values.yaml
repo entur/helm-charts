@@ -177,6 +177,12 @@ container:
   probes:
     # -- Enable or disable probes
     enabled: true
+    # -- Override with k8s spec for custom probes
+    spec:
+      # livenessProbe:
+      #   successThreshold: 1
+      #   tcpSocket:
+      #     port: admin
     liveness:
       # -- Set the path for liveness probe
       # @default -- /actuator/health/liveness
