@@ -25,16 +25,23 @@ tests:
     asserts:
       - isNotEmpty:
           template: deployment.yaml
-          path: metadata.labels
-      - isNotEmpty:
-          template: deployment.yaml
-          path: metadata.labels.environment
-      - isNotEmpty:
-          template: deployment.yaml
           path: metadata.labels.custom
       - isNotEmpty:
           template: deployment.yaml
           path: spec.template.metadata.labels.common
+      - equal:
+          path: metadata.labels.app
+          value: RELEASE-NAME
+      - equal:
+          path: metadata.labels.app_id
+          value: tstsut
+      - equal:
+          path: metadata.labels.environment
+          value: dev
+      - equal:
+          path: metadata.labels.team
+          value: team-common
+
   - it: must add to env if listed
     set:
       <<: *values
