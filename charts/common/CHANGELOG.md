@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/entur/helm-charts/compare/common-v1.10.0...common-v1.11.0) (2023-03-21)
+
+
+### Features
+
+* option to add custom annotations for ingress ([#93](https://github.com/entur/helm-charts/issues/93)) ([9eed6a5](https://github.com/entur/helm-charts/commit/9eed6a548aeb358d574c8c6aff0b4eed5efdf706))
+
 ## [1.10.0](https://github.com/entur/helm-charts/compare/common-v1.9.0...common-v1.10.0) (2023-03-06)
 
 
