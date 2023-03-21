@@ -20,7 +20,10 @@ ingress:
   host:
   # -- Set the traffic type, typically `api` or `public`
   trafficType:
+  # -- Optionally set annotations for the service
+  annotations: {}
   # rules: # k8s spec for ingress rules
+
 
 # -- Specify a list of `ingress` specs
 ingresses: []
