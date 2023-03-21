@@ -15,7 +15,7 @@ Add to Chart.yaml:
 ```yaml
 dependencies:
   - name: common
-    version: 1.3.1
+    version: 1.11.0
     repository: "https://entur.github.io/helm-charts"
 ```
 
