@@ -82,6 +82,7 @@ Highlighted features:
 | env | string | `nil` | The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd` |
 | grpc | bool | `false` | Enable gRPC which will add an annotation and use grpc probes |
 | hpa.spec | object | `{}` | Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas. |
+| ingress.annotations | object | `{}` | Optionally set annotations for the ingress |
 | ingress.enabled | bool | `true` | Enable or disable the ingress |
 | ingress.host | string | `nil` | Set the host name, do this in your `values-kub-ent-$env.yaml` files |
 | ingress.trafficType | string | `nil` | Set the traffic type, typically `api` or `public` |

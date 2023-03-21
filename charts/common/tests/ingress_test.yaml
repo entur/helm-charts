@@ -147,3 +147,15 @@ tests:
       - equal:
           path: metadata.name
           value: override
+  - it: can add custom ingress-annotations
+    set:
+      <<: *values
+      ingress:
+        host: test.dev.entur.io
+        trafficType: public
+        annotations:
+          ingress.kubernetes.io/protocol: h2c
+    asserts:
+      - isNotEmpty:
+          template: ingress.yaml
+          path: metadata.annotations.ingress\.kubernetes\.io/protocol
