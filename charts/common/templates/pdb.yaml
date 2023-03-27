@@ -3,9 +3,10 @@
 {{- $releaseName := include "name" . -}}
 {{- $minAvailable := .Values.deployment.minAvailable | default .Values.container.minAvailable }}
 {{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
+{{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
 
 {{- if (and (not (eq (int $forceReplicas) 1)) (or (eq "prd" .Values.env) $minAvailable) )}}
-  {{- if (and (ne "prd" .Values.env) (eq 1 (int .Values.container.replicas))) }}
+  {{- if (and (ne "prd" .Values.env) (eq 1 (int $replicas))) }}
     {{ $checkReplicas := .Values.error | required ".Values.common.container.replicas must be greater than 1 when using minAvailable" }}
   {{- end }}
 
