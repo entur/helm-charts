@@ -277,3 +277,13 @@ tests:
       - equal:
           path: metadata.name
           value: override
+  - it: has good security context
+    set:
+      <<: *values
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 1000
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false         
