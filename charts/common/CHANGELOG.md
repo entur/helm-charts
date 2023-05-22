@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/entur/helm-charts/compare/common-v1.11.0...common-v1.11.1) (2023-05-22)
+
+
+### Bug Fixes
+
+* set fsGroup ([#97](https://github.com/entur/helm-charts/issues/97)) ([d8f7c57](https://github.com/entur/helm-charts/commit/d8f7c5780174521d52091edacd38322f12c0403f))
+
 ## [1.11.0](https://github.com/entur/helm-charts/compare/common-v1.10.0...common-v1.11.0) (2023-03-21)
 
 
