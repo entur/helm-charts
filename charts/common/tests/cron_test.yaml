@@ -282,8 +282,8 @@ tests:
       <<: *values
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.securityContext.fsGroup
+          path: spec.jobTemplate.spec.template.spec.securityContext.fsGroup
           value: 1000
       - equal:
-          path: spec.jobTemplate.spec.containers[0].securityContext.allowPrivilegeEscalation
+          path: spec.jobTemplate.spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
           value: false         
