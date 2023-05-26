@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/entur/helm-charts/compare/common-v1.11.1...common-v1.12.0) (2023-05-26)
+
+
+### Features
+
+* ability to use grpc probes from k8s 1.24 ([#99](https://github.com/entur/helm-charts/issues/99)) ([3816c8c](https://github.com/entur/helm-charts/commit/3816c8c2fa126870dd48eedfe5a7f87b1cc95be6))
+
 ## [1.11.1](https://github.com/entur/helm-charts/compare/common-v1.11.0...common-v1.11.1) (2023-05-22)
 
 
