@@ -87,7 +87,11 @@ spec:
           {{- include "resources" . | nindent 10 }}
           {{- include "securitycontext" . | nindent 10 }}
           {{- if or $grpc .grpc }}
-            {{- include "grpcprobes" (dict "internalPort" $internalPort) | nindent 10 -}}
+            {{- if .probes.liveness.grpc }}
+              {{- include "grpcprobes" (dict "internalPort" $internalPort "probes" .probes) | nindent 10 -}}
+            {{- else }}
+              {{- include "grpcexecprobes" (dict "internalPort" $internalPort) | nindent 10 -}}
+            {{- end }}
           {{- else if and (ne .probes.enabled false) .probes.spec }}
             {{ toYaml .probes.spec | nindent 10 }}
           {{- else if ne .probes.enabled false }}
