@@ -34,6 +34,7 @@ Highlighted features:
 | container.minAvailable | string | 50% | Set the minimal available replicas, used by PDB |
 | container.name | string | .app | Name of container |
 | container.probes.enabled | bool | `true` | Enable or disable probes |
+| container.probes.grpc | bool | `false` | If this is true, use default grpc with internalPort |
 | container.probes.liveness.failureThreshold | int | 6 | Set the failure threshold |
 | container.probes.liveness.grpc | string | `nil` | Specify grpc probes for a port. Needs `port` child stanza |
 | container.probes.liveness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |

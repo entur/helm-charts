@@ -109,7 +109,7 @@ startupProbe:
 {{- define "grpcprobes" }}
 startupProbe:
   grpc:
-    {{ if (kindIs "bool" .probes.startup.grpc) }}
+    {{ if .probes.grpc }}
     port: {{ .internalPort }}
     {{- else }}
     port: {{ .probes.startup.grpc.port }}
@@ -119,7 +119,7 @@ startupProbe:
   periodSeconds: 10
 readinessProbe:
   grpc:
-    {{ if (kindIs "bool" .probes.readiness.grpc) }}
+    {{ if .probes.grpc }}
     port: {{ .internalPort }}
     {{- else }}
     port: {{ .probes.readiness.grpc.port }}
@@ -129,7 +129,7 @@ readinessProbe:
   timeoutSeconds: 5
 livenessProbe:
   grpc:
-    {{ if (kindIs "bool" .probes.liveness.grpc) }}
+    {{ if .probes.grpc }}
     port: {{ .internalPort }}
     {{- else }}
     port: {{ .probes.liveness.grpc.port }}

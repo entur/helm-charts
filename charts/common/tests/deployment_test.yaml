@@ -281,12 +281,7 @@ tests:
           image: img
           grpc: true
           probes:
-            liveness:
-              grpc: true
-            readiness:
-              grpc: true
-            startup:
-              grpc: true
+            grpc: true
     asserts:
       - equal:
           path: spec.template.spec.containers[0].livenessProbe.grpc.port
