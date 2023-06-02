@@ -13,6 +13,9 @@ values: &values
   app: testsuite
   shortname: tstsut
   team: common
+  service:
+    externalPort: 8080
+    internalPort: 8080
   ingress:
     host: test.dev.entur.io
     trafficType: public
@@ -270,6 +273,30 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].startupProbe.grpc.port
           value: 8154
+  - it: must adopt for new gRPC probes 1.24 use internalPort fallback
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          grpc: true
+          probes:
+            liveness:
+              grpc: true
+            readiness:
+              grpc: true
+            startup:
+              grpc: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.grpc.port
+          value: 8080
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.grpc.port
+          value: 8080
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.grpc.port
+          value: 8080
   - it: must be able to override initialDelay and successThreshold for probes
     set:
       <<: *values

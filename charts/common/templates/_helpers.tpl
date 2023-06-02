@@ -109,19 +109,31 @@ startupProbe:
 {{- define "grpcprobes" }}
 startupProbe:
   grpc:
-    port: {{ .probes.startup.grpc.port | default .internalPort }}
+    {{ if (kindIs "bool" .probes.startup.grpc) }}
+    port: {{ .internalPort }}
+    {{- else }}
+    port: {{ .probes.startup.grpc.port }}
+    {{- end }}
   initialDelaySeconds: 10
   failureThreshold: 30
   periodSeconds: 10
 readinessProbe:
   grpc:
-    port: {{ .probes.readiness.grpc.port | default .internalPort }}
+    {{ if (kindIs "bool" .probes.readiness.grpc) }}
+    port: {{ .internalPort }}
+    {{- else }}
+    port: {{ .probes.readiness.grpc.port }}
+    {{- end }}
   initialDelaySeconds: 10
   periodSeconds: 10
   timeoutSeconds: 5
 livenessProbe:
   grpc:
-    port: {{ .probes.liveness.grpc.port | default .internalPort }}
+    {{ if (kindIs "bool" .probes.liveness.grpc) }}
+    port: {{ .internalPort }}
+    {{- else }}
+    port: {{ .probes.liveness.grpc.port }}
+    {{- end }}
   initialDelaySeconds: 10
   periodSeconds: 10
   timeoutSeconds: 5
