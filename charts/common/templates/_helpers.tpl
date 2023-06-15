@@ -88,6 +88,7 @@ livenessProbe:
     path: {{ .probes.liveness.path }}
     port: {{ .probes.liveness.port | default .internalPort }}
   initialDelaySeconds: {{ .probes.liveness.initialDelaySeconds | default 0 }}
+  timeoutSeconds: {{ .probes.liveness.timeoutSeconds | default 1 }}
   successThreshold: {{ .probes.liveness.successThreshold | default 1 }}
   failureThreshold: {{ .probes.liveness.failureThreshold | default 6 }}
   periodSeconds: {{ .probes.liveness.periodSeconds | default 5 }}
@@ -96,14 +97,19 @@ readinessProbe:
     path: {{ .probes.readiness.path }}
     port: {{ .probes.readiness.port | default .internalPort }}
   initialDelaySeconds: {{ .probes.readiness.initialDelaySeconds | default 0 }}
+  timeoutSeconds: {{ .probes.liveness.timeoutSeconds | default 1 }}
   successThreshold: {{ .probes.readiness.successThreshold | default 1 }}
   failureThreshold: {{ .probes.readiness.failureThreshold | default 6 }}
   periodSeconds: {{ .probes.readiness.periodSeconds | default 5 }}
 startupProbe:
-  tcpSocket:
-    port: {{ .probes.startup.port | default .internalPort }}
-  failureThreshold: {{ .probes.startup.failureThreshold | default 300  }}
-  periodSeconds: {{ .probes.startup.periodSeconds | default 1 }}
+  httpGet:
+    path: {{ .probes.readiness.path }}
+    port: {{ .probes.readiness.port | default .internalPort }}
+  initialDelaySeconds: {{ .probes.liveness.initialDelaySeconds | default 0 }}
+  timeoutSeconds: {{ .probes.liveness.timeoutSeconds | default 1 }}
+  successThreshold: {{ .probes.liveness.successThreshold | default 1 }}
+  failureThreshold: {{ .probes.liveness.failureThreshold | default 6 }}
+  periodSeconds: {{ .probes.liveness.periodSeconds | default 5 }}
 {{- end }}
 
 {{- define "grpcprobes" }}
