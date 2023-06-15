@@ -39,17 +39,24 @@ Highlighted features:
 | container.probes.liveness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
 | container.probes.liveness.path | string | /actuator/health/liveness | Set the path for liveness probe |
 | container.probes.liveness.periodSeconds | int | 5 | Set the period of checking |
-| container.probes.liveness.successThreshold | int | 1 | Set the success threshold |
+| container.probes.liveness.successThreshold | int | 1 | Set the success threshold. Must be 1 for liveness and startup probes |
+| container.probes.liveness.timeoutSeconds | int | 1 | Set the number of seconds after which the probe times out |
 | container.probes.readiness.failureThreshold | int | 6 | Set the failure threshold |
 | container.probes.readiness.grpc | string | `nil` | Specify grpc probes for a port. Needs `port` child stanza |
 | container.probes.readiness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
 | container.probes.readiness.path | string | /actuator/health/liveness | Set the path for liveness probe |
 | container.probes.readiness.periodSeconds | int | 5 | Set the period of checking |
 | container.probes.readiness.successThreshold | int | 1 | Set the success threshold |
+| container.probes.readiness.timeoutSeconds | int | 1 | Set the number of seconds after which the probe times out |
 | container.probes.spec | string | `nil` | Override with k8s spec for custom probes |
 | container.probes.startup.failureThreshold | int | 300 | Set the failure threshold |
 | container.probes.startup.grpc | string | `nil` | Specify grpc probes for a port. Needs `port` child stanza |
+| container.probes.startup.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
+| container.probes.startup.path | string | /actuator/health/liveness | Set the path for liveness probe |
 | container.probes.startup.periodSeconds | int | 1 | Set the period of checking |
+| container.probes.startup.successThreshold | int | 1 | Set the success threshold. Must be 1 for liveness and startup probes |
+| container.probes.startup.timeoutSeconds | int | 1 | Set the number of seconds after which the probe times out |
+| container.probes.startup.timeoutSeconds | int | 1 | Set the number of seconds after which the probe times out |
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |
 | container.prometheus.path | string | /actuator/prometheus | Set the path for scraping metrics |
 | container.prometheus.port | int | service.internalPort | Set the port for prometheus scraping |
