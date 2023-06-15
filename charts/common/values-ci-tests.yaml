@@ -37,10 +37,6 @@ container:
       path: "/"
       failureThreshold: 6
       periodSeconds: 5
-    startup:
-      path: "/"
-      failureThreshold: 6
-      periodSeconds: 5
 
 serviceAccount:
   create: true

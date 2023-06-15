@@ -345,6 +345,47 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].startupProbe.httpGet.path
           value: /actuator/health/readiness
+  - it: should exclude startup.tcpSocket if probes.startup.path is set
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          probes:
+            liveness:
+              successThreshold: 11
+            readiness:
+              successThreshold: 12
+            startup:
+              tcpSocket:
+                port: 8080
+              path: "/actuator/health/readiness"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.path
+          value: /actuator/health/readiness
+      - isEmpty:
+          path: spec.template.spec.containers[0].startupProbe.tcpSocket
+  - it: should exclude startup.path if probes.startup.path is not set
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          probes:
+            liveness:
+              successThreshold: 11
+            readiness:
+              successThreshold: 12
+            startup:
+              tcpSocket:
+                port: 8080
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.tcpSocket.port
+          value: 8080
+      - isEmpty:
+          path: spec.template.spec.containers[0].startupProbe.httpGet
   - it: terminationGracePeriodSeconds use correct value
     set:
       <<: *values
