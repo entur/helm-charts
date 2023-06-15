@@ -301,6 +301,50 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].readinessProbe.successThreshold
           value: 12
+  - it: should override timeutSeconds for probes
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          probes:
+            liveness:
+              path: "/actuator/health/liveness"
+              timeoutSeconds: 10
+            readiness:
+              path: "/actuator/health/readiness"
+              timeoutSeconds: 5
+            startup:
+              failureThreshold: 300
+              periodSeconds: 1
+              timeoutSeconds: 2
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.timeoutSeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.timeoutSeconds
+          value: 5
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.timeoutSeconds
+          value: 2
+  - it: should override path for readiness probe
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          probes:
+            liveness:
+              successThreshold: 11
+            readiness:
+              successThreshold: 12
+            startup:
+              path: "/actuator/health/readiness"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.path
+          value: /actuator/health/readiness
   - it: terminationGracePeriodSeconds use correct value
     set:
       <<: *values
