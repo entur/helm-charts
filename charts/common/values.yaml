@@ -192,7 +192,10 @@ container:
       path: "/actuator/health/liveness"
       # -- Set the initial delay for the probe
       initialDelaySeconds: 0
-      # -- Set the success threshold
+      # -- Set the number of seconds after which the probe times out
+      # @default -- 1
+      timeoutSeconds: 1
+      # -- Set the success threshold. Must be 1 for liveness and startup probes
       # @default -- 1
       successThreshold: 1
       # -- Set the failure threshold
@@ -210,6 +213,9 @@ container:
       path: "/actuator/health/readiness"
       # -- Set the initial delay for the probe
       initialDelaySeconds: 0
+      # -- Set the number of seconds after which the probe times out
+      # @default -- 1
+      timeoutSeconds: 1
       # -- Set the success threshold
       # @default -- 1
       successThreshold: 1
@@ -223,9 +229,23 @@ container:
       grpc:
         # port: 8080
     startup:
+      # -- Set the path for liveness probe
+      # @default -- /actuator/health/liveness
+      path: "/actuator/health/readiness"
+      # -- Set the initial delay for the probe
+      initialDelaySeconds: 0
+      # -- Set the number of seconds after which the probe times out
+      # @default -- 1
+      timeoutSeconds: 1
+      # -- Set the success threshold. Must be 1 for liveness and startup probes
+      # @default -- 1
+      successThreshold: 1
       # -- Set the failure threshold
       # @default -- 300
       failureThreshold: 300
+      # -- Set the number of seconds after which the probe times out
+      # @default -- 1
+      timeoutSeconds: 1
       # -- Set the period of checking
       # @default -- 1
       periodSeconds: 1
