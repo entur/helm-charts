@@ -11,7 +11,8 @@ A Helm chart for Entur's Kubernetes workloads
 * Rule based safety net, a chart that breaks business rules will fail with a helpful message
 * Convention based automatic limit configuration. Cpu is 5x request, and memory is +20%.
 ## Take full control:
-* Horizontal Pod Autoscaler can be configured with `hpa.spec` to your specific needs * Probes can be overridden with `probes.spec` to your needs
+* Horizontal Pod Autoscaler can be configured with `hpa.spec` to your specific needs
+* Probes can be overridden with `probes.spec` to your needs
 
 ## Values
 

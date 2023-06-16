@@ -23,6 +23,7 @@ description: >
   * Horizontal Pod Autoscaler can be configured with `hpa.spec` to your specific needs
 
   * Probes can be overridden with `probes.spec` to your needs
+
 type: application
 version: 1.12.0
 appVersion: 0.0.1
