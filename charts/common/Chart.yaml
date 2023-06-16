@@ -4,8 +4,7 @@ description: >
   A Helm chart for Entur's Kubernetes workloads
 
 
-  Highlighted features:
-
+  ## Highlighted features:
 
   * Defaults typically match a properly configured Spring Boot project
 
@@ -18,6 +17,13 @@ description: >
 
   * Convention based automatic limit configuration. Cpu is 5x request, and
   memory is +20%.
+
+  ## Take full control:
+
+  * Horizontal Pod Autoscaler can be configured with `hpa.spec` to your specific needs
+
+  * Probes can be overridden with `probes.spec` to your needs
+
 type: application
 version: 1.12.0
 appVersion: 0.0.1
