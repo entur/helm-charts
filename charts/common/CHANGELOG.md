@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/entur/helm-charts/compare/common-v1.12.0...common-v1.12.1) (2023-06-19)
+
+
+### Bug Fixes
+
+* allow no `limits.cpu` ([#105](https://github.com/entur/helm-charts/issues/105)) ([9988a31](https://github.com/entur/helm-charts/commit/9988a31d4ca73ff5537cd51527e5951c6d9c3be3))
+
 ## [1.12.0](https://github.com/entur/helm-charts/compare/common-v1.11.1...common-v1.12.0) (2023-05-26)
 
 
