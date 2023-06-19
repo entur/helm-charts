@@ -60,7 +60,7 @@ tests:
       - equal:      
           path: spec.jobTemplate.spec.template.spec.containers[0].env[0].FOO
           value: bar
-  - it: cpu limit can be overridden
+  - it: cpu limit can be set
     release:
     set:
       <<: *values
@@ -77,70 +77,6 @@ tests:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
-  - it: cpu limit is 5x request for 0.1
-    release:
-    set:
-      <<: *values
-      containers:
-        - name: test
-          image: img
-          cpu: 0.1
-          <<: *probes
-    asserts:
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
-          value: 500m
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.1
-  - it: cpu limit is 5x request for 0.75
-    release:
-    set:
-      <<: *values
-      containers:
-        - name: test
-          image: img
-          cpu: 0.75
-          <<: *probes
-    asserts:
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
-          value: 3750m
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.75
-  - it: cpu limit is 5x request for 1
-    release:
-    set:
-      <<: *values
-      containers:
-        - name: test
-          image: img
-          cpu: 1.0
-          <<: *probes
-    asserts:
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
-          value: 5000m
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
-          value: 1
-  - it: cpu limit is 5x request for > 1
-    release:
-    set:
-      <<: *values
-      containers:
-        - name: test
-          image: img
-          cpu: 2.1
-          <<: *probes
-    asserts:
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
-          value: 10500m
-      - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
-          value: 2.1
   - it: memory limit is 120 percent of request
     release:
     set:

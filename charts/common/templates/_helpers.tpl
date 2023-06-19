@@ -44,8 +44,6 @@ resources:
   limits:
     {{- if .cpuLimit }}
     cpu: {{ .cpuLimit }}
-    {{- else }}
-    cpu: "{{ printf "%.2f" .cpu | replace "0." "" | replace "." "" | int64 | mul 50 }}m"
     {{- end }}
     {{- if .memoryLimit }}
     memory: "{{ .memoryLimit }}Mi"
