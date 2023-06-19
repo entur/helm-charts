@@ -59,7 +59,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: testsuite
-  - it: cpu limit can be overridden
+  - it: cpu limit can be set
     release:
     set:
       <<: *values
@@ -74,7 +74,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
-  - it: cpu limit is 5x request for 0.1
+  - it: cpu limit can be skipped
     release:
     set:
       <<: *values
@@ -82,54 +82,11 @@ tests:
         image: img
         cpu: 0.1
     asserts:
-      - equal:
+      - isNull:
           path: spec.template.spec.containers[0].resources.limits.cpu
-          value: 500m
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
-  - it: cpu limit is 5x request for 0.75
-    release:
-    set:
-      <<: *values
-      container:
-        image: img
-        cpu: 0.75
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].resources.limits.cpu
-          value: 3750m
-      - equal:
-          path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.75
-  - it: cpu limit is 5x request for 1
-    release:
-    set:
-      <<: *values
-      container:
-        image: img
-        cpu: 1.0
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].resources.limits.cpu
-          value: 5000m
-      - equal:
-          path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 1
-  - it: cpu limit is 5x request for > 1
-    release:
-    set:
-      <<: *values
-      container:
-        image: img
-        cpu: 2.1
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].resources.limits.cpu
-          value: 10500m
-      - equal:
-          path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 2.1
   - it: memory limit is 120 percent of request
     release:
     set:
