@@ -5,10 +5,6 @@
 {{- $minAvailable := .Values.deployment.minAvailable | default .Values.container.minAvailable }}
 {{- $minAvailablePDB := .Values.pdb.minAvailable }}
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
-{{- /* If replicas is set to 1, minAvailable should be set to 100% to avoid downtime  */}}
-{{- if (eq (int $replicas) 1) }}
-{{- $minAvailable = "100%" }}
-{{- end }}
 
 {{- /* Do not setup PDB if forceReplicas is set to 1 */}}
 {{- if (not (eq (int $forceReplicas) 1)) }}
