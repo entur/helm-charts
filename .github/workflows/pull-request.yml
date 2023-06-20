@@ -18,7 +18,7 @@ jobs:
 
   pr:
     if: startsWith(github.head_ref, 'release-please--branches') == false
-    uses: entur/gh-workflows/.github/workflows/pr-tests-helm.yml@main
+    uses: entur/gh-workflows/.github/workflows/pr-tests-helm.yml@87bc8a1b9622e3640f42fa9a727851194192145e
     with:
       charts: '["common"]'
 
