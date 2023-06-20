@@ -1,26 +1,29 @@
 {{- /* Rules */}}
-{{- $env := .Values.env | required ".Values.common.env is required." -}}
 {{- $releaseName := include "name" . -}}
-{{- $minAvailable := .Values.deployment.minAvailable | default .Values.container.minAvailable }}
+{{- $releaseNamespace := .Release.Namespace -}}
 {{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
+{{- $minAvailable := .Values.deployment.minAvailable | default .Values.container.minAvailable }}
+{{- $minAvailablePDB := .Values.pdb.minAvailable }}
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
+{{- /* If replicas is set to 1, minAvailable should be set to 100% to avoid downtime  */}}
+{{- if (eq (int $replicas) 1) }}
+{{- $minAvailable = "100%" }}
+{{- end }}
 
-{{- if (and (not (eq (int $forceReplicas) 1)) (or (eq "prd" .Values.env) $minAvailable) )}}
-  {{- if (and (ne "prd" .Values.env) (eq 1 (int $replicas))) }}
-    {{ $checkReplicas := .Values.error | required ".Values.common.container.replicas must be greater than 1 when using minAvailable" }}
-  {{- end }}
-
+{{- /* Do not setup PDB if forceReplicas is set to 1 */}}
+{{- if (not (eq (int $forceReplicas) 1)) }}
 {{- /* YAML Spec */}}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ $releaseName }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $releaseNamespace }}
   labels:
     {{- include "labels" . | indent 4 }}
 spec:
-  {{- if ((.Values.pdb).minAvailable) }}
-  minAvailable: {{ .Values.pdb.minAvailable }}
+  {{- /* PDB.minAvailable takes precedence over deployment/container.minAvailable */}}
+  {{- if ($minAvailablePDB) }}
+  minAvailable: {{ $minAvailablePDB }}
   {{- else }}
   minAvailable: {{ $minAvailable | default "50%" }}
   {{- end }}

@@ -45,11 +45,11 @@ deployment:
   #prometheus: same as container.prometheus stanza
   # -- Set the target replica count
   # @default -- container.replicas
-  replicas: 
+  replicas:
   # -- Set the max replica count
   # @default -- 10
-  maxReplicas: 
-  # -- (int) Force replicas disables autoscaling, if set to 1 it will use Recreate strategy
+  maxReplicas:
+  # -- (int) Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy
   forceReplicas:
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
@@ -104,7 +104,7 @@ hpa:
     #behaviour: ...
 
 pdb:
-  # -- (string) Set minimum available %
+  # -- (string) Set minimum available %, this overrides pdb setting minAvailable in deployment/container
   # @default -- 50%
   minAvailable:
 
@@ -148,10 +148,10 @@ container:
   # -- Set the uid that your user runs with
   # @default -- 1000
   uid: 1000
-  # -- Set the target replica count
+  # -- Set the target replica count, if equal to 1 the PDB minAvailable will be set to 100%
   # @default -- 1
   replicas: 1
-  # -- (int) Force replicas disables autoscaling, if set to 1 it will use Recreate strategy
+  # -- (int) Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy
   forceReplicas:
   # -- (string) Set the minimal available replicas, used by PDB
   # @default -- 50%
@@ -176,7 +176,7 @@ container:
     path: "/actuator/prometheus"
     # -- (int) Set the port for prometheus scraping
     # @default -- service.internalPort
-    port: 
+    port:
   probes:
     # -- Enable or disable probes
     enabled: true
@@ -257,7 +257,7 @@ postgres:
   # @default -- 16
   memoryLimit: 16
   # -- Override name for connection configmap. This must at least contain `INSTANCES`.
-  connectionConfig: 
+  connectionConfig:
   # -- Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`.
   credentialsSecret:
 
