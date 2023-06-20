@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/entur/helm-charts/compare/common-v1.12.1...common-v1.13.0) (2023-06-20)
+
+
+### Features
+
+* vpa enabled by default in audit mode ([#107](https://github.com/entur/helm-charts/issues/107)) ([cc3dcad](https://github.com/entur/helm-charts/commit/cc3dcad577ca53c6af6621bd7cc7d48813bd287e))
+
 ## [1.12.1](https://github.com/entur/helm-charts/compare/common-v1.12.0...common-v1.12.1) (2023-06-19)
 
 
