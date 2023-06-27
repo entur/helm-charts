@@ -248,8 +248,8 @@ postgres:
   # -- Configure cpu request for proxy
   # @default -- 0.05
   cpu: 0.05
-  # -- (float) Configure cpu limit for proxy
-  cpuLimit: 0.3
+  # -- (float) Configure optional cpu limit for proxy
+  cpuLimit:
   # -- Configure memory request for proxy without units, `Mi` inferred
   # @default -- 16
   memory: 16
@@ -269,3 +269,9 @@ configmap:
   data: {}
     # MY_CONFIG: yes
 
+# -- Add externalSecret to sync secrets from secret manager
+secrets:
+  {}
+  # demo-secret:
+  #   - FIRST_SECRET
+  #   - SECOND_SECRET

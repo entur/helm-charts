@@ -1,6 +1,6 @@
 # common
 
-![Version: 1.13.0](https://img.shields.io/badge/Version-1.13.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 1.13.1](https://img.shields.io/badge/Version-1.13.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 A Helm chart for Entur's Kubernetes workloads
 
@@ -96,12 +96,13 @@ A Helm chart for Entur's Kubernetes workloads
 | pdb.minAvailable | string | 50% | Set minimum available %, this overrides pdb setting minAvailable in deployment/container |
 | postgres.connectionConfig | string | `nil` | Override name for connection configmap. This must at least contain `INSTANCES`. |
 | postgres.cpu | float | 0.05 | Configure cpu request for proxy |
-| postgres.cpuLimit | float | `0.3` | Configure cpu limit for proxy |
+| postgres.cpuLimit | float | `nil` | Configure optional cpu limit for proxy |
 | postgres.credentialsSecret | string | `nil` | Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`. |
 | postgres.enabled | bool | false | Enable or disable the proxy |
 | postgres.memory | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
 | postgres.memoryLimit | int | 16 | Configure memoryLimit for proxy without units, `Mi` inferred |
 | releaseName | string | `nil` | Override release name, useful for multiple deployments |
+| secrets | object | `{}` | Add externalSecret to sync secrets from secret manager |
 | service.annotations | object | `{}` | Optionally set annotations for the service |
 | service.enabled | bool | `true` | Enable or disable the service |
 | service.externalPort | int | 80 | Set the external port for your service |
