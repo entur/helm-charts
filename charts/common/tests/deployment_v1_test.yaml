@@ -166,6 +166,16 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].resources.requests.cpu
           value: 0.1
+  - it: postgres cpu limit can be cleared
+    release:
+    set:
+      <<: *values
+      postgres:
+        enabled: true
+        cpu: 0.1
+    asserts:
+      - isEmpty:
+          path: spec.template.spec.containers[1].resources.limits.cpu
   - it: must use 3 replicas if replicas is 3
     set:
       <<: *values

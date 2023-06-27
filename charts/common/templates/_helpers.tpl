@@ -172,8 +172,6 @@ livenessProbe:
     limits:
       {{- if .postgres.cpuLimit }}
       cpu: {{ .postgres.cpuLimit }}
-      {{- else }}
-      cpu: {{ .postgres.cpu }}
       {{- end }}
       {{- if .postgres.memoryLimt }}
       memory: "{{ .postgres.memoryLimit }}Mi"
