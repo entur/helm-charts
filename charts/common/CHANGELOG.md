@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/entur/helm-charts/compare/common-v1.13.0...common-v1.13.1) (2023-06-27)
+
+
+### Bug Fixes
+
+* allow no `limits.cpu` for postgres ([#110](https://github.com/entur/helm-charts/issues/110)) ([4c8cb96](https://github.com/entur/helm-charts/commit/4c8cb9624ef63e86636486b28e33c91ec28633c9))
+
 ## [1.13.0](https://github.com/entur/helm-charts/compare/common-v1.12.1...common-v1.13.0) (2023-06-20)
 
 
