@@ -402,6 +402,7 @@ tests:
           image: img
           probes:
             enabled: false
+      releaseName: override
       secrets:
         one-secret:
           - SINGLE_SECRET
@@ -411,16 +412,16 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].secretRef.name
-          value: one-secret
+          value: override-one-secret
       - equal:
           path: spec.template.spec.containers[0].envFrom[1].secretRef.name
-          value: two-secrets
+          value: override-two-secrets
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].secretRef.name
-          value: one-secret
+          value: override-one-secret
       - equal:
           path: spec.template.spec.containers[1].envFrom[1].secretRef.name
-          value: two-secrets
+          value: override-two-secrets
   - it: has no envFrom with no secrets
     set:
       <<: *values

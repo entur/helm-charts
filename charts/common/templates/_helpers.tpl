@@ -80,7 +80,7 @@ envFrom:
   {{- if .secrets }}
   {{- range $secret, $secretValue := .secrets }}
   - secretRef:
-      name: {{ $secret }}
+      name: {{ $.releaseName }}-{{ $secret }}
   {{- end }}
   {{- end }}
 {{- end }}
