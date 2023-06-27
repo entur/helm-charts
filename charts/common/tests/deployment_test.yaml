@@ -404,7 +404,7 @@ tests:
             enabled: false
       secrets:
         one-secret:
-          - FIRST_SECRET
+          - SINGLE_SECRET
         two-secrets:
           - FIRST_SECRET
           - SECOND_SECRET
