@@ -102,7 +102,7 @@ A Helm chart for Entur's Kubernetes workloads
 | postgres.memory | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
 | postgres.memoryLimit | int | 16 | Configure memoryLimit for proxy without units, `Mi` inferred |
 | releaseName | string | `nil` | Override release name, useful for multiple deployments |
-| secrets | object | `{}` |  |
+| secrets | object | `{}` | Add externalSecret to sync secrets from secret manager |
 | service.annotations | object | `{}` | Optionally set annotations for the service |
 | service.enabled | bool | `true` | Enable or disable the service |
 | service.externalPort | int | 80 | Set the external port for your service |
