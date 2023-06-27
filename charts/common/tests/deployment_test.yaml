@@ -390,3 +390,45 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
           value: false
+  - it: has envFrom secrets in all containers
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          probes:
+            enabled: false
+        - name: test2
+          image: img
+          probes:
+            enabled: false
+      secrets:
+        one-secret:
+          - FIRST_SECRET
+        two-secrets:
+          - FIRST_SECRET
+          - SECOND_SECRET
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: one-secret
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[1].secretRef.name
+          value: two-secrets
+      - equal:
+          path: spec.template.spec.containers[1].envFrom[0].secretRef.name
+          value: one-secret
+      - equal:
+          path: spec.template.spec.containers[1].envFrom[1].secretRef.name
+          value: two-secrets
+  - it: has no envFrom with no secrets
+    set:
+      <<: *values
+      containers:
+        - name: test
+          image: img
+          probes:
+            enabled: false
+    asserts:
+      - isEmpty:
+          path: spec.template.spec.containers[0].envFrom

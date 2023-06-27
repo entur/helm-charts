@@ -269,3 +269,10 @@ configmap:
   data: {}
     # MY_CONFIG: yes
 
+secrets:
+# -- add externalSecret to sync secrets from secret manager
+# @default -- {}
+  {}
+  # demo-secret:
+  #   - FIRST_SECRET
+  #   - SECOND_SECRET

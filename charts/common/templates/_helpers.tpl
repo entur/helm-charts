@@ -60,7 +60,7 @@ resources:
 env:
   {{- toYaml .env | nindent 2 }}
 {{ end }}
-{{- if or .envFrom .configmap.enabled .postgres.enabled }}
+{{- if or .envFrom .configmap.enabled .postgres.enabled .secrets}}
 envFrom:
   {{- if .envFrom }}
   {{- toYaml .envFrom | nindent 2 }}
@@ -75,6 +75,12 @@ envFrom:
       name: {{ .postgres.credentialsSecret }}
   {{- else }}
       name: {{ .app }}-psql-credentials
+  {{- end }}
+  {{- end }}
+  {{- if .secrets }}
+  {{- range $secret, $secretValue := .secrets }}
+  - secretRef:
+      name: {{ $secret }}
   {{- end }}
   {{- end }}
 {{- end }}
