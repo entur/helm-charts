@@ -6,8 +6,8 @@
 {{- $minAvailablePDB := .Values.pdb.minAvailable }}
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
 
-{{- /* Do not setup PDB if forceReplicas is set to 1 */}}
-{{- if (not (eq (int $forceReplicas) 1)) }}
+{{- /* Do not setup PDB if forceReplicas or replicas is set to 1 */}}
+{{- if (and (not (eq (int $forceReplicas) 1)) (not (eq (int $replicas) 1))) }}
 {{- /* YAML Spec */}}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
