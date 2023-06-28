@@ -7,6 +7,7 @@ values: &values
     trafficType: public
   container:
     image: img
+    replicas: 2
 
 suite: test pdb
 templates:
@@ -17,8 +18,6 @@ tests:
       <<: *values
       env: dev
       container:
-        image: img
-        replicas: 2
         minAvailable: 50%
     asserts:
       - isNotEmpty:
@@ -28,6 +27,22 @@ tests:
     set:
       <<: *values
       env: prd
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: must default for tst
+    set:
+      <<: *values
+      env: tst
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: must default for dev
+    set:
+      <<: *values
+      env: dev
     asserts:
       - equal:
           path: spec.minAvailable
@@ -61,9 +76,9 @@ tests:
       env: tst
       deployment:
         minAvailable: 25%
-        replicas: 2
+        replicas: 3
       container:
-        replicas: 1
+        replicas: 1  # should fail
       containers:
         - image: app
     asserts:
@@ -83,6 +98,27 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "25%"
+  - it: must not use pdb if Replicas is set to 1
+    set:
+      <<: *values
+      env: prd
+      container:
+        image: some
+        Replicas: 1
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: must not use pdb if deployment Replicas is set to 1
+    set:
+      <<: *values
+      env: prd
+      deployment:
+        replicas: 1
+      container:
+        image: some
+    asserts:
+      - hasDocuments:
+          count: 0
   - it: must not use pdb if forceReplicas is set to 1
     set:
       <<: *values

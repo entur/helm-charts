@@ -4,13 +4,16 @@
 
 A Helm chart for Entur's Kubernetes workloads
 
-## Highlighted features:
+## Highlighted features
+
 * Defaults typically match a properly configured Spring Boot project
 * Automatic HA with HPA and PDB in `prd`
 * Enforces explicit setting of important aspecs such as traffic type
 * Rule based safety net, a chart that breaks business rules will fail with a helpful message
 * Convention based automatic limit configuration. Cpu is 5x request, and memory is +20%.
-## Take full control:
+
+## Take full control
+
 * Horizontal Pod Autoscaler can be configured with `hpa.spec` to your specific needs
 * Probes can be overridden with `probes.spec` to your needs
 
