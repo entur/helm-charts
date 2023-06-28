@@ -92,7 +92,8 @@ tests:
       env: prd
       pdb:
         minAvailable: 25%
-      container: {}
+      container:
+        replicas: 2
       containers:
         - image: app
     asserts:
@@ -148,6 +149,7 @@ tests:
       container:
         image: some
         forceReplicas: 2
+        replicas: 2
     asserts:
       - hasDocuments:
           count: 1
