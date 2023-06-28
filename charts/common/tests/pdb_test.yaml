@@ -18,6 +18,7 @@ tests:
       <<: *values
       env: dev
       container:
+        replicas: 2
         minAvailable: 50%
     asserts:
       - isNotEmpty:
@@ -52,6 +53,7 @@ tests:
       <<: *values
       env: prd
       container:
+        replicas: 2
         minAvailable: 25%
     asserts:
       - equal:
@@ -62,14 +64,13 @@ tests:
       <<: *values
       env: prd
       deployment:
-        minAvailable: 25%
-      container: {}
+        minAvailable: 26%
       containers:
         - image: app
     asserts:
       - equal:
           path: spec.minAvailable
-          value: "25%"
+          value: "26%"
   - it: check for replicas on deployment before container
     set:
       <<: *values
