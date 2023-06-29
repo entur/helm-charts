@@ -27,7 +27,7 @@ A Helm chart for Entur's Kubernetes workloads
 | container.cpuLimit | float | `5 x cpu` | Set CPU limit without any unit. 100m is 0.1 |
 | container.env | list | `[]` | Specify `env` entries for your container |
 | container.envFrom | list | `[]` | Attach secrets and configmaps to your `env` |
-| container.forceReplicas | int | `nil` | Force replicas disables autoscaling, if set to 1 it will use Recreate strategy |
+| container.forceReplicas | int | `nil` | Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy |
 | container.labels | object | `{}` | Add labels to your pods |
 | container.lifecycle | object | `{}` | Set pod lifecycle handlers |
 | container.maxReplicas | int | `nil` | Set the maxReplicas for your HPA |
@@ -55,7 +55,7 @@ A Helm chart for Entur's Kubernetes workloads
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |
 | container.prometheus.path | string | /actuator/prometheus | Set the path for scraping metrics |
 | container.prometheus.port | int | service.internalPort | Set the port for prometheus scraping |
-| container.replicas | int | 1 | Set the target replica count |
+| container.replicas | int | 1 | Set the target replica count, if equal to 1 the PDB minAvailable will be set to 100% |
 | container.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | container.uid | int | 1000 | Set the uid that your user runs with |
 | container.volumeMounts | list | `[]` | Configure volume mounts, accepts kubernetes syntax |
@@ -73,7 +73,7 @@ A Helm chart for Entur's Kubernetes workloads
 | cron.terminationGracePeriodSeconds | int | false | Override pod terminationGracePeriodSeconds (default 30s). |
 | cron.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | deployment.enabled | bool | `true` | Enable or disable the deployment |
-| deployment.forceReplicas | int | `nil` | Force replicas disables autoscaling, if set to 1 it will use Recreate strategy |
+| deployment.forceReplicas | int | `nil` | Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy |
 | deployment.labels | object | `{}` | Add labels to your pods |
 | deployment.maxReplicas | string | 10 | Set the max replica count |
 | deployment.maxSurge | string | 25% | Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas. |
@@ -93,7 +93,7 @@ A Helm chart for Entur's Kubernetes workloads
 | ingress.trafficType | string | `nil` | Set the traffic type, typically `api` or `public` |
 | ingresses | list | `[]` | Specify a list of `ingress` specs |
 | labels | object | `{ app shortname team common:version environment }` | Specify additional labels for every resource |
-| pdb.minAvailable | string | 50% | Set minimum available % |
+| pdb.minAvailable | string | 50% | Set minimum available %, this overrides pdb setting minAvailable in deployment/container |
 | postgres.connectionConfig | string | `nil` | Override name for connection configmap. This must at least contain `INSTANCES`. |
 | postgres.cpu | float | 0.05 | Configure cpu request for proxy |
 | postgres.cpuLimit | float | `nil` | Configure optional cpu limit for proxy |
