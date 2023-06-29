@@ -6,8 +6,17 @@
 {{- $minAvailablePDB := .Values.pdb.minAvailable }}
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
 
-{{- /* Do not setup PDB if forceReplicas or replicas is set to 1 */}}
-{{- if (and (not (eq (int $forceReplicas) 1)) (not (eq (int $replicas) 1))) }}
+{{-
+    /*
+    We set PDB even if forceReplicas, replicas = 1,
+    This is because helm is not able to delete unknown-previous config.
+    In this case we set the PDB minAvailable to 0% so it behaves the same way as a PDB does not exist.
+    */
+}}
+{{- if (or (eq (int $replicas) 1) (eq (int $forceReplicas) 1)) }}
+{{- $minAvailablePDB := "0%" }}
+{{- end }}
+
 {{- /* YAML Spec */}}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -26,4 +35,3 @@ spec:
   selector:
     matchLabels:
       app: {{ $releaseName }}
-{{- end }}

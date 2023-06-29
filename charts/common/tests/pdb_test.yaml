@@ -18,13 +18,12 @@ tests:
       <<: *values
       env: dev
       container:
-        replicas: 2
         minAvailable: 50%
     asserts:
       - isNotEmpty:
           template: pdb.yaml
           path: metadata.labels
-  - it: must default for prd
+  - it: must default for prd with 2 replicas or more
     set:
       <<: *values
       env: prd
@@ -54,16 +53,17 @@ tests:
       env: prd
       container:
         replicas: 2
-        minAvailable: 25%
+        minAvailable: 27%
     asserts:
       - equal:
           path: spec.minAvailable
-          value: "25%"
+          value: "27%"
   - it: use minAvailable from deployment if not set on pdb or container
     set:
       <<: *values
       env: prd
       deployment:
+        replicas: 2
         minAvailable: 26%
       containers:
         - image: app
@@ -71,21 +71,22 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "26%"
-  - it: check for replicas on deployment before container
+  - it: check for minAvailable on deployment before container
     set:
       <<: *values
       env: tst
       deployment:
-        minAvailable: 25%
-        replicas: 3
+        replicas: 2
+        minAvailable: 30%
       container:
-        replicas: 1  # should fail
+        replicas: 2
+        minAvailable: 50%
       containers:
         - image: app
     asserts:
       - equal:
           path: spec.minAvailable
-          value: "25%"
+          value: "30%"
   - it: use minAvailable from pdb if not set on pdb or container
     set:
       <<: *values
@@ -100,17 +101,18 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "25%"
-  - it: must not use pdb if Replicas is set to 1
+  - it: if container Replicas is set to 1, minAvailable must be 0%
     set:
       <<: *values
       env: prd
       container:
         image: some
-        Replicas: 1
+        replicas: 1
     asserts:
-      - hasDocuments:
-          count: 0
-  - it: must not use pdb if deployment Replicas is set to 1
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  - it: if deployment Replicas is set to 1, minAvailable must be 0%
     set:
       <<: *values
       env: prd
@@ -119,9 +121,10 @@ tests:
       container:
         image: some
     asserts:
-      - hasDocuments:
-          count: 0
-  - it: must not use pdb if forceReplicas is set to 1
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  - it: if container forceReplicas is set to 1, minAvailable must be 0%
     set:
       <<: *values
       env: prd
@@ -129,9 +132,10 @@ tests:
         image: some
         forceReplicas: 1
     asserts:
-      - hasDocuments:
-          count: 0
-  - it: must not use pdb if forceReplicas is set to 1 on deployment
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  - it: if deployment forceReplicas is set to 1, minAvailable must be 0%
     set:
       <<: *values
       env: prd
@@ -140,8 +144,20 @@ tests:
       containers:
         - image: some
     asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  - it: must use pdb if forceReplicas is set to more than 1
+    set:
+      <<: *values
+      env: prd
+      container:
+        image: some
+        forceReplicas: 2
+        replicas: 2
+    asserts:
       - hasDocuments:
-          count: 0
+          count: 1
   - it: must use pdb if forceReplicas is set to more than 1
     set:
       <<: *values
@@ -159,6 +175,17 @@ tests:
       env: prd
       deployment:
         forceReplicas: 2
+      containers:
+        - image: some
+    asserts:
+      - hasDocuments:
+          count: 1
+  - it: must use pdb if forceReplicas is set to 1 on deployment
+    set:
+      <<: *values
+      env: prd
+      deployment:
+        forceReplicas: 1
       containers:
         - image: some
     asserts:
