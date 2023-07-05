@@ -1,29 +1,28 @@
-values: &values
-  env: dev
-  app: testsuite
-  shortname: tstsut
-  team: common
-  ingress:
-    host: test.dev.entur.io
-    trafficType: public
+# values: &values
+#   env: dev
+#   app: testsuite
+#   shortname: tstsut
+#   team: common
+#   ingress:
+#     host: test.dev.entur.io
+#     trafficType: public
 
 suite: test hpa
+values:
+  - ./values/common-test-values.yaml
 templates:
   - hpa.yaml
 tests:
   - it: must have labels
     set:
-      <<: *values
       container:
         image: img
         maxReplicas: 5
     asserts:
       - isNotEmpty:
-          template: hpa.yaml
           path: metadata.labels
   - it: default off
     set:
-      <<: *values
       container:
         image: img
     asserts:
@@ -31,7 +30,6 @@ tests:
           count: 0
   - it: must have minReplicas 2 if not set
     set:
-      <<: *values
       container:
         image: img
         maxReplicas: 5
@@ -41,7 +39,6 @@ tests:
           value: 2
   - it: use minReplicas from deployment if not set on container
     set:
-      <<: *values
       deployment:
         replicas: 4
         maxReplicas: 5
@@ -53,7 +50,6 @@ tests:
           value: 4
   - it: uses 80 % as target cpu
     set:
-      <<: *values
       container:
         image: img
         maxReplicas: 5
@@ -63,7 +59,6 @@ tests:
           value: 100
   - it: must default for prd
     set:
-      <<: *values
       env: prd
       container:
         replicas: 1 # even if 1, this must be 2
@@ -77,7 +72,6 @@ tests:
           value: 10
   - it: must not use hpa if forceReplicas is set
     set:
-      <<: *values
       env: prd
       container:
         image: some
@@ -87,7 +81,6 @@ tests:
           count: 0
   - it: use maxReplicas from deployment if not set on container
     set:
-      <<: *values
       env: tst # always creates HPA for prd
       deployment:
         maxReplicas: 5
@@ -98,7 +91,6 @@ tests:
           count: 1
   - it: must not use hpa if forceReplicas is set on deployment
     set:
-      <<: *values
       env: prd
       deployment:
         forceReplicas: 1
@@ -109,7 +101,6 @@ tests:
           count: 0
   - it: must have scaleTargetRef even if spec is given
     set:
-      <<: *values
       env: prd
       hpa:
         spec:
@@ -128,7 +119,6 @@ tests:
           value: 200
   - it: can override release name
     set:
-      <<: *values
       env: prd
       releaseName: override
     asserts:

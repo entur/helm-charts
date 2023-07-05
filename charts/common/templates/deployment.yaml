@@ -93,7 +93,7 @@ spec:
             {{- else }}
               {{- include "grpcexecprobes" (dict "internalPort" $internalPort) | nindent 10 -}}
             {{- end }}
-          {{- else if and (ne .probes.enabled false) .probes.spec }}
+          {{- else if (and (ne .probes.enabled false) .probes.spec) }}
             {{ toYaml .probes.spec | nindent 10 }}
           {{- else if ne .probes.enabled false }}
             {{- include "probes" (dict "internalPort" $internalPort "probes" .probes) | nindent 10 -}}

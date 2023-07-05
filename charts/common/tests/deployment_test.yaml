@@ -1,71 +1,35 @@
-probes: &probes
-      probes:
-        liveness:
-          path: "/actuator/health/liveness"
-        readiness:
-          path: "/actuator/health/readiness"
-        startup:
-          failureThreshold: 300
-          periodSeconds: 1
-
-values: &values
-  env: dev
-  app: testsuite
-  shortname: tstsut
-  team: common
-  ingress:
-    host: test.dev.entur.io
-    trafficType: public
-  labels:
-    custom: label
-  deployment:
-    labels:
-      version: 1
-  containers:
-    - name: test
-      image: img
-      env:
-        - FOO: bar
-      <<: *probes
-
-
 suite: test deployment
+values:
+  - ./values/deployment-values-no-secrets.yaml
+#  - ./values/common-test-values.yaml
 templates:
   - deployment.yaml
 tests:
   - it: must have labels
-    set:
-      <<: *values
     asserts:
       - isNotEmpty:
-          template: deployment.yaml
           path: metadata.labels
       - isNotEmpty:
-          template: deployment.yaml
           path: metadata.labels.environment
       - isNotEmpty:
-          template: deployment.yaml
           path: metadata.labels.custom
       - isNotEmpty:
-          template: deployment.yaml
           path: spec.template.metadata.labels.common
   - it: must add to env if listed
-    set:
-      <<: *values
     asserts:
       - equal:
           path: spec.template.spec.containers[0].env[0].FOO
           value: bar
   - it: cpu limit can be overridden
-    release:
+    release: {}
     set:
-      <<: *values
       containers:
         - name: test
           image: img
           cpu: 0.1
           cpuLimit: 1
-          <<: *probes
+          probes:
+            enabled: false
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
@@ -74,14 +38,13 @@ tests:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
   - it: memory limit is 120 percent of request
-    release:
     set:
-      <<: *values
       containers:
         - name: test
           image: img
           memory: 256
-          <<: *probes
+          probes:
+            enabled: false
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
@@ -90,15 +53,14 @@ tests:
           path: spec.template.spec.containers[0].resources.requests.memory
           value: 256Mi
   - it: memory limit can be overridden
-    release:
     set:
-      <<: *values
       containers:
         - name: test
           image: img
           memory: 256
           memoryLimit: 1024
-          <<: *probes
+          probes:
+            enabled: false
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
@@ -108,7 +70,6 @@ tests:
           value: 256Mi
   - it: must enable prometheus if enabled
     set:
-      <<: *values
       deployment:
         prometheus:
           enabled: true
@@ -123,7 +84,6 @@ tests:
             prometheus.io/port: "8080"
   - it: must use 3 replicas if replicas is 3
     set:
-      <<: *values
       env: dev
       deployment:
         replicas: 3
@@ -136,7 +96,6 @@ tests:
           value: RollingUpdate
   - it: must use 1 replica if forceReplicas is 1 and recreate
     set:
-      <<: *values
       env: prd
       deployment:
         forceReplicas: 1
@@ -149,7 +108,6 @@ tests:
           value: Recreate
   - it: must use 3 replica if forceReplicas is 3
     set:
-      <<: *values
       env: prd
       deployment:
         forceReplicas: 3
@@ -162,7 +120,6 @@ tests:
           value: RollingUpdate
   - it: must adopt for gRPC
     set:
-      <<: *values
       containers:
         - name: test
           image: img
@@ -177,11 +134,9 @@ tests:
               periodSeconds: 1
     asserts:
       - isNotEmpty:
-          template: deployment.yaml
           path: spec.template.spec.containers[0].livenessProbe.exec.command
   - it: must adopt for new gRPC probes 1.24
     set:
-      <<: *values
       containers:
         - name: test
           image: img
@@ -208,7 +163,6 @@ tests:
           value: 8154
   - it: must be able to override initialDelay and successThreshold for probes
     set:
-      <<: *values
       containers:
         - name: test
           image: img
@@ -239,7 +193,6 @@ tests:
           value: 12
   - it: terminationGracePeriodSeconds use correct value
     set:
-      <<: *values
       deployment:
         terminationGracePeriodSeconds: 60
     asserts:
@@ -247,94 +200,83 @@ tests:
           path: spec.template.spec.terminationGracePeriodSeconds
           value: 60
   - it: spec does not contain terminationGracePeriodSeconds if missing from values
-    set:
-      <<: *values
     asserts:
-      - isEmpty:
+      - isNull:
           path: spec.template.spec.terminationGracePeriodSeconds
   - it: override credentialsSecret
     set:
-      <<: *values
       postgres:
         enabled: true
-        credentialsSecret: my-secret 
+        credentialsSecret: my-secret
     asserts:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].secretRef.name
           value: my-secret
   - it: override connectionConfig
     set:
-      <<: *values
       postgres:
         enabled: true
-        connectionConfig: my-config 
+        connectionConfig: my-config
     asserts:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
           value: my-config
   - it: command use correct value
     set:
-      <<: *values
       containers:
         - name: test
           image: img
           command: ["/bin/sh"]
-          <<: *probes
+          probes:
+            enabled: false
     asserts:
       - equal:
           path: spec.template.spec.containers[0].command
           value: ["/bin/sh"]
   - it: spec does not contain command if missing from values
-    set:
-      <<: *values
     asserts:
-      - isEmpty:
+      - isNull:
           path: spec.template.spec.containers[0].command
   - it: args use correct value
     set:
-      <<: *values
       containers:
         - name: test
           image: img
           args: ["-c", "gcloud sql export"]
-          <<: *probes
+          probes:
+            enabled: false
     asserts:
       - equal:
           path: spec.template.spec.containers[0].args
           value: ["-c", "gcloud sql export"]
   - it: spec does not contain args if missing from values
-    set:
-      <<: *values
     asserts:
-      - isEmpty:
+      - isNull:
           path: spec.template.spec.containers[0].args
   - it: set lifecycle hooks
     set:
-      <<: *values
       containers:
         - name: test
           image: img
           args: ["-c", "gcloud sql export"]
+          probes:
+            enabled: false
           lifecycle:
             preStop:
               exec:
                 command:
                   - echo
-          <<: *probes
     asserts:
       - equal:
           path: spec.template.spec.containers[0].lifecycle.preStop.exec.command[0]
           value: echo
   - it: serviceAccountName use correct default value
-    set:
-      <<: *values
     asserts:
       - equal:
           path: spec.template.spec.serviceAccountName
           value: application
   - it: serviceAccountName use correct value when overridden
     set:
-      <<: *values
       deployment:
         serviceAccountName: myaccount
     asserts:
@@ -343,15 +285,13 @@ tests:
           value: myaccount
   - it: can override release name
     set:
-      <<: *values
       releaseName: override
     asserts:
       - equal:
           path: metadata.name
           value: override
-  - it: can disable probes  
+  - it: can disable probes
     set:
-      <<: *values
       containers:
         - name: test
           image: img
@@ -360,12 +300,10 @@ tests:
           probes:
             enabled: false
     asserts:
-      - isEmpty:
-          template: deployment.yaml
+      - isNull:
           path: spec.template.spec.containers[0].livenessProbe
-  - it: can override probes  
+  - it: can override probes
     set:
-      <<: *values
       containers:
         - name: test
           image: img
@@ -381,8 +319,6 @@ tests:
           path: spec.template.spec.containers[0].livenessProbe.tcpSocket.port
           value: admin
   - it: has good security context
-    set:
-      <<: *values
     asserts:
       - equal:
           path: spec.template.spec.securityContext.fsGroup
@@ -392,7 +328,6 @@ tests:
           value: false
   - it: has envFrom secrets in all containers
     set:
-      <<: *values
       containers:
         - name: test
           image: img
@@ -423,13 +358,6 @@ tests:
           path: spec.template.spec.containers[1].envFrom[1].secretRef.name
           value: override-two-secrets
   - it: has no envFrom with no secrets
-    set:
-      <<: *values
-      containers:
-        - name: test
-          image: img
-          probes:
-            enabled: false
     asserts:
-      - isEmpty:
+      - isNull:
           path: spec.template.spec.containers[0].envFrom

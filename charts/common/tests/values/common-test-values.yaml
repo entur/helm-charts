@@ -1,45 +1,50 @@
-app: mytest
-shortname: mytst
+app: rocket-test
+shortname: myrocket
+releaseName: rocket-liftoff
 team: team
-
 env: dev
-
 # common labels for all resources
 labels:
   custom: label
-
-
 ingress:
-  host: mytest.dev.entur.io
-  trafficType: api
-
+  host: test.dev.entur.io
+  trafficType: public
 service:
   externalPort: 8080
   internalPort: 8080
-
 container:
   image: nginxinc/nginx-unprivileged:latest
   labels:
     version: v1.2.3
   cpu: 1
   memory: 128
-  replicas: 1
-  maxReplicas: 2
+  replicas: 2
   cpuLimit: 10
   memoryLimit: 128
-  envFrom: []
+  env:
+    - FOO: bar
   probes:
+    enabled: true
     liveness:
-      path: "/"
+      path: "/actuator/health/liveness"
       failureThreshold: 6
       periodSeconds: 5
     readiness:
-      path: "/"
+      path: "/actuator/health/readiness"
       failureThreshold: 6
       periodSeconds: 5
-
+    startup:
+      failureThreshold: 300
+      periodSeconds: 1
 serviceAccount:
   create: true
 secrets:
-  app-secrets:
+  one-secret:
     - ROCKET_SECRET
+  two-secrets:
+    - ROCKET_FUEL_SECRET
+    - ROCKET_SCIENCE_SECRET
+configmap:
+  enabled: true
+  data:
+    FOO: bar

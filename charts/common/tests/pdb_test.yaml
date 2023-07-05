@@ -1,55 +1,24 @@
-values: &values
-  app: testsuite
-  shortname: tstsut
-  team: common
-  ingress:
-    host: test.dev.entur.io
-    trafficType: public
-  container:
-    image: img
-    replicas: 2
-
 suite: test pdb
+values:
+  - ./values/common-test-values.yaml
 templates:
   - pdb.yaml
 tests:
   - it: must have labels
     set:
-      <<: *values
       env: dev
       container:
         minAvailable: 50%
     asserts:
       - isNotEmpty:
-          template: pdb.yaml
           path: metadata.labels
-  - it: must default for prd with 2 replicas or more
-    set:
-      <<: *values
-      env: prd
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "50%"
-  - it: must default for tst
-    set:
-      <<: *values
-      env: tst
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "50%"
-  - it: must default for dev
-    set:
-      <<: *values
-      env: dev
+  - it: must default with 2 replicas or more
     asserts:
       - equal:
           path: spec.minAvailable
           value: "50%"
   - it: use minAvailable from container if not set on pdb
     set:
-      <<: *values
       env: prd
       container:
         replicas: 2
@@ -60,7 +29,6 @@ tests:
           value: "27%"
   - it: use minAvailable from deployment if not set on pdb or container
     set:
-      <<: *values
       env: prd
       deployment:
         replicas: 2
@@ -73,7 +41,6 @@ tests:
           value: "26%"
   - it: check for minAvailable on deployment before container
     set:
-      <<: *values
       env: tst
       deployment:
         replicas: 2
@@ -89,7 +56,6 @@ tests:
           value: "30%"
   - it: use minAvailable from pdb if not set on pdb or container
     set:
-      <<: *values
       env: prd
       pdb:
         minAvailable: 25%
@@ -103,7 +69,6 @@ tests:
           value: "25%"
   - it: if container Replicas is set to 1, minAvailable must be 0%
     set:
-      <<: *values
       env: prd
       container:
         image: some
@@ -114,7 +79,6 @@ tests:
           value: "0%"
   - it: if deployment Replicas is set to 1, minAvailable must be 0%
     set:
-      <<: *values
       env: prd
       deployment:
         replicas: 1
@@ -126,7 +90,6 @@ tests:
           value: "0%"
   - it: if container forceReplicas is set to 1, minAvailable must be 0%
     set:
-      <<: *values
       env: prd
       container:
         image: some
@@ -137,7 +100,6 @@ tests:
           value: "0%"
   - it: if deployment forceReplicas is set to 1, minAvailable must be 0%
     set:
-      <<: *values
       env: prd
       deployment:
         forceReplicas: 1
@@ -149,7 +111,6 @@ tests:
           value: "0%"
   - it: must use pdb if forceReplicas is set to more than 1
     set:
-      <<: *values
       env: prd
       container:
         image: some
@@ -160,7 +121,6 @@ tests:
           count: 1
   - it: must use pdb if forceReplicas is set to more than 1
     set:
-      <<: *values
       env: prd
       container:
         image: some
@@ -171,7 +131,6 @@ tests:
           count: 1
   - it: must use pdb if forceReplicas is set to more than 1 on deployment
     set:
-      <<: *values
       env: prd
       deployment:
         forceReplicas: 2
@@ -182,7 +141,6 @@ tests:
           count: 1
   - it: must use pdb if forceReplicas is set to 1 on deployment
     set:
-      <<: *values
       env: prd
       deployment:
         forceReplicas: 1
@@ -193,7 +151,6 @@ tests:
           count: 1
   - it: can override release name
     set:
-      <<: *values
       env: prd
       releaseName: override
     asserts:
