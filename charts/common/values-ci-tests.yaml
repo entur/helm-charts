@@ -42,4 +42,4 @@ serviceAccount:
   create: true
 secrets:
   app-secrets:
-    - ROCKET_SECRET
+    - RUDDER_SECRET
