@@ -1,0 +1,6 @@
+configmap:
+  enabled: true
+  data:
+    FOO: bar
+labels:
+  custom: label

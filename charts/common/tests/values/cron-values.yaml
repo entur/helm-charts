@@ -1,12 +1,3 @@
-env: dev
-app: testsuite
-shortname: tstsut
-team: common
-ingress:
-  host: test.dev.entur.io
-  trafficType: public
-labels:
-  custom: label
 deployment:
   enabled: false
 cron:
@@ -14,16 +5,3 @@ cron:
   schedule: "30 04 * ? *"
   labels:
     version: 1
-containers:
-  - name: test
-    image: img
-    env:
-      - FOO: bar
-    probes:
-      liveness:
-        path: "/actuator/health/liveness"
-      readiness:
-        path: "/actuator/health/readiness"
-      startup:
-        failureThreshold: 300
-        periodSeconds: 1

@@ -1,5 +1,6 @@
 suite: test cron
 values:
+  - ./values/common-test-values.yaml
   - ./values/cron-values.yaml
 templates:
   - cron.yaml

@@ -1,9 +1,8 @@
-app: rocket-test
-shortname: myrocket
-releaseName: rocket-liftoff
-team: team
+app: rudder-test
+releaseName: rudder-test
 env: dev
-# common labels for all resources
+appname: rudder-test
+team: platform
 labels:
   custom: label
 ingress:
@@ -13,38 +12,20 @@ service:
   externalPort: 8080
   internalPort: 8080
 container:
-  image: nginxinc/nginx-unprivileged:latest
-  labels:
-    version: v1.2.3
-  cpu: 1
-  memory: 128
-  replicas: 2
-  cpuLimit: 10
-  memoryLimit: 128
   env:
     - FOO: bar
+  image: img
+  memory: 768
+  cpu: 0.1
+  replicas: 2
   probes:
-    enabled: true
     liveness:
-      path: "/actuator/health/liveness"
-      failureThreshold: 6
-      periodSeconds: 5
+      path: /actuator/health
     readiness:
-      path: "/actuator/health/readiness"
-      failureThreshold: 6
-      periodSeconds: 5
+      path: /actuator/health
     startup:
-      failureThreshold: 300
+      failureThreshold: 299
       periodSeconds: 1
-serviceAccount:
-  create: true
-secrets:
-  one-secret:
-    - ROCKET_SECRET
-  two-secrets:
-    - ROCKET_FUEL_SECRET
-    - ROCKET_SCIENCE_SECRET
-configmap:
-  enabled: true
-  data:
-    FOO: bar
+  prometheus:
+    enabled: true
+shortname: rudder
