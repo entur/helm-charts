@@ -19,7 +19,6 @@ tests:
           value: "50%"
   - it: must default for tst
     set:
-      <<: *values
       env: tst
     asserts:
       - equal:
@@ -27,7 +26,6 @@ tests:
           value: "50%"
   - it: must default for dev
     set:
-      <<: *values
       env: dev
     asserts:
       - equal:
