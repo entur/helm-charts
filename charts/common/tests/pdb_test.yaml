@@ -17,6 +17,22 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "50%"
+  - it: must default for tst
+    set:
+      <<: *values
+      env: tst
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: must default for dev
+    set:
+      <<: *values
+      env: dev
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
   - it: use minAvailable from container if not set on pdb
     set:
       env: prd

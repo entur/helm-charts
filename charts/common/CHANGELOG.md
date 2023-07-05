@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.15.0](https://github.com/entur/helm-charts/compare/common-v1.14.0...common-v1.15.0) (2023-06-29)
+
+
+### Features
+
+* add pdb for sbx/dev/test envs + logic ([#109](https://github.com/entur/helm-charts/issues/109)) ([b4b246a](https://github.com/entur/helm-charts/commit/b4b246af0eeacc9d15f3702e01b303d919b900d3))
+
+## [1.14.0](https://github.com/entur/helm-charts/compare/common-v1.13.1...common-v1.14.0) (2023-06-27)
+
+
+### Features
+
+* add support for external-secrets ([#112](https://github.com/entur/helm-charts/issues/112)) ([e913ea1](https://github.com/entur/helm-charts/commit/e913ea1246496b6523862d622acc28915f7c032f))
+
 ## [1.13.1](https://github.com/entur/helm-charts/compare/common-v1.13.0...common-v1.13.1) (2023-06-27)
 
 
