@@ -10,6 +10,7 @@ The common helm chart is a quick and easy way to get an application ready for de
 Read more in its updated [README.md](./charts/common/README.md).
 
 #### Use [common](./charts/common/README.md)
+
 Add to Chart.yaml:
 
 ```yaml
@@ -19,7 +20,7 @@ dependencies:
     repository: "https://entur.github.io/helm-charts"
 ```
 
-#### Update [common](./charts/common/README.md)  
+#### Update [common](./charts/common/README.md)
 
 Update version in Chart.yaml and run `helm dependency update`
 
@@ -37,13 +38,13 @@ helm template charts/common -f example/values-cron.yaml
 ```bash
 docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
 ```
-        
+
 ### Install helm chart unit test plugin
 
 ```bash
-helm plugin install https://github.com/vbehar/helm3-unittest
+helm plugin install https://github.com/helm-unittest/helm-unittest.git
 ```
-        
+
 ### Run unit tests
 
 ```bash
