@@ -6,6 +6,7 @@ templates:
 tests:
   - it: must have labels
     set:
+      env: dev
       labels:
         custom: label
       container:

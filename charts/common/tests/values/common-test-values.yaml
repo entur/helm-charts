@@ -3,8 +3,6 @@ releaseName: rudder-test
 env: dev
 appname: rudder-test
 team: platform
-labels:
-  custom: label
 ingress:
   host: test.dev.entur.io
   trafficType: public
