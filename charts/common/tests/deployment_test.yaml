@@ -16,23 +16,18 @@ tests:
           value: label
       - isNotEmpty:
           path: spec.template.metadata.labels.common
-  - it: cpu limit can be overridden
+  - it: CPU limit can be set
     release: {}
     set:
       containers:
-        - name: test
+        - cpuLimit: 1
           image: img
-          cpu: 0.1
-          cpuLimit: 1
           probes:
             enabled: false
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
           value: 1
-      - equal:
-          path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.1
   # #TODO mem req/limit should be equal
   - it: memory limit is 120 percent of request
     set:

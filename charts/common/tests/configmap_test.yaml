@@ -9,10 +9,12 @@ tests:
     asserts:
       - isNotEmpty:
           path: metadata.labels
-      - isNotEmpty:
+      - equal:
           path: metadata.labels.environment
-      - isNotEmpty:
+          value: dev
+      - equal:
           path: metadata.labels.custom
+          value: label
   - it: can override release name
     set:
       releaseName: override

@@ -5,13 +5,15 @@ templates:
   - pdb.yaml
 tests:
   - it: must have labels
-    set:
-      env: dev
-      container:
-        minAvailable: 50%
     asserts:
       - isNotEmpty:
           path: metadata.labels
+      - equal:
+          path: metadata.labels.environment
+          value: dev
+      - equal:
+          path: metadata.labels.custom
+          value: label
   - it: must use default with 2 replicas or more
     asserts:
       - equal:

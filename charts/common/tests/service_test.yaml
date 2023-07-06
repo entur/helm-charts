@@ -20,6 +20,12 @@ tests:
     asserts:
       - isNotEmpty:
           path: metadata.labels
+      - equal:
+          path: metadata.labels.environment
+          value: dev
+      - equal:
+          path: metadata.labels.custom
+          value: label
   - it: sane defaults and forwards
     asserts:
       - equal:

@@ -24,8 +24,7 @@ tests:
     release: {}
     set:
       containers:
-        - name: test
-          image: img
+        - image: img
           cpu: 0.1
           cpuLimit: 1
     asserts:
@@ -40,8 +39,7 @@ tests:
     release: {}
     set:
       containers:
-        - name: test
-          image: img
+        - image: img
           memory: 256
     asserts:
       - equal:
@@ -54,8 +52,7 @@ tests:
     release: {}
     set:
       containers:
-        - name: test
-          image: img
+        - image: img
           memory: 256
           memoryLimit: 1024
     asserts:
