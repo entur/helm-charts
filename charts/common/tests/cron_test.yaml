@@ -9,12 +9,12 @@ tests:
     asserts:
       - isNotEmpty:
           path: metadata.labels
-      - isNotEmpty:
+      - equal:
           path: metadata.labels.environment
-      - isNotEmpty:
+          value: dev
+      - equal:
           path: metadata.labels.custom
-      - isNotEmpty:
-          path: spec.jobTemplate.metadata.labels.common
+          value: label
   - it: must add to env if listed
     asserts:
       - equal:
@@ -28,14 +28,6 @@ tests:
           image: img
           cpu: 0.1
           cpuLimit: 1
-      probes:
-        liveness:
-          path: "/actuator/health/liveness"
-        readiness:
-          path: "/actuator/health/readiness"
-        startup:
-          failureThreshold: 300
-          periodSeconds: 1
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
@@ -43,6 +35,7 @@ tests:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
+  # #TODO mem req/limit should be equal
   - it: memory limit is 120 percent of request
     release: {}
     set:
@@ -50,14 +43,6 @@ tests:
         - name: test
           image: img
           memory: 256
-      probes:
-        liveness:
-          path: "/actuator/health/liveness"
-        readiness:
-          path: "/actuator/health/readiness"
-        startup:
-          failureThreshold: 300
-          periodSeconds: 1
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.memory
@@ -73,14 +58,6 @@ tests:
           image: img
           memory: 256
           memoryLimit: 1024
-      probes:
-        liveness:
-          path: "/actuator/health/liveness"
-        readiness:
-          path: "/actuator/health/readiness"
-        startup:
-          failureThreshold: 300
-          periodSeconds: 1
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.memory

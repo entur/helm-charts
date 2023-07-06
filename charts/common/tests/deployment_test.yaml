@@ -5,20 +5,15 @@ templates:
   - deployment.yaml
 tests:
   - it: must have labels
-    set:
-      labels:
-        custom: label
-      container:
-        image: img
-        labels:
-          version: 1
     asserts:
       - isNotEmpty:
           path: metadata.labels
-      - isNotEmpty:
+      - equal:
           path: metadata.labels.environment
-      - isNotEmpty:
+          value: dev
+      - equal:
           path: metadata.labels.custom
+          value: label
       - isNotEmpty:
           path: spec.template.metadata.labels.common
   - it: cpu limit can be overridden
@@ -38,6 +33,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: 0.1
+  # #TODO mem req/limit should be equal
   - it: memory limit is 120 percent of request
     set:
       containers:
