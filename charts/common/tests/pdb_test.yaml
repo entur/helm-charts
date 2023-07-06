@@ -12,21 +12,14 @@ tests:
     asserts:
       - isNotEmpty:
           path: metadata.labels
-  - it: must default with 2 replicas or more
+  - it: must use default with 2 replicas or more
     asserts:
       - equal:
           path: spec.minAvailable
           value: "50%"
-  - it: must default for tst
+  - it: must use default with 2 replicas or more in prod
     set:
-      env: tst
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "50%"
-  - it: must default for dev
-    set:
-      env: dev
+      env: prd
     asserts:
       - equal:
           path: spec.minAvailable
