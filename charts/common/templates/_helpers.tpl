@@ -177,7 +177,7 @@ livenessProbe:
   resources:
     limits:
       {{- if .postgres.cpuLimit }}
-      cpu: {{ .postgres.cpuLimit }}
+      cpu: "{{ .postgres.cpuLimit }}"
       {{- end }}
       {{- if .postgres.memoryLimt }}
       memory: "{{ .postgres.memoryLimit }}Mi"
@@ -185,6 +185,6 @@ livenessProbe:
       memory: "{{ .postgres.memory }}Mi"
       {{- end }}
     requests:
-      cpu: {{ .postgres.cpu }}
+      cpu: "{{ .postgres.cpu }}"
       memory: "{{ .postgres.memory }}Mi"
 {{- end }}
