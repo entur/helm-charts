@@ -112,7 +112,7 @@ spec:
       {{- end }}
       {{- if $volumes }}
       volumes:
-        {{- toYaml $volumes |trim| nindent 8 -}}
+        {{- toYaml $volumes | nindent 8 }}
       {{- end }}
       {{- include "topologyspreadconstraints" . | indent 6 }}
       {{- if $terminationGracePeriodSeconds }}
