@@ -43,7 +43,7 @@ topologySpreadConstraints:
 resources:
   limits:
     {{- if .cpuLimit }}
-    cpu: {{ .cpuLimit }}
+    cpu: "{{ .cpuLimit| float64 }}"
     {{- end }}
     {{- if .memoryLimit }}
     memory: "{{ .memoryLimit }}Mi"
@@ -51,7 +51,7 @@ resources:
     memory: "{{ (div (mul .memory 6) 5) }}Mi"
     {{- end }}
   requests:
-    cpu: {{ .cpu | float64 }}
+    cpu: "{{ .cpu | float64 }}"
     memory: "{{ .memory }}Mi"
 {{- end }}
 
@@ -177,7 +177,7 @@ livenessProbe:
   resources:
     limits:
       {{- if .postgres.cpuLimit }}
-      cpu: {{ .postgres.cpuLimit }}
+      cpu: "{{ .postgres.cpuLimit }}"
       {{- end }}
       {{- if .postgres.memoryLimt }}
       memory: "{{ .postgres.memoryLimit }}Mi"
@@ -185,6 +185,6 @@ livenessProbe:
       memory: "{{ .postgres.memory }}Mi"
       {{- end }}
     requests:
-      cpu: {{ .postgres.cpu }}
+      cpu: "{{ .postgres.cpu }}"
       memory: "{{ .postgres.memory }}Mi"
 {{- end }}

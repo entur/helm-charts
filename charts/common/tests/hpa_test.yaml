@@ -1,37 +1,23 @@
-values: &values
-  env: dev
-  app: testsuite
-  shortname: tstsut
-  team: common
-  ingress:
-    host: test.dev.entur.io
-    trafficType: public
-
 suite: test hpa
+values:
+  - ./values/common-test-values.yaml
 templates:
   - hpa.yaml
 tests:
-  - it: must have labels
-    set:
-      <<: *values
-      container:
-        image: img
-        maxReplicas: 5
-    asserts:
-      - isNotEmpty:
-          template: hpa.yaml
-          path: metadata.labels
-  - it: default off
-    set:
-      <<: *values
-      container:
-        image: img
+  - it: Should not generate hpa by default
     asserts:
       - hasDocuments:
           count: 0
+  - it: hpa must be generated if maxReplicas > 1 and must have labels
+    set:
+      container:
+        maxReplicas: 2
+    asserts:
+      - isNotEmpty:
+          path: metadata.labels
   - it: must have minReplicas 2 if not set
     set:
-      <<: *values
+      env: prd
       container:
         image: img
         maxReplicas: 5
@@ -41,7 +27,6 @@ tests:
           value: 2
   - it: use minReplicas from deployment if not set on container
     set:
-      <<: *values
       deployment:
         replicas: 4
         maxReplicas: 5
@@ -51,22 +36,20 @@ tests:
       - equal:
           path: spec.minReplicas
           value: 4
-  - it: uses 80 % as target cpu
+  # #TODO 100% cpu target is set as default?
+  - it: uses 100 % as target cpu
     set:
-      <<: *values
       container:
-        image: img
         maxReplicas: 5
     asserts:
       - equal:
           path: spec.metrics[0].resource.target.averageUtilization
           value: 100
-  - it: must default for prd
+  - it: Must use minimum two replicas in prod, max 10
     set:
-      <<: *values
       env: prd
       container:
-        replicas: 1 # even if 1, this must be 2
+        replicas: 1 # even if 1, this must be 2 in prod
         image: img
     asserts:
       - equal:
@@ -75,30 +58,28 @@ tests:
       - equal:
           path: spec.maxReplicas
           value: 10
-  - it: must not use hpa if forceReplicas is set
+  - it: Must not use hpa if forceReplicas is set
     set:
-      <<: *values
       env: prd
       container:
         image: some
+        maxReplicas: 5  # should not matter
         forceReplicas: 1
     asserts:
       - hasDocuments:
           count: 0
-  - it: use maxReplicas from deployment if not set on container
+  - it: Uses maxReplicas from deployment before container settings
     set:
-      <<: *values
-      env: tst # always creates HPA for prd
       deployment:
-        maxReplicas: 5
+        maxReplicas: 99
       containers:
-        - image: some
+        - maxReplicas: 2
     asserts:
-      - hasDocuments:
-          count: 1
+      - equal:
+          path: spec.maxReplicas
+          value: 99
   - it: must not use hpa if forceReplicas is set on deployment
     set:
-      <<: *values
       env: prd
       deployment:
         forceReplicas: 1
@@ -109,7 +90,6 @@ tests:
           count: 0
   - it: must have scaleTargetRef even if spec is given
     set:
-      <<: *values
       env: prd
       hpa:
         spec:
@@ -128,7 +108,6 @@ tests:
           value: 200
   - it: can override release name
     set:
-      <<: *values
       env: prd
       releaseName: override
     asserts:

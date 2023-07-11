@@ -1,21 +1,12 @@
-values: &values
-  env: dev
-  app: testsuite
-  shortname: tstsut
-  team: common
-  ingress:
-    host: test.dev.entur.io
-    trafficType: public
-  container:
-    image: img
-
-suite: test deployment
+suite: test v1 compatibility
+values:
+  - ./values/deployment-v1-values.yaml
 templates:
   - deployment.yaml
 tests:
   - it: must have labels
     set:
-      <<: *values
+      env: dev
       labels:
         custom: label
       container:
@@ -24,20 +15,15 @@ tests:
           version: 1
     asserts:
       - isNotEmpty:
-          template: deployment.yaml
           path: metadata.labels
       - isNotEmpty:
-          template: deployment.yaml
           path: metadata.labels.environment
       - isNotEmpty:
-          template: deployment.yaml
           path: metadata.labels.custom
       - isNotEmpty:
-          template: deployment.yaml
           path: spec.template.metadata.labels.common
   - it: must add to env if listed
     set:
-      <<: *values
       container:
         image: img
         env:
@@ -50,7 +36,6 @@ tests:
     release:
       name: testsuite
     set:
-      <<: *values
       configmap:
         enabled: true
         data:
@@ -60,24 +45,20 @@ tests:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: testsuite
   - it: cpu limit can be set
-    release:
     set:
-      <<: *values
       container:
         image: img
-        cpu: 0.1
+        cpu: "0.1"
         cpuLimit: 1
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
-          value: 1
+          value: "1"
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.1
+          value: "0.1"
   - it: cpu limit can be skipped
-    release:
     set:
-      <<: *values
       container:
         image: img
         cpu: 0.1
@@ -86,11 +67,9 @@ tests:
           path: spec.template.spec.containers[0].resources.limits.cpu
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.1
+          value: "0.1"
   - it: memory limit is 120 percent of request
-    release:
     set:
-      <<: *values
       container:
         image: img
         memory: 256
@@ -102,9 +81,7 @@ tests:
           path: spec.template.spec.containers[0].resources.requests.memory
           value: 256Mi
   - it: memory limit can be overridden
-    release:
     set:
-      <<: *values
       container:
         image: img
         memory: 256
@@ -118,7 +95,6 @@ tests:
           value: 256Mi
   - it: must enable prometheus if enabled
     set:
-      <<: *values
       container:
         image: img
         prometheus:
@@ -133,7 +109,6 @@ tests:
             prometheus.io/port: "8080"
   - it: must mount envFrom if postgres enabled
     set:
-      <<: *values
       postgres:
         enabled: true
     asserts:
@@ -142,7 +117,6 @@ tests:
           value: testsuite-psql-credentials
   - it: must enable sidecar if postgres enabled
     set:
-      <<: *values
       postgres:
         enabled: true
     asserts:
@@ -152,33 +126,28 @@ tests:
           path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
           value: testsuite-psql-connection
   - it: postgres cpu limit can be overridden
-    release:
     set:
-      <<: *values
       postgres:
         enabled: true
-        cpu: 0.1
-        cpuLimit: 1
+        cpu: "0.1"
+        cpuLimit: "1"
     asserts:
       - equal:
           path: spec.template.spec.containers[1].resources.limits.cpu
-          value: 1
+          value: "1"
       - equal:
           path: spec.template.spec.containers[1].resources.requests.cpu
-          value: 0.1
+          value: "0.1"
   - it: postgres cpu limit can be cleared
-    release:
     set:
-      <<: *values
       postgres:
         enabled: true
         cpu: 0.1
     asserts:
-      - isEmpty:
+      - isNull:
           path: spec.template.spec.containers[1].resources.limits.cpu
   - it: must use 3 replicas if replicas is 3
     set:
-      <<: *values
       env: dev
       container:
         image: testimg
@@ -192,7 +161,6 @@ tests:
           value: RollingUpdate
   - it: must use 1 replica if forceReplicas is 1 and recreate
     set:
-      <<: *values
       env: prd
       container:
         image: some
@@ -206,7 +174,6 @@ tests:
           value: Recreate
   - it: must use 3 replica if forceReplicas is 3
     set:
-      <<: *values
       env: prd
       container:
         image: some
@@ -220,17 +187,14 @@ tests:
           value: RollingUpdate
   - it: must adopt for gRPC
     set:
-      <<: *values
       grpc: true
       container:
         image: img
     asserts:
       - isNotEmpty:
-          template: deployment.yaml
           path: spec.template.spec.containers[0].livenessProbe.exec.command
   - it: terminationGracePeriodSeconds use correct value
     set:
-      <<: *values
       container:
         image: img
         terminationGracePeriodSeconds: 60
@@ -240,11 +204,8 @@ tests:
           value: 60
   - it: spec does not contain terminationGracePeriodSeconds if missing from values
     set:
-      <<: *values
       container:
         image: img
     asserts:
-      - isEmpty:
+      - isNull:
           path: spec.template.spec.terminationGracePeriodSeconds
-
-

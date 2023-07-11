@@ -9,7 +9,7 @@ metadata:
   name: {{ $releaseName }}
   namespace: {{ $releaseNamespace }}
   labels:
-    {{- include "labels" . | indent 4 }}
+    {{- include "labels" . |trim| nindent 4 }}
 spec:
   targetRef:
     apiVersion: "apps/v1"
@@ -17,7 +17,7 @@ spec:
     name: {{ $releaseName }}
   resourcePolicy:
     containerPolicies:
-      - containerName: '*'
-        controlledResources: ["cpu", "memory"]
+    - containerName: '*'
+      controlledResources: ["cpu", "memory"]
   updatePolicy:
     updateMode: "Off"

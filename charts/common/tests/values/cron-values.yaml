@@ -1,0 +1,8 @@
+deployment:
+  enabled: false
+cron:
+  enabled: true
+  schedule: "30 04 * ? *"
+  labels:
+    version: 1
+

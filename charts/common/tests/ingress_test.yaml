@@ -1,35 +1,30 @@
-values: &values
-  env: dev
-  app: testsuite
-  shortname: tstsut
-  team: common
-  ingress:
-    host: test.dev.entur.io
-    trafficType: public
-  container:
-    image: img
-    maxReplicas: 5
-
 suite: test ingress
+values:
+  - ./values/common-test-values.yaml
 templates:
   - ingress.yaml
 tests:
   - it: must have labels
     set:
-      <<: *values
+      env: dev
+      labels:
+        custom: label
     asserts:
       - isNotEmpty:
-          template: ingress.yaml
           path: metadata.labels
+      - equal:
+          path: metadata.labels.environment
+          value: dev
+      - equal:
+          path: metadata.labels.custom
+          value: label
   - it: sane defaults and forwards
     release:
       name: testsuite
-    set:
-      <<: *values
     asserts:
       - equal:
           path: spec.rules[0].http.paths[0].backend.service.port.number
-          value: 80
+          value: 8080
       - equal:
           path: spec.rules[0].host
           value: test.dev.entur.io
@@ -42,7 +37,6 @@ tests:
           value: public
   - it: can be disabled
     set:
-      <<: *values
       ingress:
         enabled: false
     asserts:
@@ -50,7 +44,6 @@ tests:
           count: 0
   - it: can be custom
     set:
-      <<: *values
       ingress:
         enabled: true
         trafficType: public
@@ -141,7 +134,6 @@ tests:
         documentIndex: 1
   - it: can override release name
     set:
-      <<: *values
       releaseName: override
     asserts:
       - equal:
@@ -149,13 +141,12 @@ tests:
           value: override
   - it: can add custom ingress-annotations
     set:
-      <<: *values
       ingress:
         host: test.dev.entur.io
         trafficType: public
         annotations:
           ingress.kubernetes.io/protocol: h2c
     asserts:
-      - isNotEmpty:
-          template: ingress.yaml
-          path: metadata.annotations.ingress\.kubernetes\.io/protocol
+      - equal:
+          path: metadata.annotations["ingress.kubernetes.io/protocol"]
+          value: h2c

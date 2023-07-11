@@ -26,7 +26,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    {{- include "labels" . | indent 4 }}
+    {{- include "labels" . |trim| nindent 4 }}
   name: {{ $releaseName }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -57,7 +57,7 @@ spec:
         prometheus.io/port: "{{ $prometheus.port | default .Values.service.internalPort | required "Must set deployment.prometheus.port" }}"
         {{- end }}
       labels:
-        {{- include "labels" . | indent 8 }}
+        {{- include "labels" . |trim| nindent 8 }}
         {{- if $labels }}
         {{- toYaml $labels | nindent 8 }}
         {{- end }}
@@ -93,7 +93,7 @@ spec:
             {{- else }}
               {{- include "grpcexecprobes" (dict "internalPort" $internalPort) | nindent 10 -}}
             {{- end }}
-          {{- else if and (ne .probes.enabled false) .probes.spec }}
+          {{- else if (and (ne .probes.enabled false) .probes.spec) }}
             {{ toYaml .probes.spec | nindent 10 }}
           {{- else if ne .probes.enabled false }}
             {{- include "probes" (dict "internalPort" $internalPort "probes" .probes) | nindent 10 -}}

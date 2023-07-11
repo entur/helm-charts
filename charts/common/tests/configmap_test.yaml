@@ -1,35 +1,26 @@
-values: &values
-  env: dev
-  app: testsuite
-  shortname: tstsut
-  team: common
-  ingress:
-    host: test.dev.entur.io
-    trafficType: public
-  container:
-    image: img
-  configmap:
-    enabled: true
-    data:
-      FOO: bar
-
 suite: test configmap
+values:
+  - ./values/common-test-values.yaml
+  - ./values/configmap-values.yaml
 templates:
   - configmap.yaml
 tests:
   - it: must have labels
     set:
-      <<: *values
+      env: dev
+      labels:
+        custom: label
     asserts:
       - isNotEmpty:
-          template: configmap.yaml
           path: metadata.labels
       - equal:
-          path: data.FOO
-          value: bar
+          path: metadata.labels.environment
+          value: dev
+      - equal:
+          path: metadata.labels.custom
+          value: label
   - it: can override release name
     set:
-      <<: *values
       releaseName: override
     asserts:
       - equal:
