@@ -15,7 +15,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   labels:
-    {{- include "labels" . | indent 4 }}
+    {{- include "labels" . |trim| nindent 4 }}
   name: {{ $releaseName }}
   namespace: {{ .Release.Namespace }}
 spec:

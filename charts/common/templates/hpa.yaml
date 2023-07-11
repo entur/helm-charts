@@ -19,7 +19,7 @@ metadata:
   name: {{ $releaseName }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "labels" . | indent 4 }}
+    {{- include "labels" . |trim| nindent 4 }}
 spec:
   {{- if ((.Values.hpa).spec) }}
   {{ toYaml .Values.hpa.spec | nindent 2 }}

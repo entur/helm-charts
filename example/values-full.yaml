@@ -1,0 +1,41 @@
+app: full-example-app
+appname: full-example-app
+shortname: fexapp
+team: platform
+env: dev
+configmap:
+  data:
+    APP_NAME: full-example-app
+    APP_VERSION: main-v1
+    PG_DB_NAME: example-db
+    APP_ENV: dev
+  enabled: true
+  toEnv: true
+container:
+  image: img # ${artifact.metadata.image}
+  memory: 768
+  memoryLimit: 2048
+  cpu: 0.1
+  replicas: 5
+  probes:
+    liveness:
+      path: /actuator/health
+    readiness:
+      path: /actuator/health
+  prometheus:
+    enabled: true
+  volumes:
+  - configMap:
+      name: oidc-auth-config
+    name: oidc-auth-volume
+ingress:
+  trafficType: api
+  host: test.dev.entur.io
+postgres:  # enables postgres proxy
+  enabled: true
+  memory: 100
+secrets:  # enables external-secrets
+  secret-manager-secrets:  # name of k8s secret to be mounted
+    - SECRET_ONE  # name of secret in secret manager
+serviceAccount:
+  create: true

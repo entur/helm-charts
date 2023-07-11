@@ -12,7 +12,7 @@ metadata:
   name: {{ $releaseName }}
   namespace: {{ $releaseNamespace }}
   labels:
-    {{- include "labels" . | indent 4 }}
+    {{- include "labels" . |trim| nindent 4 }}
 spec:
   {{- if (or (eq (int $replicas) 1) (eq (int $forceReplicas) 1)) }}
   {{- /* We set PDB even if forceReplicas or replicas = 1 */}}

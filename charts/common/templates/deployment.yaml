@@ -26,7 +26,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    {{- include "labels" . | indent 4 }}
+    {{- include "labels" . |trim| nindent 4 }}
   name: {{ $releaseName }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -57,7 +57,7 @@ spec:
         prometheus.io/port: "{{ $prometheus.port | default .Values.service.internalPort | required "Must set deployment.prometheus.port" }}"
         {{- end }}
       labels:
-        {{- include "labels" . | indent 8 }}
+        {{- include "labels" . |trim| nindent 8 }}
         {{- if $labels }}
         {{- toYaml $labels | nindent 8 }}
         {{- end }}
@@ -112,7 +112,7 @@ spec:
       {{- end }}
       {{- if $volumes }}
       volumes:
-        {{- toYaml $volumes | nindent 8 }}
+        {{- toYaml $volumes |trim| nindent 8 -}}
       {{- end }}
       {{- include "topologyspreadconstraints" . | indent 6 }}
       {{- if $terminationGracePeriodSeconds }}
