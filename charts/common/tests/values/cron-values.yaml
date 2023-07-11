@@ -5,3 +5,4 @@ cron:
   schedule: "30 04 * ? *"
   labels:
     version: 1
+
