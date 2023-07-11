@@ -34,10 +34,10 @@ tests:
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
-          value: 1
+          value: "1"
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.1
+          value: "0.1"
   # #TODO mem req/limit should be equal
   - it: memory limit is 120 percent of request
     release: {}

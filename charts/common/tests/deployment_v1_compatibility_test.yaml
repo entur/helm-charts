@@ -48,15 +48,15 @@ tests:
     set:
       container:
         image: img
-        cpu: 0.1
+        cpu: "0.1"
         cpuLimit: 1
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
-          value: 1
+          value: "1"
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.1
+          value: "0.1"
   - it: cpu limit can be skipped
     set:
       container:
@@ -67,7 +67,7 @@ tests:
           path: spec.template.spec.containers[0].resources.limits.cpu
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 0.1
+          value: "0.1"
   - it: memory limit is 120 percent of request
     set:
       container:
@@ -129,15 +129,15 @@ tests:
     set:
       postgres:
         enabled: true
-        cpu: 0.1
-        cpuLimit: 1
+        cpu: "0.1"
+        cpuLimit: "1"
     asserts:
       - equal:
           path: spec.template.spec.containers[1].resources.limits.cpu
-          value: 1
+          value: "1"
       - equal:
           path: spec.template.spec.containers[1].resources.requests.cpu
-          value: 0.1
+          value: "0.1"
   - it: postgres cpu limit can be cleared
     set:
       postgres:
