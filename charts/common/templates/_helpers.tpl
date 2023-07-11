@@ -43,7 +43,7 @@ topologySpreadConstraints:
 resources:
   limits:
     {{- if .cpuLimit }}
-    cpu: "{{ .cpuLimit }}"
+    cpu: "{{ .cpuLimit| float64 }}"
     {{- end }}
     {{- if .memoryLimit }}
     memory: "{{ .memoryLimit }}Mi"
