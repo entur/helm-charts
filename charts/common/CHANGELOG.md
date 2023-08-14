@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.2](https://github.com/entur/helm-charts/compare/common-v1.16.1...common-v1.16.2) (2023-08-14)
+
+
+### Bug Fixes
+
+* new release ([#118](https://github.com/entur/helm-charts/issues/118)) ([74864a0](https://github.com/entur/helm-charts/commit/74864a0e3eeb0fabf430b2e9b708bda824186e0b))
+
 ## [1.16.1](https://github.com/entur/helm-charts/compare/common-v1.16.0...common-v1.16.1) (2023-08-14)
 
 
