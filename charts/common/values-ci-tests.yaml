@@ -24,7 +24,7 @@ container:
   cpu: 0.2
   memory: 64
   replicas: 1
-  maxReplicas: 1
+  maxReplicas: 2
   memoryLimit: 64
   envFrom: []
   probes:
