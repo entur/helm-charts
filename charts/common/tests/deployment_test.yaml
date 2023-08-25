@@ -64,6 +64,22 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.memory
           value: 256Mi
+  - it: ephemeral-storage can be set
+    set:
+      containers:
+        - name: test
+          image: img
+          ephemeralStorage: 2Gi
+          ephemeralStorageLimit: 4Gi
+          probes:
+            enabled: false
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.ephemeral-storage
+          value: 4Gi
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.ephemeral-storage
+          value: 2Gi
   - it: must enable prometheus if enabled
     set:
       deployment:

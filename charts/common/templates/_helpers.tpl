@@ -50,9 +50,15 @@ resources:
     {{- else }}
     memory: "{{ (div (mul .memory 6) 5) }}Mi"
     {{- end }}
+    {{- if .ephemeralStorageLimit }}
+    ephemeral-storage: "{{ .ephemeralStorageLimit }}"
+    {{- end }}
   requests:
     cpu: "{{ .cpu | float64 }}"
     memory: "{{ .memory }}Mi"
+    {{- if .ephemeralStorage}}
+    ephemeral-storage: "{{ .ephemeralStorage}}"
+    {{- end }}
 {{- end }}
 
 {{- define "environment" }}
