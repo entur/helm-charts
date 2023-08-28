@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/entur/helm-charts/compare/common-v1.16.2...common-v1.17.0) (2023-08-28)
+
+
+### Features
+
+* add ephemeral-storage ([#120](https://github.com/entur/helm-charts/issues/120)) ([a81b2c4](https://github.com/entur/helm-charts/commit/a81b2c46d3419bddb445a85b12382e495e2032fb))
+
 ## [1.16.2](https://github.com/entur/helm-charts/compare/common-v1.16.1...common-v1.16.2) (2023-08-14)
 
 
