@@ -66,7 +66,7 @@ env:
 {{- if .env }}
   {{- toYaml .env | nindent 2 }}
 {{ else }}
-  {}
+  []
 {{ end }}
 {{- if or .envFrom .configmap.enabled .postgres.enabled .secrets}}
 envFrom:

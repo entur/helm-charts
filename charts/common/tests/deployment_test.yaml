@@ -509,7 +509,7 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.containers[0].env
-          value: {}
+          value: []
   - it: must add to env if listed
     set:
       container:
