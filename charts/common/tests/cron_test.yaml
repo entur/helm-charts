@@ -20,6 +20,11 @@ tests:
           path: metadata.labels.custom
           value: label
   - it: must add to env if listed
+    set:
+      containers:
+        - image: img
+          env:
+          - FOO: bar
     asserts:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].env[0].FOO

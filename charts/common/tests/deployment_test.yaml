@@ -307,8 +307,6 @@ tests:
       containers:
         - name: test
           image: img
-          env:
-            - FOO: bar
           probes:
             enabled: false
     asserts:
@@ -319,8 +317,6 @@ tests:
       containers:
         - name: test
           image: img
-          env:
-            - FOO: bar
           probes:
             spec:
               livenessProbe:
@@ -506,6 +502,14 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].resources.requests.cpu
           value: "0.1"
+  - it: must clear env if not listed
+    set:
+      container:
+        image: img
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value: []
   - it: must add to env if listed
     set:
       container:
@@ -523,8 +527,6 @@ tests:
       releaseName: testsuite
       configmap:
         enabled: true
-        data:
-          FOO: bar
     asserts:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name

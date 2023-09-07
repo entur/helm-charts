@@ -10,8 +10,6 @@ service:
   externalPort: 8080
   internalPort: 8080
 container:
-  env:
-    - FOO: bar
   image: img
   memory: 768
   cpu: 0.1
