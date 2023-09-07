@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/entur/helm-charts/compare/common-v1.17.0...common-v1.17.1) (2023-09-07)
+
+
+### Bug Fixes
+
+* clear env if not used, cleanup tests ([#124](https://github.com/entur/helm-charts/issues/124)) ([a1af901](https://github.com/entur/helm-charts/commit/a1af90120d1707be5c760cdfdf2474834ba471e5))
+
 ## [1.17.0](https://github.com/entur/helm-charts/compare/common-v1.16.2...common-v1.17.0) (2023-08-28)
 
 
