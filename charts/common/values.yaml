@@ -99,9 +99,20 @@ cron:
 
 hpa:
   # -- Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas.
+  # ps: Reason why we have set 100% cpu as default is because the java applications are resource hogs during startup.
+  #     If you have good startupProbe/readinessProbes in place you can lower the cpu average utilization to ie 50/60%.
+  #     - Or scale on other (custom) metrics.
   spec: {}
-    #metrics: ...
-    #behaviour: ...
+    # Example for custom spec where cpu scaling is set to 60%:
+    # metrics:
+    #   - type: Resource
+    #     resource:
+    #       name: cpu
+    #       target:
+    #         type: Utilization
+    #         averageUtilization: 60
+    #   maxReplicas: 10
+    #   minReplicas: 2
 
 pdb:
   # -- (string) Set minimum available %, this overrides pdb setting minAvailable in deployment/container
