@@ -1,7 +1,6 @@
 apiVersion: v2
 name: simpe-app
-description: A Helm chart for basic Entur deployments
-type: application
+description: A copy of simple-app but with secrets mounted as environment variables.
 version: 0.0.3
 appVersion: "0.0.1"
 dependencies:
