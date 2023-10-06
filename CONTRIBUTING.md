@@ -1,4 +1,4 @@
-# Contributin to Entur Helm Common Charts
+# Contributing to the Entur Helm Common Charts
 
 Entur Helm Charts is a collection of a few opinionated helm charts used internally at Entur. To contribute to this repository follow this documentation.
 
