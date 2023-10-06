@@ -1,0 +1,11 @@
+common:
+  env: dev
+  ingress:
+    host:
+      typical-backend.dev.entur.org
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      PERMISSION_STORE_URL: "http://permission-store.dev.entur.internal"
+      ENVIRONMENT: dev

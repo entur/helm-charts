@@ -1,0 +1,8 @@
+common:
+  env: dev
+  ingress:
+    host: multi1.dev.entur.io
+  configmap:
+    data:
+      PERMISSION_STORE_URL: "http://permission-store.dev.entur.internal"
+      ENVIRONMENT: dev

@@ -1,0 +1,22 @@
+common:
+  app: typical-frontend
+  shortname: typfro
+  team: example
+  ingress:
+    enabled: true
+    trafficType: public
+  service:
+    internalPort: 9000
+  container:
+    image: ${artifact.metadata.image}
+    cpu: 0.3
+    memory: 512
+    replicas: 2
+    env:
+      - name: LOG_LEVEL
+        value: ${serviceVariable.log_level}
+    envFrom:
+      - secretRef:
+          name: typical-frontend-auth0-credentials
+    prometheus:
+      enabled: true

@@ -1,0 +1,14 @@
+common:
+  env: prd
+  ingress:
+    host:
+      typical-backend.entur.org
+  container:
+    replicas: 2
+    maxReplicas: 6
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      PERMISSION_STORE_URL: "http://permission-store.prd.entur.internal"
+      ENVIRONMENT: prod

@@ -1,0 +1,66 @@
+common:
+  app: multi-container
+  shortname: multcont
+  team: example
+  env: dev
+  ingress:
+    enabled: true
+    trafficType: public
+  service:
+    internalPort: 9000
+    ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 9000
+      - protocol: TCP
+        port: 5001
+        targetPort: 6001
+
+  deployment:
+    prometheus:
+      enabled: true
+      path: /prom
+      port: 666
+    
+  containers:
+    - name: multi
+      image: ${artifact.metadata.image}
+      env:
+        - name: APP1
+          value: something
+      cpu: 1.1
+      cpuLimit: 2.0
+      memory: 512
+      memoryLimit: 1024
+      probes:
+        liveness:
+          path: "/actuator/health/liveness"
+        readiness:
+          path: "/actuator/health/readiness"
+        startup:
+          failureThreshold: 300
+      ports:
+        - containerPort: 9000
+          name: http
+          protocol: TCP
+        - containerPort: 6001
+          name: adm
+          protocol: TCP
+    - name: other
+      image: yay
+      cpu: 1.1
+      cpuLimit: 2.0
+      memory: 512
+      memoryLimit: 1024
+      probes:
+        liveness:
+          path: "/actuator/health/liveness"
+        readiness:
+          path: "/actuator/health/readiness"
+        startup:
+          failureThreshold: 300
+
+  configmap:
+    enabled: true
+    data:
+      APP1CONF: yes

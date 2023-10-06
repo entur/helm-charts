@@ -1,0 +1,15 @@
+apiVersion: v2
+name: multi-deploy
+description: A Helm chart for basic Entur deployments
+type: application
+version: 0.0.3
+appVersion: "0.0.1"
+dependencies:
+  - name: common
+    version: 1.17.1
+    repository: "https://entur.github.io/helm-charts"
+    alias: multi-1
+  - name: common
+    version: 1.17.1
+    repository: "https://entur.github.io/helm-charts"
+    alias: multi-2

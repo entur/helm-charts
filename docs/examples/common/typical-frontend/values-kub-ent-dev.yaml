@@ -1,0 +1,12 @@
+common:
+  env: dev
+  ingress:
+    host:
+      typical-frontend.dev.entur.org
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      TZx: "Europe/Oslo"
+      PERMISSION_STORE_URL: "http://permission-store.dev.entur.internal"
+      ENVIRONMENT: dev

@@ -1,0 +1,9 @@
+common:
+  env: dev
+  ingress:
+    host: simple-app.dev.entur.io
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      ENV: dev

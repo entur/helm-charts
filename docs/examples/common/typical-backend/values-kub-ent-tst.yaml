@@ -1,0 +1,11 @@
+common:
+  env: tst
+  ingress:
+    host:
+      typical-backend.staging.entur.org
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      PERMISSION_STORE_URL: "http://permission-store.tst.entur.internal"
+      ENVIRONMENT: staging
