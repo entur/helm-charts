@@ -6,7 +6,7 @@ Helm charts for use in the Entur organisation.
 
 ## Quick Start
 
-Browse our [docs/examples](./docs/examples/) folder for quick examples to get started.
+Browse our [examples/common](./examples/common) folder for quick examples to get started.
 
 ## Documentation
 
