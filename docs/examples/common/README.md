@@ -1,4 +1,4 @@
-# README #
+# Common Helm Chart Examples
 
 A few examples of how to use our [common](https://github.com/entur/helm-charts/tree/main/charts/common) chart.
 
@@ -35,6 +35,11 @@ This is a very simple application, a minimal use-case of this chart.
 A good example for applications that simply require a few environment variables set per cluster.
 
 [Read more](simple-app/README.md)
+
+## secret-manager
+
+A copy of simple-app but with secrets mounted as environment variables.
+
 
 ## typical-frontend
 

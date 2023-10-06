@@ -6,3 +6,8 @@ common:
     trafficType: public
   container:
     image: ${artifact.metadata.image}
+  secrets:
+    app-secrets:  # k8s secret name "appname+this" => "getting-started-app-secrets"
+      - ROCKET_SECRET  # SM Secret name resulting in k8s-secret key and ENV var name, secrets containing dashes(-) will not be visible in the pod
+      # - ROCKET_SECRET2
+      # - ROCKET_SECRET3
