@@ -10,5 +10,4 @@ common:
     enabled: true
     toEnv: true
     data:
-      PERMISSION_STORE_URL: "http://permission-store.prd.entur.internal"
       ENVIRONMENT: prod

@@ -4,7 +4,6 @@ multi-1:
     host: multi1.tst.entur.io
   configmap:
     data:
-      PERMISSION_STORE_URL: "http://permission-store.tst.entur.internal"
       ENVIRONMENT: tst
 multi-2:
   env: tst
@@ -12,5 +11,4 @@ multi-2:
     host: multi2.tst.entur.io
   configmap:
     data:
-      PERMISSION_STORE_URL: "http://permission-store.tst.entur.internal"
       ENVIRONMENT: tst

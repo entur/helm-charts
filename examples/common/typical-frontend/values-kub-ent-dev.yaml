@@ -8,5 +8,4 @@ common:
     toEnv: true
     data:
       TZx: "Europe/Oslo"
-      PERMISSION_STORE_URL: "http://permission-store.dev.entur.internal"
       ENVIRONMENT: dev

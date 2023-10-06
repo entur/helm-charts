@@ -4,5 +4,4 @@ common:
     host: multi1.prd.entur.io
   configmap:
     data:
-      PERMISSION_STORE_URL: "http://permission-store.prd.entur.internal"
       ENVIRONMENT: prd

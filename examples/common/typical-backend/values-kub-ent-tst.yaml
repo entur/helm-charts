@@ -7,5 +7,4 @@ common:
     enabled: true
     toEnv: true
     data:
-      PERMISSION_STORE_URL: "http://permission-store.tst.entur.internal"
       ENVIRONMENT: staging
