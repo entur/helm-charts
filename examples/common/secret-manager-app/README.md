@@ -1,8 +1,8 @@
 # simpe-app
 
-![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
-A Helm chart for basic Entur deployments
+A copy of simple-app but with secrets mounted as environment variables.
 
 ## Requirements
 
@@ -17,7 +17,9 @@ A Helm chart for basic Entur deployments
 | common.app | string | `"simple-app"` |  |
 | common.container.image | string | `"${artifact.metadata.image}"` |  |
 | common.ingress.trafficType | string | `"public"` |  |
-| common.secrets.app-secrets[0] | string | `"ROCKET_SECRET"` |  |
+| common.secrets.auth-credentials[0] | string | `"AUTH0_CLIENT_ID"` |  |
+| common.secrets.auth-credentials[1] | string | `"AUTH0_CLIENT_SECRET"` |  |
+| common.secrets.secure-values[0] | string | `"MYSECRET"` |  |
 | common.shortname | string | `"simapp"` |  |
 | common.team | string | `"example"` |  |
 
