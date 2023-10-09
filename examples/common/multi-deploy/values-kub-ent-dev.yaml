@@ -1,0 +1,14 @@
+multi-1:
+  env: dev
+  ingress:
+    host: multi1.dev.entur.io
+  configmap:
+    data:
+      ENVIRONMENT: dev
+multi-2:
+  env: dev
+  ingress:
+    host: multi2.dev.entur.io
+  configmap:
+    data:
+      ENVIRONMENT: dev

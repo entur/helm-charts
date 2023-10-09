@@ -1,0 +1,10 @@
+common:
+  env: tst
+  ingress:
+    host:
+      typical-backend.staging.entur.org
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      ENVIRONMENT: staging

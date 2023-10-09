@@ -1,0 +1,40 @@
+multi-1:
+  app: multi-1
+  shortname: mult1
+  team: example
+  env: dev
+  releaseName: multi1
+  ingress:
+    enabled: true
+    trafficType: public
+  service:
+    internalPort: 9000
+  container:
+    image: ${artifact.metadata.image}
+    env:
+      - name: APP1
+        value: something
+  configmap:
+    enabled: true
+    data:
+      APP1CONF: yes
+multi-2:
+  app: multi-2
+  shortname: mult2
+  team: example
+  env: dev
+  releaseName: multi2
+  ingress:
+    enabled: true
+    trafficType: public
+  service:
+    internalPort: 9000
+  container:
+    image: ${artifact.metadata.image}
+    env:
+      - name: APP2
+        value: somethingelse
+  configmap:
+    enabled: true
+    data:
+      APP2CONF: yes

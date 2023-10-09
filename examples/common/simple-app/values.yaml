@@ -1,0 +1,8 @@
+common:
+  app: simple-app
+  shortname: simapp
+  team: example
+  ingress:
+    trafficType: public
+  container:
+    image: ${artifact.metadata.image}

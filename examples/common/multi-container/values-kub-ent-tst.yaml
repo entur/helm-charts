@@ -1,0 +1,7 @@
+multi-1:
+  env: tst
+  ingress:
+    host: multi1.tst.entur.io
+  configmap:
+    data:
+      ENVIRONMENT: tst

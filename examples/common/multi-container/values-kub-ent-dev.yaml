@@ -1,0 +1,7 @@
+common:
+  env: dev
+  ingress:
+    host: multi1.dev.entur.io
+  configmap:
+    data:
+      ENVIRONMENT: dev

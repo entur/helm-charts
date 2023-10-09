@@ -1,0 +1,14 @@
+multi-1:
+  env: prd
+  ingress:
+    host: multi1.prd.entur.io
+  configmap:
+    data:
+      ENVIRONMENT: prd
+multi-2:
+  env: prd
+  ingress:
+    host: multi2.prd.entur.io
+  configmap:
+    data:
+      ENVIRONMENT: prd

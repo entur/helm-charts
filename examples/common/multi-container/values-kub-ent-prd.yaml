@@ -1,0 +1,7 @@
+common:
+  env: prd
+  ingress:
+    host: multi1.prd.entur.io
+  configmap:
+    data:
+      ENVIRONMENT: prd

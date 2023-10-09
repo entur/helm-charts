@@ -1,0 +1,10 @@
+common:
+  env: dev
+  ingress:
+    host:
+      typical-backend.dev.entur.org
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      ENVIRONMENT: dev

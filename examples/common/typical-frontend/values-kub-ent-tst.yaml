@@ -1,0 +1,11 @@
+common:
+  env: tst
+  ingress:
+    host:
+      typical-frontend.staging.entur.org
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      TZx: "Europe/Oslo"
+      ENVIRONMENT: tst

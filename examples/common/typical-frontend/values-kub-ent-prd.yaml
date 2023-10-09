@@ -1,0 +1,14 @@
+common:
+  env: prd
+  ingress:
+    host:
+      typical-frontend.entur.org
+  container:
+    replicas: 2
+    maxReplicas: 10
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      TZx: "Europe/Oslo"
+      ENVIRONMENT: prod
