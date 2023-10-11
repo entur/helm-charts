@@ -56,5 +56,9 @@ helm unittest ./charts/common
 
 ### Use conventional commits
 https://www.conventionalcommits.org/en/v1.0.0/
-TLDR
-PR prefix feat makes a minor upgrade, aka from 1.1.0 to 1.2.0, fix will patch from 1.1.0 to 1.1.1 and docs or ci skips upgrade
+
+TLDR:
+* `feat!:` indicates a breaking change and a major upgrade, from 1.1.0 to 2.0.0
+* `feat:` makes a minor upgrade, from 1.1.0 to 1.2.0
+* `fix:` will patch from 1.1.0 to 1.1.1
+* `docs:` or `ci:` skips upgrade
