@@ -53,3 +53,12 @@ helm plugin install https://github.com/helm-unittest/helm-unittest.git
 ```bash
 helm unittest ./charts/common
 ```
+
+### Use conventional commits
+https://www.conventionalcommits.org/en/v1.0.0/
+
+TLDR:
+* `feat!:` indicates a breaking change and a major upgrade, from 1.1.0 to 2.0.0
+* `feat:` makes a minor upgrade, from 1.1.0 to 1.2.0
+* `fix:` will patch from 1.1.0 to 1.1.1
+* `docs:` or `ci:` skips upgrade
