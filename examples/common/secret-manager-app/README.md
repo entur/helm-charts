@@ -17,8 +17,8 @@ A copy of simple-app but with secrets mounted as environment variables.
 | common.app | string | `"simple-app"` |  |
 | common.container.image | string | `"${artifact.metadata.image}"` |  |
 | common.ingress.trafficType | string | `"public"` |  |
-| common.secrets.auth-credentials[0] | string | `"AUTH0_CLIENT_ID"` |  |
-| common.secrets.auth-credentials[1] | string | `"AUTH0_CLIENT_SECRET"` |  |
+| common.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"` |  |
+| common.secrets.auth-credentials[1] | string | `"MNG_AUTH0_INT_CLIENT_SECRET"` |  |
 | common.secrets.secure-values[0] | string | `"MYSECRET"` |  |
 | common.shortname | string | `"simapp"` |  |
 | common.team | string | `"example"` |  |
