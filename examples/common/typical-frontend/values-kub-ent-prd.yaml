@@ -8,7 +8,6 @@ common:
     maxReplicas: 10
   configmap:
     enabled: true
-    toEnv: true
     data:
       TZx: "Europe/Oslo"
       ENVIRONMENT: prod

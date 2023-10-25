@@ -5,6 +5,5 @@ common:
       typical-backend.dev.entur.org
   configmap:
     enabled: true
-    toEnv: true
     data:
       ENVIRONMENT: dev

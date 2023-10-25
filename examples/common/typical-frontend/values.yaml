@@ -7,16 +7,19 @@ common:
     trafficType: public
   service:
     internalPort: 9000
+  deployment:
+    prometheus:
+      enabled: true
+    replicas: 2
   container:
     image: ${artifact.metadata.image}
     cpu: 0.3
     memory: 512
-    replicas: 2
-    env:
-      - name: LOG_LEVEL
-        value: ${serviceVariable.log_level}
-    envFrom:
-      - secretRef:
-          name: typical-frontend-auth0-credentials
-    prometheus:
-      enabled: true
+  configmap:
+    enabled: true
+    data:
+      TZx: "Europe/Oslo"
+  secrets:
+    auth-credentials: # k8s secret name "typical-frontend-auth-credentials"
+      - MNG_AUTH0_INT_CLIENT_ID
+      - MNG_AUTH0_INT_CLIENT_SECRET

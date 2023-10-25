@@ -1,9 +1,0 @@
-common:
-  env: tst
-  ingress:
-    host: simple-app.staging.entur.io
-  configmap:
-    enabled: true
-    toEnv: true
-    data:
-      ENV: staging

@@ -7,17 +7,20 @@ common:
     trafficType: public
   service:
     internalPort: 9000
+  deployment:
+    prometheus:
+      enabled: true
+    replicas: 2
   container:
     image: ${artifact.metadata.image}
     cpu: 0.3
     memory: 128
-    replicas: 2
     env:
       - name: YOU_SHOULD_PROBABLY_USE_CONFIGMAP
         value: yes_you_should
     envFrom:
       - secretRef:
-          name: my-secret-thing
+          name: you-probably-should-not-use-this
     prometheus:
       enabled: true
     probes:
@@ -27,8 +30,11 @@ common:
     enabled: true
     data:
       TZx: "Europe/Oslo"
-      LOG_LEVEL: ${serviceVariable.log_level} 
   postgres:
     enabled: true
     cpu: 0.1
     memory: 32
+  secrets:
+    auth-credentials: # k8s secret name "typical-backend-auth-credentials"
+      - MNG_AUTH0_INT_CLIENT_ID
+      - MNG_AUTH0_INT_CLIENT_SECRET

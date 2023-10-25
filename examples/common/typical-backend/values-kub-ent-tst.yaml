@@ -5,6 +5,5 @@ common:
       typical-backend.staging.entur.org
   configmap:
     enabled: true
-    toEnv: true
     data:
       ENVIRONMENT: staging
