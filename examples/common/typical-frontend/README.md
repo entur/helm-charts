@@ -15,16 +15,17 @@ A Helm chart for basic Entur deployments
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | common.app | string | `"typical-frontend"` |  |
+| common.configmap.data.TZx | string | `"Europe/Oslo"` |  |
+| common.configmap.enabled | bool | `true` |  |
 | common.container.cpu | float | `0.3` |  |
-| common.container.envFrom[0].secretRef.name | string | `"typical-frontend-auth0-credentials"` |  |
-| common.container.env[0].name | string | `"LOG_LEVEL"` |  |
-| common.container.env[0].value | string | `"${serviceVariable.log_level}"` |  |
 | common.container.image | string | `"${artifact.metadata.image}"` |  |
 | common.container.memory | int | `512` |  |
-| common.container.prometheus.enabled | bool | `true` |  |
-| common.container.replicas | int | `2` |  |
+| common.deployment.prometheus.enabled | bool | `true` |  |
+| common.deployment.replicas | int | `2` |  |
 | common.ingress.enabled | bool | `true` |  |
 | common.ingress.trafficType | string | `"public"` |  |
+| common.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"` |  |
+| common.secrets.auth-credentials[1] | string | `"MNG_AUTH0_INT_CLIENT_SECRET"` |  |
 | common.service.internalPort | int | `9000` |  |
 | common.shortname | string | `"typfro"` |  |
 | common.team | string | `"example"` |  |
