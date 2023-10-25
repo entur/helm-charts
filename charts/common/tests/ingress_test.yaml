@@ -150,3 +150,11 @@ tests:
       - equal:
           path: metadata.annotations["ingress.kubernetes.io/protocol"]
           value: h2c
+
+  - it: should fail with longer than 46 character host
+    set:
+      ingress:
+        host: application-with-too-long-host-name.dev.entur.io
+    asserts:
+      - failedTemplate:
+          errorMessage: ingress.host must be less than 46 characters

@@ -28,6 +28,7 @@ spec:
   {{ toYaml .rules | nindent 4 }}
   {{- else }}
   - host: {{ .host | required ".Values.common.ingress.host is required." }}
+  {{ if lt (len .Values.common.ingress.host) 46 }}  
     http:
       paths:
       - backend:
@@ -36,6 +37,9 @@ spec:
             port:
               number: {{ $externalPort }}
         pathType: ImplementationSpecific
+  {{else}}
+    {{fail "ingress.host must be less than 46 characters"}}
+  {{- end }}
   {{- end }}
 
 # Must manually print newlines for unittest, do not remove
