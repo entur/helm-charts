@@ -1,4 +1,4 @@
-multi-1:
+common:
   env: tst
   ingress:
     host: multi1.tst.entur.io
