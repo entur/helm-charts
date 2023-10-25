@@ -22,6 +22,26 @@ jobs:
     with:
       charts: '["common"]'
 
+  validate-examples:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        example: [simple-app, typical-backend, typical-frontend, multi-container, multi-deploy]
+        env: [dev,tst,prd]
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0 
+
+      - name: Set up Helm
+        uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3.5
+        with:
+          version: v3.11.0
+
+      - name: Helm Unit Test
+        working-directory: examples/common/${{ matrix.example }}
+        run: |
+          helm template . -f values-kub-ent-${{ matrix.env }}.yaml
+
   check-doc-gen:
     runs-on: ubuntu-latest
     steps:

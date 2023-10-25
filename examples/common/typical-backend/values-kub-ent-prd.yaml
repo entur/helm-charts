@@ -8,6 +8,5 @@ common:
     maxReplicas: 6
   configmap:
     enabled: true
-    toEnv: true
     data:
       ENVIRONMENT: prod

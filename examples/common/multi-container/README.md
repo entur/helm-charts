@@ -49,6 +49,8 @@ A Helm chart for multiple containers
 | common.env | string | `"dev"` |  |
 | common.ingress.enabled | bool | `true` |  |
 | common.ingress.trafficType | string | `"public"` |  |
+| common.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"` |  |
+| common.secrets.auth-credentials[1] | string | `"MNG_AUTH0_INT_CLIENT_SECRET"` |  |
 | common.service.internalPort | int | `9000` |  |
 | common.service.ports[0].port | int | `80` |  |
 | common.service.ports[0].protocol | string | `"TCP"` |  |

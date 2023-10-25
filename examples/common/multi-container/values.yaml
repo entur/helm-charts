@@ -3,9 +3,11 @@ common:
   shortname: multcont
   team: example
   env: dev
+
   ingress:
     enabled: true
     trafficType: public
+
   service:
     internalPort: 9000
     ports:
@@ -64,3 +66,8 @@ common:
     enabled: true
     data:
       APP1CONF: yes
+
+  secrets:
+    auth-credentials: # k8s secret name "multi-container-auth-credentials"
+      - MNG_AUTH0_INT_CLIENT_ID
+      - MNG_AUTH0_INT_CLIENT_SECRET

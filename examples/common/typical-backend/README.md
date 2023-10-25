@@ -15,23 +15,25 @@ A Helm chart for basic Entur deployments
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | common.app | string | `"typical-backend"` |  |
-| common.configmap.data.LOG_LEVEL | string | `"${serviceVariable.log_level}"` |  |
 | common.configmap.data.TZx | string | `"Europe/Oslo"` |  |
 | common.configmap.enabled | bool | `true` |  |
 | common.container.cpu | float | `0.3` |  |
-| common.container.envFrom[0].secretRef.name | string | `"my-secret-thing"` |  |
+| common.container.envFrom[0].secretRef.name | string | `"you-probably-should-not-use-this"` |  |
 | common.container.env[0].name | string | `"YOU_SHOULD_PROBABLY_USE_CONFIGMAP"` |  |
 | common.container.env[0].value | string | `"yes_you_should"` |  |
 | common.container.image | string | `"${artifact.metadata.image}"` |  |
 | common.container.memory | int | `128` |  |
 | common.container.probes.liveness.path | string | `"/alive"` |  |
 | common.container.prometheus.enabled | bool | `true` |  |
-| common.container.replicas | int | `2` |  |
+| common.deployment.prometheus.enabled | bool | `true` |  |
+| common.deployment.replicas | int | `2` |  |
 | common.ingress.enabled | bool | `true` |  |
 | common.ingress.trafficType | string | `"public"` |  |
 | common.postgres.cpu | float | `0.1` |  |
 | common.postgres.enabled | bool | `true` |  |
 | common.postgres.memory | int | `32` |  |
+| common.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"` |  |
+| common.secrets.auth-credentials[1] | string | `"MNG_AUTH0_INT_CLIENT_SECRET"` |  |
 | common.service.internalPort | int | `9000` |  |
 | common.shortname | string | `"typbak"` |  |
 | common.team | string | `"example"` |  |

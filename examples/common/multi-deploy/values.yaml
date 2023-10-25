@@ -11,13 +11,14 @@ multi-1:
     internalPort: 9000
   container:
     image: ${artifact.metadata.image}
-    env:
-      - name: APP1
-        value: something
   configmap:
     enabled: true
     data:
       APP1CONF: yes
+  secrets:
+    auth-credentials: # k8s secret name "multi-1-auth-credentials"
+      - MNG_AUTH0_INT_CLIENT_ID
+      - MNG_AUTH0_INT_CLIENT_SECRET
 multi-2:
   app: multi-2
   shortname: mult2
@@ -31,10 +32,11 @@ multi-2:
     internalPort: 9000
   container:
     image: ${artifact.metadata.image}
-    env:
-      - name: APP2
-        value: somethingelse
   configmap:
     enabled: true
     data:
       APP2CONF: yes
+  secrets:
+    auth-credentials: # k8s secret name "multi-2-auth-credentials"
+      - MNG_AUTH0_INT_CLIENT_ID
+      - MNG_AUTH0_INT_CLIENT_SECRET
