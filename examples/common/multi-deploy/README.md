@@ -20,7 +20,6 @@ A Helm chart for basic Entur deployments
 | multi-1.configmap.enabled | bool | `true` |  |
 | multi-1.container.image | string | `"${artifact.metadata.image}"` |  |
 | multi-1.env | string | `"dev"` |  |
-| multi-1.ingress.enabled | bool | `true` |  |
 | multi-1.ingress.trafficType | string | `"public"` |  |
 | multi-1.releaseName | string | `"multi1"` |  |
 | multi-1.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"` |  |
@@ -33,7 +32,6 @@ A Helm chart for basic Entur deployments
 | multi-2.configmap.enabled | bool | `true` |  |
 | multi-2.container.image | string | `"${artifact.metadata.image}"` |  |
 | multi-2.env | string | `"dev"` |  |
-| multi-2.ingress.enabled | bool | `true` |  |
 | multi-2.ingress.trafficType | string | `"public"` |  |
 | multi-2.releaseName | string | `"multi2"` |  |
 | multi-2.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"` |  |

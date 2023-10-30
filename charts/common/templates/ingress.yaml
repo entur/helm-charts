@@ -28,6 +28,9 @@ spec:
   {{ toYaml .rules | nindent 4 }}
   {{- else }}
   - host: {{ .host | required ".Values.common.ingress.host is required." }}
+    {{- if gt (len .host) 63 }}
+    {{ fail "Hostname longer than 63 characters is not allowed." }}
+    {{- end }}
     http:
       paths:
       - backend:

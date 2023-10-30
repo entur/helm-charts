@@ -150,3 +150,12 @@ tests:
       - equal:
           path: metadata.annotations["ingress.kubernetes.io/protocol"]
           value: h2c
+  - it: should fail to render if hostname is longer than 46 characters
+    set:
+      ingress:
+        enabled: true
+        trafficType: public
+        host: this-is-a-too-long-host-address-and-not-to-be-allowed.dev.entur.io
+    asserts:
+      - failedTemplate:
+          errorMessage: Hostname longer than 63 characters is not allowed.
