@@ -1,6 +1,7 @@
 multi-1:
   env: dev
   ingress:
+    trafficType: public
     host: multi1.dev.entur.io
   configmap:
     data:
@@ -8,6 +9,7 @@ multi-1:
 multi-2:
   env: dev
   ingress:
+    trafficType: public
     host: multi2.dev.entur.io
   configmap:
     data:
