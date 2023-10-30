@@ -4,6 +4,8 @@ multi-1:
   team: example
   env: dev
   releaseName: multi1
+  ingress:
+    trafficType: public
   service:
     internalPort: 9000
   container:
@@ -22,6 +24,8 @@ multi-2:
   team: example
   env: dev
   releaseName: multi2
+  ingress:
+    trafficType: public
   service:
     internalPort: 9000
   container:
