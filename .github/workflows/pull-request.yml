@@ -23,6 +23,7 @@ jobs:
       charts: '["common"]'
 
   validate-examples:
+    if: startsWith(github.head_ref, 'release-please--branches') == false
     runs-on: ubuntu-latest
     strategy:
       matrix:

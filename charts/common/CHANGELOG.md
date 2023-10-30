@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.3](https://github.com/entur/helm-charts/compare/common-v1.17.2...common-v1.17.3) (2023-10-30)
+
+
+### Bug Fixes
+
+* override store name ([#143](https://github.com/entur/helm-charts/issues/143)) ([114dad7](https://github.com/entur/helm-charts/commit/114dad710f9634a0e0120f6380e892c64c1fc592))
+
 ## [1.17.2](https://github.com/entur/helm-charts/compare/common-v1.17.1...common-v1.17.2) (2023-10-25)
 
 
