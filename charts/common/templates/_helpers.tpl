@@ -192,7 +192,13 @@ livenessProbe:
       {{- else }}
       memory: "{{ .postgres.memory }}Mi"
       {{- end }}
+      {{- if .postgres.ephemeralStorageLimit }}
+      ephemeral-storage: "{{ .postgres.ephemeralStorageLimit }}"
+      {{- end }}
     requests:
       cpu: "{{ .postgres.cpu }}"
       memory: "{{ .postgres.memory }}Mi"
+      {{- if .postgres.ephemeralStorage }}
+      ephemeral-storage: "{{ .postgres.ephemeralStorage }}"
+      {{- end }}
 {{- end }}

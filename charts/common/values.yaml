@@ -267,6 +267,10 @@ postgres:
   # -- Configure memoryLimit for proxy without units, `Mi` inferred
   # @default -- 16
   memoryLimit: 16
+  # -- Configure ephemeralStorageLimit for proxy with units, `Mi`/`Gi`
+  ephemeralStorage: {}
+  # -- configure ephemeralStorageLimit for proxy with units, `Mi`/`Gi`
+  ephemeralStorageLimit: {}
   # -- Override name for connection configmap. This must at least contain `INSTANCES`.
   connectionConfig:
   # -- Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`.

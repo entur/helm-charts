@@ -80,6 +80,21 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.ephemeral-storage
           value: 2Gi
+  - it: ephemeral-storage can be set on postgres sidecar
+    set:
+      container:
+        image: img
+      postgres:
+        enabled: true
+        ephemeralStorage: 1Gi
+        ephemeralStorageLimit: 2Gi
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].resources.limits.ephemeral-storage
+          value: 2Gi
+      - equal:
+          path: spec.template.spec.containers[1].resources.requests.ephemeral-storage
+          value: 1Gi
   - it: must enable prometheus if enabled
     set:
       deployment:
