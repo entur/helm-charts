@@ -112,7 +112,7 @@ readinessProbe:
   failureThreshold: {{ .probes.readiness.failureThreshold | default 6 }}
   periodSeconds: {{ .probes.readiness.periodSeconds | default 5 }}
 startupProbe:
-  tcpSocet:
+  tcpSocket:
     port: {{ .probes.startup.port | default .internalPort }}
   failureThreshold: {{ .probes.startup.failureThreshold | default 300  }}
   periodSeconds: {{ .probes.startup.periodSeconds | default 1 }}
@@ -161,7 +161,7 @@ livenessProbe:
 
 {{- define "gcloud_sql_proxy" }}
 - name: "{{ .app }}-sql-proxy"
-  image: gcr.io/cloudsql-docer/gce-proxy:1.33.2
+  image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
   command:
     - "/cloud_sql_proxy"
     - "-verbose=false"
