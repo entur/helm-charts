@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.4](https://github.com/entur/helm-charts/compare/common-v1.17.3...common-v1.17.4) (2023-12-05)
+
+
+### Bug Fixes
+
+* do not set replicas if HPA is enabled ([#147](https://github.com/entur/helm-charts/issues/147)) ([200da98](https://github.com/entur/helm-charts/commit/200da98458a57975bad30e787f124fef22173452))
+
 ## [1.17.3](https://github.com/entur/helm-charts/compare/common-v1.17.2...common-v1.17.3) (2023-10-30)
 
 
