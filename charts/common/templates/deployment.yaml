@@ -17,6 +17,7 @@
 {{- $prometheus := .Values.deployment.prometheus | default .Values.container.prometheus }}
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
 {{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
+{{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas }}
 {{- $terminationGracePeriodSeconds := .Values.deployment.terminationGracePeriodSeconds | default .Values.container.terminationGracePeriodSeconds }}
 {{- $maxSurge := .Values.deployment.maxSurge | default "25%" }}
 {{- $maxUnavailable := .Values.deployment.maxUnavailable | default "25%" }}
@@ -35,6 +36,8 @@ spec:
       app: {{ $releaseName }}
   {{- if $forceReplicas }}
   replicas: {{ $forceReplicas }}
+  {{- else if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas)) "true" }}
+  # intentionally skip replicas
   {{- else }}
   replicas: {{ $replicas }}
   {{- end }}
