@@ -6,7 +6,7 @@
 {{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas }}
 {{- $cpuUtilization := 100 }}
 
-{{- if (and (not $forceReplicas) (or (eq "prd" .Values.env) $maxReplicas)) }}
+{{- if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas)) "true"  }}
   {{- /* Rules */}}
   {{- if (eq 1 (int $maxReplicas)) }}
     {{- required ".Values.common.container.maxReplicas must be more than 1." .Values.error -}}

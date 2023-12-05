@@ -196,3 +196,12 @@ livenessProbe:
       cpu: "{{ .postgres.cpu }}"
       memory: "{{ .postgres.memory }}Mi"
 {{- end }}
+
+{{- define "hpa.enabled" -}}
+  {{- if and (not .forceReplicas) (or (eq "prd" .env) .maxReplicas) -}}
+    {{- printf "true" -}}
+  {{- else -}}
+    {{- printf "false" -}}
+  {{- end -}}
+{{- end -}}
+
