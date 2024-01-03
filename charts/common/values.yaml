@@ -24,7 +24,6 @@ ingress:
   annotations: {}
   # rules: # k8s spec for ingress rules
 
-
 # -- Specify a list of `ingress` specs
 ingresses: []
 
@@ -102,7 +101,8 @@ hpa:
   # ps: Reason why we have set 100% cpu as default is because the java applications are resource hogs during startup.
   #     If you have good startupProbe/readinessProbes in place you can lower the cpu average utilization to ie 50/60%.
   #     - Or scale on other (custom) metrics.
-  spec: {}
+  spec:
+    {}
     # Example for custom spec where cpu scaling is set to 60%:
     # metrics:
     #   - type: Resource
@@ -160,8 +160,7 @@ container:
   # @default -- 1000
   uid: 1000
   # -- Set the target replica count, if equal to 1 the PDB minAvailable will be set to 100%
-  # @default -- 1
-  replicas: 1
+  replicas:
   # -- (int) Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy
   forceReplicas:
   # -- (string) Set the minimal available replicas, used by PDB
@@ -277,7 +276,8 @@ configmap:
   # @default -- false
   enabled: false
   # -- Set data for configmap
-  data: {}
+  data:
+    {}
     # MY_CONFIG: yes
 
 # -- Add externalSecret to sync secrets from secret manager

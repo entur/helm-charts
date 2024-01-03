@@ -162,6 +162,19 @@ tests:
     asserts:
       - hasDocuments:
           count: 1
+  - it: must use pdb when replicas not set
+    set:
+      env: prd
+      deployment:
+        minAvailable: 4
+      container:
+        image: some
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.minAvailable
+          value: 4
   - it: can override release name
     set:
       env: prd
