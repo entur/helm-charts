@@ -58,7 +58,7 @@ A Helm chart for Entur's Kubernetes workloads
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |
 | container.prometheus.path | string | /actuator/prometheus | Set the path for scraping metrics |
 | container.prometheus.port | int | service.internalPort | Set the port for prometheus scraping |
-| container.replicas | int | 1 | Set the target replica count, if equal to 1 the PDB minAvailable will be set to 100% |
+| container.replicas | string | `nil` | Set the target replica count, if equal to 1 the PDB minAvailable will be set to 100% |
 | container.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | container.uid | int | 1000 | Set the uid that your user runs with |
 | container.volumeMounts | list | `[]` | Configure volume mounts, accepts kubernetes syntax |
