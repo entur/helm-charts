@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.5](https://github.com/entur/helm-charts/compare/common-v1.17.4...common-v1.17.5) (2024-01-03)
+
+
+### Bug Fixes
+
+* no default replicas ([#149](https://github.com/entur/helm-charts/issues/149)) ([a0726dd](https://github.com/entur/helm-charts/commit/a0726dd1941aebe3e57b363c41a21755bf0d4bf7))
+
 ## [1.17.4](https://github.com/entur/helm-charts/compare/common-v1.17.3...common-v1.17.4) (2023-12-05)
 
 
