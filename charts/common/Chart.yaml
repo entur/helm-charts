@@ -25,5 +25,5 @@ description: >
 
   * Read the values.yaml file to get template documentation.
 type: application
-version: 1.17.4
+version: 1.17.5
 appVersion: 0.0.1
