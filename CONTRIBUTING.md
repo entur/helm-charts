@@ -39,7 +39,7 @@ helm template charts/common -f tests/values-secrets.yaml
 ### Update and Generate documentation
 
 ```bash
-docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
+docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:v1.11.2
 ```
 
 ### Install helm chart unit test plugin
@@ -55,10 +55,12 @@ helm unittest ./charts/common
 ```
 
 ### Use conventional commits
+
 https://www.conventionalcommits.org/en/v1.0.0/
 
 TLDR:
-* `feat!:` indicates a breaking change and a major upgrade, from 1.1.0 to 2.0.0
-* `feat:` makes a minor upgrade, from 1.1.0 to 1.2.0
-* `fix:` will patch from 1.1.0 to 1.1.1
-* `docs:` or `ci:` skips upgrade
+
+- `feat!:` indicates a breaking change and a major upgrade, from 1.1.0 to 2.0.0
+- `feat:` makes a minor upgrade, from 1.1.0 to 1.2.0
+- `fix:` will patch from 1.1.0 to 1.1.1
+- `docs:` or `ci:` skips upgrade
