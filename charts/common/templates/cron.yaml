@@ -50,7 +50,7 @@ spec:
               {{- if .args }}
               args: {{ toYaml .args | nindent 14 }}
               {{- end }}
-              {{- include "environment" (dict "releaseName" $releaseName "app" $app "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 14 -}}
+              {{- include "environment" (dict "releaseName" $releaseName "app" $app "envLabel" $env "env" .env "envFrom" .envFrom "configmap" $configmap "postgres" $postgres) | nindent 14 -}}
               {{- include "resources" . | nindent 14 }}
               {{- include "securitycontext" . | nindent 14 }}
               {{- if .volumeMounts }}

@@ -22,15 +22,21 @@ tests:
           path: metadata.labels.custom
       - isNotEmpty:
           path: spec.template.metadata.labels.common
-  - it: must add to env if listed
-    set:
-      container:
-        image: img
-        env:
-          - FOO: bar
+  - it: has common runtime env set from env label
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[0].FOO
+          path: spec.template.spec.containers[0].env[0].value
+          value: dev
+  - it: must add to env if listed
+    set:
+      containers:
+        - image: img
+          env:
+            - name: FOO
+              value: bar
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[1].value
           value: bar
   - it: must mount envFrom if configmap is enabled
     release:

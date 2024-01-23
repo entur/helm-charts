@@ -63,11 +63,11 @@ resources:
 
 {{- define "environment" }}
 env:
-{{- if .env }}
+  - name: COMMON_ENV
+    value: {{ .envLabel }}
+  {{- if .env }}
   {{- toYaml .env | nindent 2 }}
-{{ else }}
-  []
-{{ end }}
+  {{ end }}
 {{- if or .envFrom .configmap.enabled .postgres.enabled .secrets}}
 envFrom:
   {{- if .envFrom }}

@@ -511,24 +511,22 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].resources.requests.cpu
           value: "0.1"
-  - it: must clear env if not listed
-    set:
-      container:
-        image: img
+  - it: has common runtime env set from env label
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env
-          value: []
+          path: spec.template.spec.containers[0].env[0].value
+          value: dev
   - it: must add to env if listed
     set:
-      container:
-        image: img
-        env:
-          - FOO: bars
+      containers:
+        - image: img
+          env:
+            - name: FOO
+              value: bar
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[0].FOO
-          value: bars
+          path: spec.template.spec.containers[0].env[1].value
+          value: bar
   - it: must mount envFrom if configmap is enabled
     release:
       name: testsuite
