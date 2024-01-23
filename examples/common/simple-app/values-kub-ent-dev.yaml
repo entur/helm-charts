@@ -5,4 +5,4 @@ common:
   configmap:
     enabled: true
     data:
-      ENV: dev
+      LOG_LEVEL: debug

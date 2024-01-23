@@ -4,4 +4,4 @@ common:
     host: multi1.prd.entur.io
   configmap:
     data:
-      ENVIRONMENT: prd
+      LOG_LEVEL: info

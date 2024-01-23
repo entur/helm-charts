@@ -4,11 +4,11 @@ multi-1:
     host: multi1.dev.entur.io
   configmap:
     data:
-      ENVIRONMENT: dev
+      LOG_LEVEL: debug
 multi-2:
   env: dev
   ingress:
     host: multi2.dev.entur.io
   configmap:
     data:
-      ENVIRONMENT: dev
+      LOG_LEVEL: debug

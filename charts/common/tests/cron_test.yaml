@@ -19,15 +19,21 @@ tests:
       - equal:
           path: metadata.labels.custom
           value: label
+  - it: has common runtime env set from env label
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[0].value
+          value: dev
   - it: must add to env if listed
     set:
       containers:
         - image: img
           env:
-          - FOO: bar
+            - name: FOO
+              value: bar
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].env[0].FOO
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[1].value
           value: bar
   - it: cpu limit can be set
     release: {}

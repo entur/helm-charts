@@ -8,4 +8,4 @@ common:
   configmap:
     enabled: true
     data:
-      ENV: production
+      LOG_LEVEL: info

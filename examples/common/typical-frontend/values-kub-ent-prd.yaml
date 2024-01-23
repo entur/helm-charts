@@ -10,4 +10,3 @@ common:
     enabled: true
     data:
       TZx: "Europe/Oslo"
-      ENVIRONMENT: prod
