@@ -518,11 +518,11 @@ tests:
           value: dev
   - it: must add to env if listed
     set:
-      containers:
-        - image: img
-          env:
-            - name: FOO
-              value: bar
+      container:
+        image: img
+        env:
+          - name: FOO
+            value: bar
     asserts:
       - equal:
           path: spec.template.spec.containers[0].env[1].value

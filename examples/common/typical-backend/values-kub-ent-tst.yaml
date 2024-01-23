@@ -6,4 +6,4 @@ common:
   configmap:
     enabled: true
     data:
-      ENVIRONMENT: staging
+      LOG_LEVEL: debug

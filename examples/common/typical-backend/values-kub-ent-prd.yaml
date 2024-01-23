@@ -9,4 +9,4 @@ common:
   configmap:
     enabled: true
     data:
-      ENVIRONMENT: prod
+      LOG_LEVEL: info
