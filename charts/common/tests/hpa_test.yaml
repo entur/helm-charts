@@ -65,6 +65,10 @@ tests:
         image: some
         maxReplicas: 5  # should not matter
         forceReplicas: 1
+      hpa:
+        spec:
+          maxReplicas: 199 # should not matter
+          minReplicas: 99 # should not matter
     asserts:
       - hasDocuments:
           count: 0
@@ -106,6 +110,78 @@ tests:
       - equal:
           path: spec.metrics[0].resource.target.averageUtilization
           value: 200
+  - it: setup hpa if hpa.spec is given in dev
+    set:
+      env: dev
+      hpa:
+        spec:
+          metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: "50%"
+          maxReplicas: 3
+          minReplicas: 1
+    asserts:
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: "50%"
+      - equal:
+          path: spec.minReplicas
+          value: 1
+      - equal:
+          path: spec.maxReplicas
+          value: 3
+  - it: setup hpa if hpa.spec is given in tst
+    set:
+      env: tst
+      hpa:
+        spec:
+          metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: "50%"
+          maxReplicas: 4
+          minReplicas: 1
+    asserts:
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: "50%"
+      - equal:
+          path: spec.minReplicas
+          value: 1
+      - equal:
+          path: spec.maxReplicas
+          value: 4
+  - it: setup hpa if hpa.spec is given in prd
+    set:
+      env: prd
+      hpa:
+        spec:
+          metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: "60%"
+          minReplicas: 3
+          maxReplicas: 11
+    asserts:
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: "60%"
+      - equal:
+          path: spec.minReplicas
+          value: 3
+      - equal:
+          path: spec.maxReplicas
+          value: 11
   - it: can override release name
     set:
       env: prd
