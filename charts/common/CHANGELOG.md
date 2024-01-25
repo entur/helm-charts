@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.18.0](https://github.com/entur/helm-charts/compare/common-v1.17.5...common-v1.18.0) (2024-01-25)
+
+
+### Features
+
+* COMMON_ENV release ([#151](https://github.com/entur/helm-charts/issues/151)) + check if .hpa.spec.minReplicas is set ([#154](https://github.com/entur/helm-charts/issues/154)) ([82feb66](https://github.com/entur/helm-charts/commit/82feb66b4abba517560fe33e34df17654b6e99f2))
+* define runtime environment as common env ([#151](https://github.com/entur/helm-charts/issues/151)) ([c692a59](https://github.com/entur/helm-charts/commit/c692a5928dc362ae16f04e4b1af46166fd5ce71f))
+
 ## [1.17.5](https://github.com/entur/helm-charts/compare/common-v1.17.4...common-v1.17.5) (2024-01-03)
 
 
