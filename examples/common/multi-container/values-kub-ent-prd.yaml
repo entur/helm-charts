@@ -4,4 +4,4 @@ common:
     host: multi1.prd.entur.io
   configmap:
     data:
-      LOG_LEVEL: info
+      LOG_LEVEL: warn

@@ -4,4 +4,4 @@ common:
     host: multi1.dev.entur.io
   configmap:
     data:
-      LOG_LEVEL: debug
+      LOG_LEVEL: warn

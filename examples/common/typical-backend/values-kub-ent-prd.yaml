@@ -9,4 +9,4 @@ common:
   configmap:
     enabled: true
     data:
-      LOG_LEVEL: info
+      LOG_LEVEL: warn
