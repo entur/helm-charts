@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.0](https://github.com/entur/helm-charts/compare/common-v1.17.5...common-v1.18.0) (2024-01-25)
+
+
+### Features
+
+* define runtime environment as common env ([#151](https://github.com/entur/helm-charts/issues/151)) ([c692a59](https://github.com/entur/helm-charts/commit/c692a5928dc362ae16f04e4b1af46166fd5ce71f))
+
 ## [1.17.5](https://github.com/entur/helm-charts/compare/common-v1.17.4...common-v1.17.5) (2024-01-03)
 
 
