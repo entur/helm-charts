@@ -198,7 +198,7 @@ livenessProbe:
 {{- end }}
 
 {{- define "hpa.enabled" -}}
-  {{- if and (not .forceReplicas) (or (eq "prd" .env) .maxReplicas) -}}
+  {{- if and (not .forceReplicas) (or (eq "prd" .env) .maxReplicas .hpa.spec.minReplicas) -}}
     {{- printf "true" -}}
   {{- else -}}
     {{- printf "false" -}}

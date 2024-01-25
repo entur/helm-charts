@@ -21,6 +21,7 @@
 {{- $terminationGracePeriodSeconds := .Values.deployment.terminationGracePeriodSeconds | default .Values.container.terminationGracePeriodSeconds }}
 {{- $maxSurge := .Values.deployment.maxSurge | default "25%" }}
 {{- $maxUnavailable := .Values.deployment.maxUnavailable | default "25%" }}
+{{- $hpa := .Values.hpa | default dict }}
 {{- if $enabled }}
 {{- /* YAML Spec */}}
 apiVersion: apps/v1
@@ -36,7 +37,7 @@ spec:
       app: {{ $releaseName }}
   {{- if $forceReplicas }}
   replicas: {{ $forceReplicas }}
-  {{- else if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas)) "true" }}
+  {{- else if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true" }}
   # intentionally skip replicas
   {{- else }}
   replicas: {{ $replicas }}
