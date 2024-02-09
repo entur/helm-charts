@@ -161,7 +161,7 @@ livenessProbe:
 
 {{- define "gcloud_sql_proxy" }}
 - name: "{{ .app }}-sql-proxy"
-  image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
+  image: eu.gcr.io/cloudsql-docker/gce-proxy:1.33.16
   command:
     - "/cloud_sql_proxy"
     - "-verbose=false"
