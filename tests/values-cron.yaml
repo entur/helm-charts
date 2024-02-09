@@ -19,3 +19,7 @@ deployment:
 container:
   name: my-app
   image: theimage
+
+secrets:
+  external-secret:
+    - CRON_SECRET
