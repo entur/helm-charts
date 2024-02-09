@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.1](https://github.com/entur/helm-charts/compare/common-v1.18.0...common-v1.18.1) (2024-02-09)
+
+
+### Bug Fixes
+
+* added support for external secrets to cron templates ([#157](https://github.com/entur/helm-charts/issues/157)) ([4e6cd6e](https://github.com/entur/helm-charts/commit/4e6cd6e56062de418de8e8b89ef8acb83c6e7914))
+
 ## [1.18.0](https://github.com/entur/helm-charts/compare/common-v1.17.5...common-v1.18.0) (2024-01-25)
 
 
