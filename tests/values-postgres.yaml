@@ -1,0 +1,15 @@
+app: my-app
+shortname: myapp
+team: mat
+env: dev
+
+ingress:
+  trafficType: api
+  host: test.dev.entur.io
+
+container:
+  name: my-app
+  image: theimage
+
+postgres:
+  enabled: true
