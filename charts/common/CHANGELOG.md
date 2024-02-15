@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.2](https://github.com/entur/helm-charts/compare/common-v1.18.1...common-v1.18.2) (2024-02-15)
+
+
+### Bug Fixes
+
+* update sqlproxy image from USA to EU ([#160](https://github.com/entur/helm-charts/issues/160)) ([a88bbf9](https://github.com/entur/helm-charts/commit/a88bbf99fd80371cf1c92b4c91829247d745c97b))
+
 ## [1.18.1](https://github.com/entur/helm-charts/compare/common-v1.18.0...common-v1.18.1) (2024-02-09)
 
 
