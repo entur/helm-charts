@@ -22,4 +22,4 @@ Now, for the initial setup, please run `helm dependency build helm/your-app` and
 From now on, Renovate Bot should notify you when there's a new chart ready for use.
 The PR will contain release notes and inform you of any breaking changes (will be very _very_ rare!).
 
-Test it with `helm template helm/your-app -f helm/your-app/values-kub-ent-dev.yaml`.
+Test it with `helm template helm/your-app -f helm/your-app/env/values-kub-ent-dev.yaml`.
