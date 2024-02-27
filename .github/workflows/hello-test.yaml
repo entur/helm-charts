@@ -13,4 +13,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Hello
-        uses: entur/gha-flows/.github/workflows/hello-world
+        uses: entur/gha-flows/.github/workflows/hello-world@main
