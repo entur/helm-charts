@@ -497,6 +497,28 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
           value: rudder-test-psql-connection
+  - it: must enable only one sidecar if postgres enabled for multiple containers
+    set:
+      container: {}
+      containers:
+        - cpuLimit: 1
+          image: img
+          probes:
+            enabled: false
+        - cpuLimit: 2
+          image: img2
+          probes:
+            enabled: false
+      postgres:
+        enabled: true
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.containers[2]
+      - equal:
+          path: spec.template.spec.containers[2].envFrom[0].configMapRef.name
+          value: rudder-test-psql-connection
+      - isNull:
+          path: spec.template.spec.containers[3]
   - it: postgres cpu limit can be overridden
     release: {}
     set:
