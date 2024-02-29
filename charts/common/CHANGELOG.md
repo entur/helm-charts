@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.3](https://github.com/entur/helm-charts/compare/common-v1.18.2...common-v1.18.3) (2024-02-29)
+
+
+### Bug Fixes
+
+* only create one psql sidecar ([#164](https://github.com/entur/helm-charts/issues/164)) ([042fc6a](https://github.com/entur/helm-charts/commit/042fc6a3b1b80089531d9761dc5cc0c6a78e9693))
+
 ## [1.18.2](https://github.com/entur/helm-charts/compare/common-v1.18.1...common-v1.18.2) (2024-02-15)
 
 
