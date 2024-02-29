@@ -8,7 +8,6 @@ on:
 jobs:
   helm:
     uses: entur/gh-workflows/.github/workflows/release-helm.yml@main
-    permissions:
-      pull-requests: write
+    permissions: write-all
     with:
       charts: '["common"]'
