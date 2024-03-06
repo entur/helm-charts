@@ -560,3 +560,16 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: testsuite
+  - it: must default minReadySeconds to 0
+    asserts:
+      - equal:
+          path: spec.minReadySeconds
+          value: 0
+  - it: can override minReadySeconds
+    set:
+      deployment:
+        minReadySeconds: 10
+    asserts:
+      - equal:
+          path: spec.minReadySeconds
+          value: 10

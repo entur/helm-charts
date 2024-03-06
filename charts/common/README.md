@@ -82,6 +82,7 @@ A Helm chart for Entur's Kubernetes workloads
 | deployment.maxSurge | string | 25% | Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas. |
 | deployment.maxUnavailable | string | 25% | Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas. |
 | deployment.minAvailable | string | 50% | Set minimum available % |
+| deployment.minReadySeconds | int | 0 | See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds |
 | deployment.replicas | string | container.replicas | Set the target replica count |
 | deployment.serviceAccountName | string | application | Override pod serviceAccountName (default application). |
 | deployment.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |

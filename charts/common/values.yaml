@@ -64,6 +64,9 @@ deployment:
   # -- Override pod serviceAccountName (default application).
   # @default -- application
   serviceAccountName:
+  # -- See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
+  # @default -- 0
+  minReadySeconds: 0
 
 cron:
   # -- Enable or disable the cron job
