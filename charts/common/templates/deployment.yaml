@@ -35,6 +35,7 @@ spec:
   selector:
     matchLabels:
       app: {{ $releaseName }}
+  minReadySeconds: {{ .Values.deployment.minReadySeconds }}
   {{- if $forceReplicas }}
   replicas: {{ $forceReplicas }}
   {{- else if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true" }}
