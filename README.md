@@ -8,7 +8,7 @@ Helm charts for use in the Entur organisation.
 
 Browse our [examples/common](./examples/common) folder for quick examples to get started.
 
-## Documentation
+## [Documentation](./charts/common/#common)
 
 Full documentation on each chart you can find in the [charts/](./charts/) folders.
 
