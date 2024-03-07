@@ -30,9 +30,6 @@ ingresses: []
 # -- Enable gRPC which will add an annotation and use grpc probes
 grpc: false
 
-# -- Specify a list of `deployment` specs
-deployments: []
-
 deployment:
   # -- Enable or disable the deployment
   enabled: true
