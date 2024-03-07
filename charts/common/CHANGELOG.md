@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.4](https://github.com/entur/helm-charts/compare/common-v1.18.3...common-v1.18.4) (2024-03-07)
+
+
+### Bug Fixes
+
+* add deployment.minReadySeconds ([#171](https://github.com/entur/helm-charts/issues/171)) ([0543d78](https://github.com/entur/helm-charts/commit/0543d786314110fe8041af472cbea12378b7cd7b))
+
 ## [1.18.3](https://github.com/entur/helm-charts/compare/common-v1.18.2...common-v1.18.3) (2024-02-29)
 
 
