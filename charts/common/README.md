@@ -86,7 +86,6 @@ A Helm chart for Entur's Kubernetes workloads
 | deployment.serviceAccountName | string | application | Override pod serviceAccountName (default application). |
 | deployment.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | deployment.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
-| deployments | list | `[]` | Specify a list of `deployment` specs |
 | env | string | `nil` | The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd` |
 | grpc | bool | `false` | Enable gRPC which will add an annotation and use grpc probes |
 | hpa.spec | object | `{}` | Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas. ps: Reason why we have set 100% cpu as default is because the java applications are resource hogs during startup.     If you have good startupProbe/readinessProbes in place you can lower the cpu average utilization to ie 50/60%.     - Or scale on other (custom) metrics. |
