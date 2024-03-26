@@ -18,7 +18,7 @@ A Helm chart for basic Entur deployments
 | common.configmap.data.TZx | string | `"Europe/Oslo"` |  |
 | common.configmap.enabled | bool | `true` |  |
 | common.container.cpu | float | `0.3` |  |
-| common.container.image | string | `"${artifact.metadata.image}"` |  |
+| common.container.image | string | `"<+artifacts.primary.image>"` |  |
 | common.container.memory | int | `512` |  |
 | common.deployment.prometheus.enabled | bool | `true` |  |
 | common.deployment.replicas | int | `2` |  |

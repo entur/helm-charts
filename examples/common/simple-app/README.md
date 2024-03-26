@@ -15,7 +15,7 @@ A Helm chart for basic Entur deployments
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | common.app | string | `"simple-app"` |  |
-| common.container.image | string | `"${artifact.metadata.image}"` |  |
+| common.container.image | string | `"<+artifacts.primary.image>"` |  |
 | common.ingress.trafficType | string | `"public"` |  |
 | common.shortname | string | `"simapp"` |  |
 | common.team | string | `"example"` |  |

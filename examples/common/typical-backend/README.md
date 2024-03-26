@@ -21,7 +21,7 @@ A Helm chart for basic Entur deployments
 | common.container.envFrom[0].secretRef.name | string | `"you-probably-should-not-use-this"` |  |
 | common.container.env[0].name | string | `"YOU_SHOULD_PROBABLY_USE_CONFIGMAP"` |  |
 | common.container.env[0].value | string | `"yes_you_should"` |  |
-| common.container.image | string | `"${artifact.metadata.image}"` |  |
+| common.container.image | string | `"<+artifacts.primary.image>"` |  |
 | common.container.memory | int | `128` |  |
 | common.container.probes.liveness.path | string | `"/alive"` |  |
 | common.container.prometheus.enabled | bool | `true` |  |

@@ -21,7 +21,7 @@ A Helm chart for multiple containers
 | common.containers[0].cpuLimit | float | `2` |  |
 | common.containers[0].env[0].name | string | `"APP1"` |  |
 | common.containers[0].env[0].value | string | `"something"` |  |
-| common.containers[0].image | string | `"${artifact.metadata.image}"` |  |
+| common.containers[0].image | string | `"<+artifacts.primary.image>"` |  |
 | common.containers[0].memory | int | `512` |  |
 | common.containers[0].memoryLimit | int | `1024` |  |
 | common.containers[0].name | string | `"multi"` |  |
