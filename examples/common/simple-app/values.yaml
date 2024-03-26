@@ -5,4 +5,4 @@ common:
   ingress:
     trafficType: public
   container:
-    image: ${artifact.metadata.image}
+    image: <+artifacts.primary.image>

@@ -12,7 +12,7 @@ common:
       enabled: true
     replicas: 2
   container:
-    image: ${artifact.metadata.image}
+    image: <+artifacts.primary.image>
     cpu: 0.3
     memory: 512
   configmap:
