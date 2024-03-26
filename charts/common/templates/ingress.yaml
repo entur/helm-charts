@@ -13,7 +13,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.class: traefik
   {{- if .annotations }}
     {{- toYaml .annotations | nindent 4 }}
   {{- end }}
@@ -23,6 +22,7 @@ metadata:
   name: {{ .name | default $releaseName }}
   namespace: {{ $releaseNamespace }}
 spec:
+  ingressClassName: traefik-{{.trafficType}}
   rules:
   {{- if .rules -}}
   {{ toYaml .rules | nindent 4 }}
