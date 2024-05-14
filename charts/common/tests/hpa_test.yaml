@@ -4,6 +4,36 @@ values:
 templates:
   - hpa.yaml
 tests:
+  - it: must have labels
+    set:
+      env: prd # hpa in prod
+      labels:
+        custom: label
+    asserts:
+      - isNotEmpty:
+          path: metadata.labels
+      - equal:
+          path: metadata.labels.environment
+          value: prd
+      - equal:
+          path: metadata.labels.custom
+          value: label
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: rudder-test
+  - it: must have annotations
+    set:
+      env: prd
+    asserts:
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-name"]
+          value: rudder-test
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-namespace"]
+          value: NAMESPACE
   - it: Should not generate hpa by default
     asserts:
       - hasDocuments:
@@ -63,7 +93,7 @@ tests:
       env: prd
       container:
         image: some
-        maxReplicas: 5  # should not matter
+        maxReplicas: 5 # should not matter
         forceReplicas: 1
       hpa:
         spec:
@@ -98,12 +128,12 @@ tests:
       hpa:
         spec:
           metrics:
-          - type: Resource
-            resource:
-              name: cpu
-              target:
-                type: Utilization
-                averageUtilization: 200
+            - type: Resource
+              resource:
+                name: cpu
+                target:
+                  type: Utilization
+                  averageUtilization: 200
     asserts:
       - isNotEmpty:
           path: spec.scaleTargetRef
@@ -116,12 +146,12 @@ tests:
       hpa:
         spec:
           metrics:
-          - type: Resource
-            resource:
-              name: cpu
-              target:
-                type: Utilization
-                averageUtilization: "50%"
+            - type: Resource
+              resource:
+                name: cpu
+                target:
+                  type: Utilization
+                  averageUtilization: "50%"
           maxReplicas: 3
           minReplicas: 1
     asserts:
@@ -140,12 +170,12 @@ tests:
       hpa:
         spec:
           metrics:
-          - type: Resource
-            resource:
-              name: cpu
-              target:
-                type: Utilization
-                averageUtilization: "50%"
+            - type: Resource
+              resource:
+                name: cpu
+                target:
+                  type: Utilization
+                  averageUtilization: "50%"
           maxReplicas: 4
           minReplicas: 1
     asserts:
@@ -164,12 +194,12 @@ tests:
       hpa:
         spec:
           metrics:
-          - type: Resource
-            resource:
-              name: cpu
-              target:
-                type: Utilization
-                averageUtilization: "60%"
+            - type: Resource
+              resource:
+                name: cpu
+                target:
+                  type: Utilization
+                  averageUtilization: "60%"
           minReplicas: 3
           maxReplicas: 11
     asserts:

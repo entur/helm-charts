@@ -1,9 +1,8 @@
-suite: test configmap
+suite: test vpa
 values:
   - ./values/common-test-values.yaml
-  - ./values/configmap-values.yaml
 templates:
-  - configmap.yaml
+  - vpa.yaml
 tests:
   - it: must have labels
     set:
@@ -35,10 +34,3 @@ tests:
       - equal:
           path: metadata.annotations["meta.helm.sh/release-namespace"]
           value: NAMESPACE
-  - it: can override release name
-    set:
-      releaseName: override
-    asserts:
-      - equal:
-          path: metadata.name
-          value: override

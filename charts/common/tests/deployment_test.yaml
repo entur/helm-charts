@@ -20,6 +20,22 @@ tests:
           value: label
       - isNotEmpty:
           path: spec.template.metadata.labels.common
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: rudder-test
+  - it: must have annotations
+    set:
+      env: prd
+    asserts:
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-name"]
+          value: rudder-test
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-namespace"]
+          value: NAMESPACE
   - it: CPU limit can be set
     release: {}
     set:
@@ -85,15 +101,17 @@ tests:
       deployment:
         prometheus:
           enabled: true
-          path: /actuator/prometheus
+          path: /actuator/prometheus2
     asserts:
       - equal:
-          path: spec.template.metadata.annotations
-          value:
-            cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-            prometheus.io/scrape: "true"
-            prometheus.io/path: "/actuator/prometheus"
-            prometheus.io/port: "8080"
+          path: spec.template.metadata.annotations["prometheus.io/scrape"]
+          value: "true"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/path"]
+          value: "/actuator/prometheus2"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/port"]
+          value: "8080"
   - it: must use 3 replicas if replicas is 3
     set:
       env: dev
@@ -465,12 +483,14 @@ tests:
           enabled: true
     asserts:
       - equal:
-          path: spec.template.metadata.annotations
-          value:
-            cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-            prometheus.io/scrape: "true"
-            prometheus.io/path: "/actuator/prometheus"
-            prometheus.io/port: "8080"
+          path: spec.template.metadata.annotations["prometheus.io/scrape"]
+          value: "true"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/path"]
+          value: "/actuator/prometheus"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/port"]
+          value: "8080"
   - it: must disable prometheus if disabled
     set:
       container:

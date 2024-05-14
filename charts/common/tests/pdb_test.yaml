@@ -18,14 +18,35 @@ tests:
       - equal:
           path: metadata.labels.custom
           value: label
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: rudder-test
+  - it: must have annotations
+    set:
+      env: prd
+    asserts:
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-name"]
+          value: rudder-test
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-namespace"]
+          value: NAMESPACE
   - it: must use default with 2 replicas or more
+    set:
+      env: prd
+      container:
+        replicas: 2
     asserts:
       - equal:
           path: spec.minAvailable
           value: "50%"
-  - it: must use default with 2 replicas or more in prod
+  - it: must use default with 2 maxreplicas or more in prod
     set:
       env: prd
+      maxReplicas: 3
     asserts:
       - equal:
           path: spec.minAvailable
@@ -54,7 +75,7 @@ tests:
           value: "26%"
   - it: check for minAvailable on deployment before container
     set:
-      env: tst
+      env: prd
       deployment:
         replicas: 2
         minAvailable: 30%
@@ -183,3 +204,69 @@ tests:
       - equal:
           path: metadata.name
           value: override
+  # test env
+  - it: must use default with 2 maxReplicas or more
+    set:
+      env: tst
+      container:
+        maxReplicas: 5
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: must use default with 2 maxreplicas or more in tst
+    set:
+      env: tst
+      container:
+        maxReplicas: 3
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: use minAvailable from container if not set on pdb in tst
+    set:
+      env: tst
+      container:
+        maxReplicas: 2
+        minAvailable: 27%
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "27%"
+  - it: minAvailable equals zero even if minAvailable is set on container if only one pod in tst
+    set:
+      env: tst
+      container:
+        minAvailable: 24%
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  - it: minAvailable equals zero even if minAvailable is set on container if only one pod in tst
+    set:
+      env: tst
+      deployment:
+        minAvailable: 24%
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  - it: minAvailable equals zero even if minAvailable is set on container if only one pod in dev
+    set:
+      env: dev
+      container:
+        minAvailable: 24%
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  - it: use minAvailable from container if not set on pdb in dev
+    set:
+      env: dev
+      container:
+        maxReplicas: 2
+        minAvailable: 29%
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "29%"
