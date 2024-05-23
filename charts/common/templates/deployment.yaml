@@ -70,6 +70,9 @@ spec:
       serviceAccountName: {{ .Values.deployment.serviceAccountName | default "application" }}
 
       containers:
+      {{- if $postgres.enabled }}
+        {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 8 }}
+      {{- end }}
       {{ range $containers }}
         {{- $image := .image | required ".Values.common.container.image is required." -}}
         {{- printf "\n        " -}}
@@ -111,9 +114,6 @@ spec:
           lifecycle:
             {{- toYaml .lifecycle | nindent 12 }}
           {{- end }}
-      {{- end }}
-      {{- if $postgres.enabled }}
-        {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 8 }}
       {{- end }}
       {{- if $volumes }}
       volumes:

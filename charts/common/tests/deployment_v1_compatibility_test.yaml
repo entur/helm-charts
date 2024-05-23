@@ -119,7 +119,7 @@ tests:
         enabled: true
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          path: spec.template.spec.containers[1].envFrom[0].secretRef.name
           value: testsuite-psql-credentials
   - it: must enable sidecar if postgres enabled
     set:
@@ -129,7 +129,7 @@ tests:
       - isNotEmpty:
           path: spec.template.spec.containers[1]
       - equal:
-          path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: testsuite-psql-connection
   - it: postgres cpu limit can be overridden
     set:
@@ -139,10 +139,10 @@ tests:
         cpuLimit: "1"
     asserts:
       - equal:
-          path: spec.template.spec.containers[1].resources.limits.cpu
+          path: spec.template.spec.containers[0].resources.limits.cpu
           value: "1"
       - equal:
-          path: spec.template.spec.containers[1].resources.requests.cpu
+          path: spec.template.spec.containers[0].resources.requests.cpu
           value: "0.1"
   - it: postgres cpu limit can be cleared
     set:
