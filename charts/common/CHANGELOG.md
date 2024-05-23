@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.5](https://github.com/entur/helm-charts/compare/common-v1.18.4...common-v1.18.5) (2024-05-23)
+
+
+### Bug Fixes
+
+* move psql container first ([#176](https://github.com/entur/helm-charts/issues/176)) ([5184eac](https://github.com/entur/helm-charts/commit/5184eac3b63d183e7c78d875ac67e545e4c69b2e))
+
 ## [1.18.4](https://github.com/entur/helm-charts/compare/common-v1.18.3...common-v1.18.4) (2024-03-07)
 
 
