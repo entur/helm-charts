@@ -249,7 +249,7 @@ tests:
         credentialsSecret: my-secret
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          path: spec.template.spec.containers[1].envFrom[0].secretRef.name
           value: my-secret
   - it: override connectionConfig
     set:
@@ -258,7 +258,7 @@ tests:
         connectionConfig: my-config
     asserts:
       - equal:
-          path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: my-config
   - it: command use correct value
     set:
@@ -505,7 +505,7 @@ tests:
         enabled: true
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          path: spec.template.spec.containers[1].envFrom[0].secretRef.name
           value: rudder-test-psql-credentials
   - it: must enable sidecar if postgres enabled
     set:
@@ -515,7 +515,7 @@ tests:
       - isNotEmpty:
           path: spec.template.spec.containers[1]
       - equal:
-          path: spec.template.spec.containers[1].envFrom[0].configMapRef.name
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: rudder-test-psql-connection
   - it: must enable only one sidecar if postgres enabled for multiple containers
     set:
@@ -535,7 +535,7 @@ tests:
       - isNotEmpty:
           path: spec.template.spec.containers[2]
       - equal:
-          path: spec.template.spec.containers[2].envFrom[0].configMapRef.name
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: rudder-test-psql-connection
       - isNull:
           path: spec.template.spec.containers[3]
@@ -548,10 +548,10 @@ tests:
         cpuLimit: 1
     asserts:
       - equal:
-          path: spec.template.spec.containers[1].resources.limits.cpu
+          path: spec.template.spec.containers[0].resources.limits.cpu
           value: "1"
       - equal:
-          path: spec.template.spec.containers[1].resources.requests.cpu
+          path: spec.template.spec.containers[0].resources.requests.cpu
           value: "0.1"
   - it: has common runtime env set from env label
     asserts:
