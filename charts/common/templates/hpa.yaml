@@ -21,6 +21,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "labels" . |trim| nindent 4 }}
+  annotations:
+    {{- include "annotations" . |trim| nindent 4 }}
 spec:
   {{- if ((.Values.hpa).spec) }}
   {{ toYaml .Values.hpa.spec | nindent 2 }}

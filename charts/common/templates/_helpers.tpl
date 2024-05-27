@@ -8,10 +8,19 @@ shortname: {{ .Values.shortname }}
 team: {{ .Values.team }}
 common: {{ .Chart.Version }}
 environment: {{ .Values.env }}
+app.kubernetes.io/instance: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
+app.kubernetes.io/managed-by: Helm
 {{- if .Values.labels }}
 {{ toYaml .Values.labels }}
 {{- end }}
 {{- end }}
+
+{{- define "annotations" }}
+meta.helm.sh/release-name: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
+meta.helm.sh/release-namespace: {{ empty .Release.Namespace| ternary .Release.Name .Release.Namespace }}
+{{- end }}
+
+
 
 {{- define "securitycontext" }}
 securityContext:

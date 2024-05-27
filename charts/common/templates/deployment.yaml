@@ -27,10 +27,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    {{- include "labels" . |trim| nindent 4 }}
   name: {{ $releaseName }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "labels" . |trim| nindent 4 }}
+  annotations:
+    {{- include "annotations" . |trim| nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -56,6 +58,7 @@ spec:
     metadata:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        {{- include "annotations" . |trim| nindent 8 }}
         {{- if (($prometheus).enabled) }}
         prometheus.io/scrape: "true"
         prometheus.io/path: "{{ $prometheus.path }}"

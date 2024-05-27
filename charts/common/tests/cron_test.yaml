@@ -19,6 +19,22 @@ tests:
       - equal:
           path: metadata.labels.custom
           value: label
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: rudder-test
+  - it: must have annotations
+    set:
+      env: prd
+    asserts:
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-name"]
+          value: rudder-test
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-namespace"]
+          value: NAMESPACE
   - it: has common runtime env set from env label
     asserts:
       - equal:

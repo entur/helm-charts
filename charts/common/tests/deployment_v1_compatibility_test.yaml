@@ -107,12 +107,14 @@ tests:
           enabled: true
     asserts:
       - equal:
-          path: spec.template.metadata.annotations
-          value:
-            cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-            prometheus.io/scrape: "true"
-            prometheus.io/path: "/actuator/prometheus"
-            prometheus.io/port: "8080"
+          path: spec.template.metadata.annotations["prometheus.io/scrape"]
+          value: "true"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/path"]
+          value: "/actuator/prometheus"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/port"]
+          value: "8080"
   - it: must mount envFrom if postgres enabled
     set:
       postgres:

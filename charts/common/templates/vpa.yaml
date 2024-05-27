@@ -10,6 +10,8 @@ metadata:
   namespace: {{ $releaseNamespace }}
   labels:
     {{- include "labels" . |trim| nindent 4 }}
+  annotations:
+    {{- include "annotations" . |trim| nindent 4 }}
 spec:
   targetRef:
     apiVersion: "apps/v1"

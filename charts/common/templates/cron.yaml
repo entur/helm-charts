@@ -15,10 +15,12 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  labels:
-    {{- include "labels" . |trim| nindent 4 }}
   name: {{ $releaseName }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "labels" . |trim| nindent 4 }}
+  annotations:
+    {{- include "annotations" . |trim| nindent 4 }}
 spec:
   concurrencyPolicy: {{ $cronjob.concurrencyPolicy | default "Forbid" }}
   failedJobsHistoryLimit: {{ $cronjob.failedJobsHistoryLimit | default 1 }}

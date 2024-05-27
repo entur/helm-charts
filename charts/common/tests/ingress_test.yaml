@@ -18,6 +18,22 @@ tests:
       - equal:
           path: metadata.labels.custom
           value: label
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: rudder-test
+  - it: must have annotations
+    set:
+      env: prd
+    asserts:
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-name"]
+          value: rudder-test
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-namespace"]
+          value: NAMESPACE
   - it: sane defaults and forwards
     release:
       name: testsuite
@@ -29,9 +45,8 @@ tests:
           path: spec.rules[0].host
           value: test.dev.entur.io
       - equal:
-          path: metadata.annotations
-          value:
-            kubernetes.io/ingress.class: traefik
+          path: metadata.annotations["kubernetes.io/ingress.class"]
+          value: "traefik"
       - equal:
           path: metadata.labels.traffic-type
           value: public

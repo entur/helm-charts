@@ -6,15 +6,16 @@ metadata:
   labels:
     {{- include "labels" . |trim| nindent 4 }}
   name: {{ $releaseName }}
-  {{- if (or (.Values.grpc) .Values.service.annotations) }}
   annotations:
-  {{- if .Values.grpc }}
+    {{- include "annotations" . |trim| nindent 4 }}
+    {{- if (or (.Values.grpc) .Values.service.annotations) }}
+      {{- if .Values.grpc }}
     traefik.ingress.kubernetes.io/service.serversscheme: h2c
-  {{- end }}
-  {{- if .Values.service.annotations }}
-    {{- toYaml .Values.service.annotations | nindent 4 }}
-  {{- end }}
-  {{- end }}
+      {{- end }}
+      {{- if .Values.service.annotations }}
+        {{- toYaml .Values.service.annotations | nindent 4 }}
+      {{- end }}
+    {{- end }}
   namespace: {{ .Release.Namespace }}
 spec:
   ports:

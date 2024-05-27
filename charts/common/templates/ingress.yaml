@@ -1,7 +1,7 @@
 {{- if or .Values.ingresses .Values.ingress.enabled }}
   {{- /* Rules */}}
-  {{- $externalPort :=  .Values.service.externalPort  -}}
   {{- $chart := . -}}
+  {{- $externalPort :=  .Values.service.externalPort  -}}
   {{- $releaseName := include "name" . -}}
   {{- $releaseNamespace := .Release.Namespace -}}
   {{- $ingresses := .Values.ingresses | default (list .Values.ingress) -}}
@@ -12,16 +12,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    kubernetes.io/ingress.class: traefik
-  {{- if .annotations }}
-    {{- toYaml .annotations | nindent 4 }}
-  {{- end }}
-  labels:
-    traffic-type: {{.trafficType }}
-    {{- include "labels" $chart |trim| nindent 4 }}
   name: {{ .name | default $releaseName }}
   namespace: {{ $releaseNamespace }}
+  labels:
+    {{- include "labels" $chart |trim| nindent 4 }}
+    traffic-type: {{.trafficType }}
+  annotations:
+    {{- include "annotations" $chart |trim| nindent 4 }}
+    kubernetes.io/ingress.class: traefik
+    {{- if $.Values.ingress.annotations }}
+      {{- toYaml $.Values.ingress.annotations | nindent 4 }}
+    {{- end }}
 spec:
   rules:
   {{- if .rules -}}

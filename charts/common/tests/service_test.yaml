@@ -18,6 +18,22 @@ tests:
       - equal:
           path: metadata.labels.custom
           value: label
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: rudder-test
+  - it: must have annotations
+    set:
+      env: prd
+    asserts:
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-name"]
+          value: rudder-test
+      - equal:
+          path: metadata.annotations["meta.helm.sh/release-namespace"]
+          value: NAMESPACE
   - it: sane defaults and forwards
     asserts:
       - equal:
@@ -33,10 +49,6 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
-  - it: emtpy annotations has no annotations
-    asserts:
-      - isNull:
-          path: metadata.annotations
   - it: adds metadata for gRPC
     set:
       grpc: true
