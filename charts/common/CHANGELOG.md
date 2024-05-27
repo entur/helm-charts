@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/entur/helm-charts/compare/common-v1.18.6...common-v1.19.0) (2024-05-27)
+
+
+### Features
+
+* annotations and pdb fix ([#175](https://github.com/entur/helm-charts/issues/175)) ([c1b027d](https://github.com/entur/helm-charts/commit/c1b027d5aa295c1c1de489143a864be2b5f1cce6))
+
 ## [1.18.6](https://github.com/entur/helm-charts/compare/common-v1.18.5...common-v1.18.6) (2024-05-23)
 
 ### Features
