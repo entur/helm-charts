@@ -68,3 +68,7 @@ jobs:
           git diff-files --quiet \
             || (echo "Run 'helm-docs' from https://github.com/norwoodj/helm-docs, commit the changes and push again" \
             && exit 1)
+  unittest-common-chart:
+    uses: entur/gha-helm/.github/workflows/unittest.yml@v1
+    with:
+      chart: charts/common
