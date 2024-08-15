@@ -28,9 +28,11 @@ description: >
   ### Fully customize `container.probes.spec` and `hpa.spec` with literal Kubernetes configuration
 
   <details>
+
     <summary>Example container.probes.spec</summary>
   
   ```yaml
+
   common:
     container:
       probes:
@@ -45,12 +47,15 @@ description: >
           livenessProbe: ...
           readinessProbe: ...
   ```
+
   </details>
 
   <details>
+
     <summary>Example hpa.spec</summary>
   
   ```yaml
+
   common:
     hpa:
       spec:
@@ -70,7 +75,9 @@ description: >
                 periodSeconds: 60
         maxReplicas: 7
         minReplicas: 2
+
   ```
+
   </details>
 type: application
 version: 1.19.0
