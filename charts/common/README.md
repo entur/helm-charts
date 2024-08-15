@@ -14,8 +14,55 @@ A Helm chart for Entur's Kubernetes workloads
 
 ## Take full control
 
-* Most properties can be overriden to your specific needs.
-* Read the values.yaml file to get template documentation.
+* Most properties can be overriden to your specific needs
+* Read the values.yaml file to get template documentation
+
+### Fully customize `container.probes.spec` and `hpa.spec` with literal Kubernetes configuration
+<details>
+  <summary>Example container.probes.spec</summary>
+  
+```yaml
+common:
+  container:
+    probes:
+      enabled: true
+      spec:
+        startupProbe:
+          tcpSocket:
+            port: 3000
+          periodSeconds: 1
+          timeoutSeconds: 1
+          failureThreshold: 300
+        livenessProbe: ...
+        readinessProbe: ...
+```
+</details>
+
+<details>
+  <summary>Example hpa.spec</summary>
+  
+```yaml
+common:
+  hpa:
+    spec:
+      metrics:
+        - type: Resource
+          resource:
+            name: cpu
+            target:
+              type: Utilization
+              averageUtilization: 60
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 60
+          policies:
+            - type: Pods
+              value: 1
+              periodSeconds: 60
+      maxReplicas: 7
+      minReplicas: 2
+```
+</details>
 
 ## Values
 
