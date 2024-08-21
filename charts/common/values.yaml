@@ -286,3 +286,7 @@ secrets:
   # demo-secret:
   #   - FIRST_SECRET
   #   - SECOND_SECRET
+
+vpa:
+  # -- Enable Vertical Pod Autoscaler to get resource requirement and limit recommendations
+  enabled: true

@@ -39,7 +39,7 @@ helm template charts/common -f tests/values-secrets.yaml
 ### Update and Generate documentation
 
 ```bash
-docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:v1.12.0
+docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:v1.13.1
 ```
 
 ### Install helm chart unit test plugin

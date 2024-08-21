@@ -1,6 +1,7 @@
 {{- /* Rules */}}
 {{- $releaseName := include "name" . -}}
 {{- $releaseNamespace := .Release.Namespace -}}
+{{- if .Values.vpa.enabled }}
 
 {{- /* YAML Spec */}}
 apiVersion: "autoscaling.k8s.io/v1"
@@ -23,3 +24,4 @@ spec:
       controlledResources: ["cpu", "memory"]
   updatePolicy:
     updateMode: "Off"
+{{- end }}
