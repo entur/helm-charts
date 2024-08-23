@@ -30,7 +30,7 @@ description: >
   <details>
 
     <summary>Example container.probes.spec</summary>
-  
+
   ```yaml
 
   common:
@@ -53,7 +53,7 @@ description: >
   <details>
 
     <summary>Example hpa.spec</summary>
-  
+
   ```yaml
 
   common:
@@ -80,5 +80,5 @@ description: >
 
   </details>
 type: application
-version: 1.19.0
+version: 1.20.0
 appVersion: 0.0.1
