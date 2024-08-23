@@ -34,3 +34,11 @@ tests:
       - equal:
           path: metadata.annotations["meta.helm.sh/release-namespace"]
           value: NAMESPACE
+
+  - it: Should not generate vpa when disabled
+    set:
+      vpa:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
