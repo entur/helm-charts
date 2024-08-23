@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/entur/helm-charts/compare/common-v1.19.0...common-v1.20.0) (2024-08-23)
+
+
+### Features
+
+* add support for disabling VPA ([#188](https://github.com/entur/helm-charts/issues/188)) ([8ebafd7](https://github.com/entur/helm-charts/commit/8ebafd7cb54c05cc0f3e4ab2ada04eb85fa309f5))
+
 ## [1.19.0](https://github.com/entur/helm-charts/compare/common-v1.18.6...common-v1.19.0) (2024-05-27)
 
 
