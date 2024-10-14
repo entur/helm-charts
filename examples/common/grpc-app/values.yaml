@@ -1,0 +1,17 @@
+common:
+  app: grpc-app
+  shortname: grpcapp
+  team: example
+  grpc: true # -- Enable gRPC which will add an annotation and use grpc probes
+  ingress:
+    enabled: true
+    trafficType: http2
+  container:
+    image: <+artifacts.primary.image>
+
+  service:
+    annotations:
+      entur.no/internal-http2: "true"  # -- Enable HTTP2 for internal traffic as well
+      # traefik.ingress.kubernetes.io/service.serversscheme: h2c  # is set automatically by grpc: true, if you use both grpc and ie rest, set this manually and grpc: false
+
+

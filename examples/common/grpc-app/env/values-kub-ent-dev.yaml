@@ -1,0 +1,5 @@
+common:
+  env: dev
+  ingress:
+    host: grpc-app.dev.entur.io
+
