@@ -1,36 +1,21 @@
 common:
   app: typical-backend
   shortname: typbak
-  team: example
+  team: team-example
   ingress:
     enabled: true
-    trafficType: public
+    trafficType: api
   service:
     internalPort: 9000
   deployment:
     prometheus:
-      enabled: true
+      enabled: false  # set this to true only when you have setup a metrics endpoint
     replicas: 2
   container:
     image: <+artifacts.primary.image>
-    cpu: 0.3
-    memory: 128
-    env:
-      - name: YOU_SHOULD_PROBABLY_USE_CONFIGMAP
-        value: yes_you_should
-    envFrom:
-      - secretRef:
-          name: you-probably-should-not-use-this
-    prometheus:
-      enabled: true
-    probes:
-      liveness:
-        path: "/alive"
-  configmap:
-    enabled: true
-    data:
-      TZx: "Europe/Oslo"
-  postgres:
+    cpu: 0.3 # Adjust this to your application needs
+    memory: 512 # Adjust this to your application needs
+  postgres: # sets up a postgres proxy so you can connect to your postgresql instance via localhost on the pod
     enabled: true
     cpu: 0.1
     memory: 32
