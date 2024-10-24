@@ -1,11 +1,21 @@
 common:
+
   app: typical-backend
   shortname: typbak
+  
+  
+  
   team: example
+  
   ingress:
+  
     enabled: true
+    
     trafficType: public
-  service:
+  se
+  rvice:
+  
+    
     internalPort: 9000
   deployment:
     prometheus:
