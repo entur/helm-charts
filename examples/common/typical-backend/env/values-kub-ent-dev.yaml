@@ -1,9 +1,4 @@
 common:
   env: dev
   ingress:
-    host:
-      typical-backend.dev.entur.org
-  configmap:
-    enabled: true
-    data:
-      LOG_LEVEL: warn
+    host: typical-backend.dev.entur.io

@@ -1,40 +1,20 @@
 common:
   app: typical-backend
   shortname: typbak
-  team: example
+  team: team-example
   ingress:
     enabled: true
-    trafficType: public
+    trafficType: api  # The ingress.host url is only available behind the Apigee API Gateway (https://api.entur.io/yourAPI)
   service:
-    internalPort: 9000
+    internalPort: 9000  # What TCP port the application listens on the pod, must match the port in the Dockerfile
   deployment:
     prometheus:
-      enabled: true
-    replicas: 2
+      enabled: false  # Set this to true only after you have setup a metrics endpoint
   container:
-    image: <+artifacts.primary.image>
-    cpu: 0.3
-    memory: 128
-    env:
-      - name: YOU_SHOULD_PROBABLY_USE_CONFIGMAP
-        value: yes_you_should
-    envFrom:
-      - secretRef:
-          name: you-probably-should-not-use-this
-    prometheus:
-      enabled: true
-    probes:
-      liveness:
-        path: "/alive"
-  configmap:
+    image: <+artifacts.primary.image>  # The CD tool will replace this value with the actual image
+    cpu: 0.3 # Adjust this to your application needs
+    memory: 512 # Adjust this to your application needs, a java application might need more memory to start like 1024 or 2048 or +++
+  postgres: # sets up a postgres proxy so you can connect to your postgresql instance via localhost on the pod
     enabled: true
-    data:
-      TZx: "Europe/Oslo"
-  postgres:
-    enabled: true
-    cpu: 0.1
-    memory: 32
-  secrets:
-    auth-credentials: # k8s secret name "typical-backend-auth-credentials"
-      - MNG_AUTH0_INT_CLIENT_ID
-      - MNG_AUTH0_INT_CLIENT_SECRET
+    cpu: 0.1  # PostgreSQL Proxy setting, this usually is enough for most applications
+    memory: 32  # PostgreSQL Proxy setting, this usually is enough for most applications

@@ -1,8 +1,7 @@
 common:
   env: tst
   ingress:
-    host:
-      typical-backend.staging.entur.org
+    host: typical-backend.staging.entur.io
   configmap:
     enabled: true
     data:
