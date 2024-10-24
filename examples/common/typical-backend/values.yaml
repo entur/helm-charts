@@ -4,22 +4,17 @@ common:
   team: team-example
   ingress:
     enabled: true
-    trafficType: api
+    trafficType: api  # The ingress.host url is only available behind the Apigee API Gateway (https://api.entur.io/yourAPI)
   service:
     internalPort: 9000
   deployment:
     prometheus:
-      enabled: false  # set this to true only when you have setup a metrics endpoint
-    replicas: 2
+      enabled: false  # Set this to true only after you have setup a metrics endpoint
   container:
-    image: <+artifacts.primary.image>
+    image: <+artifacts.primary.image>  # The CD tool will replace this value with the actual image
     cpu: 0.3 # Adjust this to your application needs
     memory: 512 # Adjust this to your application needs
   postgres: # sets up a postgres proxy so you can connect to your postgresql instance via localhost on the pod
     enabled: true
-    cpu: 0.1
-    memory: 32
-  secrets:
-    auth-credentials: # k8s secret name "typical-backend-auth-credentials"
-      - MNG_AUTH0_INT_CLIENT_ID
-      - MNG_AUTH0_INT_CLIENT_SECRET
+    cpu: 0.1  # This usually is enough for most applications
+    memory: 32  # This usually is enough for most applications
