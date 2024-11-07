@@ -8,7 +8,7 @@ A Helm chart for multiple containers
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://entur.github.io/helm-charts | common | 1.18.2 |
+| https://entur.github.io/helm-charts | common | 1.20.0 |
 
 ## Values
 

@@ -96,7 +96,7 @@ common:
 | container.probes.readiness.failureThreshold | int | 6 | Set the failure threshold |
 | container.probes.readiness.grpc | string | `nil` | Specify grpc probes for a port. Needs `port` child stanza |
 | container.probes.readiness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
-| container.probes.readiness.path | string | /actuator/health/liveness | Set the path for liveness probe |
+| container.probes.readiness.path | string | /actuator/health/readiness | Set the path for liveness probe |
 | container.probes.readiness.periodSeconds | int | 5 | Set the period of checking |
 | container.probes.readiness.successThreshold | int | 1 | Set the success threshold |
 | container.probes.spec | string | `nil` | Override with k8s spec for custom probes |
@@ -141,7 +141,7 @@ common:
 | ingress.annotations | object | `{}` | Optionally set annotations for the ingress |
 | ingress.enabled | bool | `true` | Enable or disable the ingress |
 | ingress.host | string | `nil` | Set the host name, do this in your `values-kub-ent-$env.yaml` files |
-| ingress.trafficType | string | `nil` | Set the traffic type, typically `api` or `public` |
+| ingress.trafficType | string | `nil` | Set the traffic type (`api`,`public` or `http2` for gRPC) |
 | ingresses | list | `[]` | Specify a list of `ingress` specs |
 | labels | object | `{ app shortname team common:version environment }` | Specify additional labels for every resource |
 | pdb.minAvailable | string | 50% | Set minimum available %, this overrides pdb setting minAvailable in deployment/container |
