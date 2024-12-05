@@ -216,7 +216,7 @@ container:
         # port: 8080
     readiness:
       # -- Set the path for liveness probe
-      # @default -- /actuator/health/liveness
+      # @default -- /actuator/health/readiness
       path: "/actuator/health/readiness"
       # -- Set the initial delay for the probe
       initialDelaySeconds: 0

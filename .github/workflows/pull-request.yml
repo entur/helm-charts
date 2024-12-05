@@ -48,7 +48,7 @@ jobs:
       - name: Helm Unit Test
         working-directory: examples/common/${{ matrix.example }}
         run: |
-          helm template . -f env/values-kub-ent-${{ matrix.env }}.yaml
+          helm template --dependency-update . -f env/values-kub-ent-${{ matrix.env }}.yaml
 
   check-doc-gen:
     runs-on: ubuntu-latest
