@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.1](https://github.com/entur/helm-charts/compare/common-v1.20.0...common-v1.20.1) (2025-02-21)
+
+
+### Bug Fixes
+
+* labels on cronjob pods and schedule fix ([#196](https://github.com/entur/helm-charts/issues/196)) ([186796d](https://github.com/entur/helm-charts/commit/186796d1b78ee421784da3b42a242df7ea88212b))
+
 ## [1.20.0](https://github.com/entur/helm-charts/compare/common-v1.19.0...common-v1.20.0) (2024-08-23)
 
 
