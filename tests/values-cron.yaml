@@ -1,6 +1,6 @@
 app: my-app
 shortname: myapp
-team: mat
+team: plattform
 env: dev
 
 ingress:
@@ -11,15 +11,18 @@ service:
 
 cron:
   enabled: true
-  schedule: 0 * * * * *
+  schedule: "* * * * *"
 
 deployment:
   enabled: false
 
 container:
   name: my-app
-  image: theimage
+  image: nginx:stable-alpine
 
 secrets:
   external-secret:
     - CRON_SECRET
+
+labels:
+  customLogRetention: "enabled"

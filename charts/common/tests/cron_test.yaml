@@ -20,6 +20,9 @@ tests:
           path: metadata.labels.custom
           value: label
       - equal:
+          path: spec.jobTemplate.metadata.labels.custom
+          value: label
+      - equal:
           path: metadata.labels["app.kubernetes.io/managed-by"]
           value: Helm
       - equal:
@@ -190,3 +193,31 @@ tests:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
           value: false
+  # Verify that we can have different cronjob schedules
+  - it: can have different schedules
+    set:
+      cron:
+        enabled: true
+        schedule: "30 04 * ? *"
+    asserts:
+      - equal:
+          path: spec.schedule
+          value: "30 04 * ? *"
+  - it: can have different schedules only stars
+    set:
+      cron:
+        enabled: true
+        schedule: "* * * * *"
+    asserts:
+      - equal:
+          path: spec.schedule
+          value: "* * * * *"
+  - it: can have different schedules with stars and numbers
+    set:
+      cron:
+        enabled: true
+        schedule: "30 04 * * *"
+    asserts:
+      - equal:
+          path: spec.schedule
+          value: "30 04 * * *"
