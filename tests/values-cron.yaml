@@ -11,7 +11,7 @@ service:
 
 cron:
   enabled: true
-  schedule: "* * * * *" # every minute"
+  schedule: "* * * * *"
 
 deployment:
   enabled: false

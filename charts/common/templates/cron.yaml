@@ -24,7 +24,8 @@ metadata:
 spec:
   concurrencyPolicy: {{ $cronjob.concurrencyPolicy | default "Forbid" }}
   failedJobsHistoryLimit: {{ $cronjob.failedJobsHistoryLimit | default 1 }}
-  schedule: {{ $cronjob.schedule | required ".Values.common.cron.schedule is required." }}
+  {{- required ".Values.common.cron.schedule is required." $cronjob.schedule }}
+  schedule: {{ printf "%s" $cronjob.schedule | quote }}
   successfulJobsHistoryLimit: {{ $cronjob.successfulJobsHistoryLimit | default 1 }}
   suspend: {{ $cronjob.suspend | default false }}
   jobTemplate:
