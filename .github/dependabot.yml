@@ -1,0 +1,17 @@
+version: 2
+updates:
+# For GitHub Actions, we group minor and patch updates together, major updates are separate.
+- package-ecosystem: github-actions
+  directory: "/"
+  groups:
+    minor-and-patch:
+      applies-to: version-updates
+      update-types:
+        - "minor"
+        - "patch"
+  schedule:
+    interval: "weekly"
+    time: "09:00"
+    timezone: "Europe/Oslo"
+    day: "monday"
+  open-pull-requests-limit: 2
