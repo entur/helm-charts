@@ -26,37 +26,36 @@ Update version in Chart.yaml and run `helm dependency update`
 
 ## Development
 
+After changes do the following to verify that all possible outcomes is working as it should.
+
+### Install helm chart unit test plugin and run unit tests
+
+```bash
+helm plugin install https://github.com/helm-unittest/helm-unittest.git
+helm unittest ./charts/common
+```
+
 ### Render test values files
 
 Verify that the test value files generate ok
 
 ```bash
-helm template charts/common -f tests/values-minimal.yaml
-helm template charts/common -f tests/values-cron.yaml
-helm template charts/common -f tests/values-secrets.yaml
+helm template charts/common -f fixture/helm//values-minimal.yaml
+helm template charts/common -f fixture/helm//values-cron.yaml
+helm template charts/common -f fixture/helm/values-secrets.yaml
+helm template charts/common -f fixture/helm/values-postgres.yaml
 ```
 
 ### Update and Generate documentation
 
 ```bash
-docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:v1.13.1
-```
-
-### Install helm chart unit test plugin
-
-```bash
-helm plugin install https://github.com/helm-unittest/helm-unittest.git
-```
-
-### Run unit tests
-
-```bash
-helm unittest ./charts/common
+brew install norwoodj/tap/helm-docs
+helm-docs
 ```
 
 ### Use conventional commits
 
-https://www.conventionalcommits.org/en/v1.0.0/
+<https://www.conventionalcommits.org/en/v1.0.0/>
 
 TLDR:
 

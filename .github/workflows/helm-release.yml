@@ -6,8 +6,35 @@ on:
       - main
 
 jobs:
-  helm:
-    uses: entur/gh-workflows/.github/workflows/release-helm.yml@main
-    permissions: write-all
-    with:
-      charts: '["common"]'
+  helm-release:
+    name: helm release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chart: [common]
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Helm Release
+        id: release
+        uses: google-github-actions/release-please-action@v3 # not compatible with v4 - monorepo-tags is not supported
+        with:
+          monorepo-tags: true
+          package-name: ${{ matrix.chart }}
+          path: charts/${{ matrix.chart }}
+          release-type: helm
+          draft-pull-request: true
+
+      - name: Publish Helm charts
+        uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260 # v1.7.0
+        with:
+          index_dir: "."
+          linting: "off"
+          target_dir: "archive"
+          token: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ steps.release.outputs.releases_created }}

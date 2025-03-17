@@ -1,5 +1,3 @@
-![Release](https://github.com/entur/helm-charts/actions/workflows/helm-release.yml/badge.svg)
-
 # Entur helm charts
 
 Helm charts for use in the Entur organisation.

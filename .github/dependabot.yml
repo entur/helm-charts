@@ -1,14 +1,36 @@
+---
 version: 2
 updates:
-# For GitHub Actions, we group minor and patch updates together, major updates are separate.
-- package-ecosystem: github-actions
-  directory: "/"
+- package-ecosystem: "github-actions"
+  directories:
+  - /
   groups:
     minor-and-patch:
       applies-to: version-updates
       update-types:
-        - "minor"
-        - "patch"
+      - "minor"
+      - "patch"
+  schedule:
+    interval: "weekly"
+    time: "09:00"
+    timezone: "Europe/Oslo"
+    day: "monday"
+  open-pull-requests-limit: 2
+- package-ecosystem: "helm"
+  directories:
+  - /charts/common
+  - /examples/common/grpc-app
+  - /examples/common/multi-container
+  - /examples/common/multi-deploy
+  - /examples/common/simple-app
+  - /examples/common/typical-backend
+  - /examples/common/typical-frontend
+  groups:
+    minor-and-patch:
+      applies-to: version-updates
+      update-types:
+      - "minor"
+      - "patch"
   schedule:
     interval: "weekly"
     time: "09:00"

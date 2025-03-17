@@ -42,7 +42,7 @@ spec:
         pathType: ImplementationSpecific
   {{- end }}
 
-# Must manually print newlines for unittest, do not remove
+{{- /* Must manually print newlines for unittest, do not remove */ -}}
 {{ print "\n---\n" }}
 
 {{- end }}
