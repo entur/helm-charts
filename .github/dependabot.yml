@@ -17,6 +17,7 @@ updates:
     day: "monday"
   open-pull-requests-limit: 2
 - package-ecosystem: "helm"
+  enable-beta-ecosystems: true
   directories:
   - /charts/common
   - /examples/common/grpc-app
