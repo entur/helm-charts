@@ -119,6 +119,10 @@ spec:
             {{- toYaml .lifecycle | nindent 12 }}
           {{- end }}
       {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers:
+      {{ toYaml .Values.initContainers | nindent 8 }}
+      {{- end }}
       {{- if $volumes }}
       volumes:
         {{- toYaml $volumes | nindent 8 }}
