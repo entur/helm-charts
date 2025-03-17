@@ -96,19 +96,18 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.ephemeral-storage
           value: 2Gi
-  - it: must enable prometheus if enabled
+  - it: must enable prometheus with defaults if enabled
     set:
       deployment:
         prometheus:
           enabled: true
-          path: /actuator/prometheus2
     asserts:
       - equal:
           path: spec.template.metadata.annotations["prometheus.io/scrape"]
           value: "true"
       - equal:
           path: spec.template.metadata.annotations["prometheus.io/path"]
-          value: "/actuator/prometheus2"
+          value: "/actuator/prometheus"
       - equal:
           path: spec.template.metadata.annotations["prometheus.io/port"]
           value: "8080"

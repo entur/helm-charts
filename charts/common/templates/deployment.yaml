@@ -15,6 +15,7 @@
 {{- $volumes := .Values.deployment.volumes | default .Values.container.volumes }}
 {{- $enabled := .Values.deployment.enabled | default .Values.container.enabled }}
 {{- $prometheus := .Values.deployment.prometheus | default .Values.container.prometheus }}
+{{- $prometheusPath := (.Values.deployment.prometheus).path | default .Values.container.prometheus.path }}
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
 {{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
 {{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas }}
@@ -61,7 +62,7 @@ spec:
         {{- include "annotations" . |trim| nindent 8 }}
         {{- if (($prometheus).enabled) }}
         prometheus.io/scrape: "true"
-        prometheus.io/path: "{{ $prometheus.path }}"
+        prometheus.io/path: "{{ $prometheusPath }}"
         prometheus.io/port: "{{ $prometheus.port | default .Values.service.internalPort | required "Must set deployment.prometheus.port" }}"
         {{- end }}
       labels:
