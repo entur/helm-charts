@@ -143,6 +143,7 @@ common:
 | ingress.host | string | `nil` | Set the host name, do this in your `values-kub-ent-$env.yaml` files |
 | ingress.trafficType | string | `nil` | Set the traffic type (`api`,`public` or `http2` for gRPC) |
 | ingresses | list | `[]` | Specify a list of `ingress` specs |
+| initContainers | list | `[]` | See: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/ |
 | labels | object | `{ app shortname team common:version environment }` | Specify additional labels for every resource |
 | pdb.minAvailable | string | 50% | Set minimum available %, this overrides pdb setting minAvailable in deployment/container |
 | postgres.connectionConfig | string | `nil` | Override name for connection configmap. This must at least contain `INSTANCES`. |
