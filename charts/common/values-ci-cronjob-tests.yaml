@@ -1,0 +1,47 @@
+app: mycronjobtest
+shortname: mycrntst
+team: team
+
+env: dev
+
+# common labels for all resources
+labels:
+  custom: label
+
+ingress:
+  enabled: false
+
+service:
+  enabled: false
+
+container:
+  image: nginxinc/nginx-unprivileged:latest
+  commmand: ["/bin/sh", "-c", "echo hello world"]
+  labels:
+    version: v1.2.3
+  cpu: 0.2
+  memory: 64
+  replicas: 1
+  maxReplicas: 2
+  memoryLimit: 64
+  envFrom: []
+  probes:
+    liveness:
+      path: "/"
+      failureThreshold: 6
+      periodSeconds: 5
+    readiness:
+      path: "/"
+      failureThreshold: 6
+      periodSeconds: 5
+
+serviceAccount:
+  create: true
+vpa:
+  enabled: false
+deployment:
+  enabled: false
+
+cron:
+  enabled: true
+  schedule: "* * * * *"
