@@ -29,6 +29,14 @@ jobs:
           path: charts/${{ matrix.chart }}
           release-type: helm
           draft-pull-request: true
+          extra-files: |
+            README.md
+            examples/common/grpc-app/Chart.yaml
+            examples/common/multi-container/Chart.yaml
+            examples/common/multi-deploy/Chart.yaml
+            examples/common/simple-app/Chart.yaml
+            examples/common/typical-backend/Chart.yaml
+            examples/common/typical-frontend/Chart.yaml
 
       - name: Publish Helm charts
         uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260 # v1.7.0
@@ -38,3 +46,11 @@ jobs:
           target_dir: "archive"
           token: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ steps.release.outputs.releases_created }}
+
+      # Update README.md's with the latest release version
+      - if: ${{ steps.release.outputs.releases_created }}
+        name: Install and run helm-docs
+        shell: bash
+        run: |
+          brew install helm-docs
+          helm-docs
