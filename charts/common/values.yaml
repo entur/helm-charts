@@ -251,6 +251,10 @@ container:
   # -- Set pod lifecycle handlers
   lifecycle: {}
 
+# -- Takes a list of initContainers
+# -- See: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+initContainers: []
+
 postgres:
   # -- Enable or disable the proxy
   # @default -- false
