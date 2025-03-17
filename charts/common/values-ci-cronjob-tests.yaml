@@ -36,7 +36,7 @@ container:
       periodSeconds: 5
 
 serviceAccount:
-  create: true
+  create: false # already created by values-ci-test.yaml
 vpa:
   enabled: false
 deployment:
