@@ -592,3 +592,19 @@ tests:
       - equal:
           path: spec.minReadySeconds
           value: 10
+  - it: can set initContainers
+    set:
+      initContainers:
+        - name: "init-a"
+          image: busybox:latest
+          command: ['sh', '-c', "echo a"]
+        - name: "init-b"
+          image: busybox:latest
+          command: ['sh', '-c', "echo b"]
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: init-a
+      - equal:
+          path: spec.template.spec.initContainers[1].name
+          value: init-b

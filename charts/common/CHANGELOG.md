@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.20.2](https://github.com/entur/helm-charts/compare/common-v1.20.1...common-v1.20.2) (2025-03-17)
+
+
+### Bug Fixes
+
+* add initContainers ([#205](https://github.com/entur/helm-charts/issues/205)) ([a67ad0c](https://github.com/entur/helm-charts/commit/a67ad0c128218ae7343ceba0d7b63caf92375189))
+* inherit prometheus path default from container ([#201](https://github.com/entur/helm-charts/issues/201)) ([49e04b4](https://github.com/entur/helm-charts/commit/49e04b45f6848369b50c251be33f804e5d68fe91))
+
 ## [1.20.1](https://github.com/entur/helm-charts/compare/common-v1.20.0...common-v1.20.1) (2025-02-21)
 
 
