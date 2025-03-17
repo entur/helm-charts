@@ -93,14 +93,15 @@ jobs:
           run: |
             helm-docs
       # if changes to the documentation are detected, commit to PR
-      - name: Add helm-docs changes
+      - if: ${{ github.event_name == 'pull_request' }}
+        name: Add helm-docs changes
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "docs: update Helm chart documentation"
-            git push
+            git push origin HEAD:${{ github.head_ref }}
           else
             echo "Helm-docs are up to date"
           fi
