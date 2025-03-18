@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.20.3](https://github.com/entur/helm-charts/compare/common-v1.20.2...common-v1.20.3) (2025-03-18)
+
+
+### Bug Fixes
+
+* Refer to readme files in release-please so versions are bumped ([ac8a4a9](https://github.com/entur/helm-charts/commit/ac8a4a99aeff07311f72f3cd8ebc6a27935a3ede))
+* Run helm-docs automatically after release ([ac8a4a9](https://github.com/entur/helm-charts/commit/ac8a4a99aeff07311f72f3cd8ebc6a27935a3ede))
+
 ## [1.20.2](https://github.com/entur/helm-charts/compare/common-v1.20.1...common-v1.20.2) (2025-03-17)
 
 
