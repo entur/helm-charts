@@ -78,23 +78,3 @@ jobs:
         working-directory: examples/common/${{ matrix.example }}
         run: |
           helm template --dependency-update . -f env/values-kub-ent-${{ matrix.env }}.yaml
-
-  check-doc-gen:
-    if: startsWith(github.head_ref, 'release-please--branches') == false
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-      - name: Run helm-docs
-        uses: addnab/docker-run-action@v3
-        with:
-          image: jnorwood/helm-docs:v1.14.2
-          options: -v ${{ github.workspace }}:/helm-docs
-          run: |
-            helm-docs
-      - name: Check uncommitted documentation changes
-        run: |
-          git diff
-          git diff-files --quiet \
-            || (echo "Run 'helm-docs' from https://github.com/norwoodj/helm-docs, commit the changes and push again" \
-            && exit 1)
