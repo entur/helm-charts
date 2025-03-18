@@ -8,7 +8,7 @@ on:
 jobs:
   helm-release:
     name: helm release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         chart: [common]
@@ -46,3 +46,34 @@ jobs:
           linting: "off"
           target_dir: "archive"
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - if: ${{ steps.release.outputs.releases_created }}
+        name: Run helm-docs
+        id: helm-docs
+        uses: addnab/docker-run-action@4f65fabd2431ebc8d299f8e5a018d79a769ae185 # v3
+        with:
+          image: jnorwood/helm-docs:v1.14.2
+          options: -v ${{ github.workspace }}:/helm-docs
+          run: |
+            helm-docs
+      - if: ${{ steps.release.outputs.releases_created }}
+        name: Add helm-docs changes
+        id: helm-docs-changes
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          if [ -n "$(git status --porcelain '*.md')" ]; then
+            git add **/*.md
+            git commit -m "docs: update Helm chart documentation"
+            git push
+          else
+            echo "Helm-docs are up to date"
+          fi
+      - if: failure()
+        name: Create issue if failure
+        run: |
+          gh issue create --title "Auto-docs update failed" \
+          --body "Auto-docs update failed, please check the logs" \
+          --assignee @${{ github.actor }} --label "auto-docs"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
