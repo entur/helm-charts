@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   helm-release:
@@ -39,7 +40,7 @@ jobs:
           target_dir: "archive"
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: ${{ ! steps.release.outputs.releases_created }}
+      - if: ${{ steps.release.outputs.releases_created }}
         name: Add helm-docs common changes to release branch
         env:
           VERSION: "${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}"

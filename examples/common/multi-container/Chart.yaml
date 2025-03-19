@@ -5,7 +5,5 @@ version: 0.0.3
 appVersion: "0.0.1"
 dependencies:
   - name: common
-    # x-release-please-start-version
     version: 1.20.0
-    # x-release-please-end
     repository: "https://entur.github.io/helm-charts"
