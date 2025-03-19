@@ -8,8 +8,8 @@ A Helm chart for basic Entur deployments
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://entur.github.io/helm-charts | multi-1(common) | ${VERSION} |
-| https://entur.github.io/helm-charts | multi-2(common) | ${VERSION} |
+| https://entur.github.io/helm-charts | multi-1(common) | .. |
+| https://entur.github.io/helm-charts | multi-2(common) | .. |
 
 ## Values
 

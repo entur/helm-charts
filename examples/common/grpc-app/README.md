@@ -8,7 +8,7 @@ A Helm chart for basic Entur deployments using gRPC
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://entur.github.io/helm-charts | common | ${VERSION} |
+| https://entur.github.io/helm-charts | common | .. |
 
 ## Values
 
