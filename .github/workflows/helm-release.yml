@@ -74,7 +74,7 @@ jobs:
             echo "Helm versions are up to date"
             exit 0
           fi
-      - if: ${{ ! steps.release.outputs.releases_created }} && failure()
+      - if: ${{ steps.release.outputs.releases_created }} && failure()
         name: Create issue if failure
         run: |
           gh issue create --title "helm-docs update failed" \
