@@ -6,6 +6,75 @@ appVersion: "0.0.1"
 dependencies:
   - name: common
     # x-release-please-start-version
-    version: 1.20.0
+    version: 1.2.4
+    # x-release-please-end
+    repository: "https://entur.github.io/helm-charts"
+---
+apiVersion: v2
+name: multi-container
+description: A Helm chart for multiple containers
+version: 0.0.3
+appVersion: "0.0.1"
+dependencies:
+  - name: common
+    # x-release-please-start-version
+    version: 1.2.4
+    # x-release-please-end
+    repository: "https://entur.github.io/helm-charts"
+---
+apiVersion: v2
+name: multi-deploy
+description: A Helm chart for basic Entur deployments
+version: 0.0.3
+appVersion: "0.0.1"
+dependencies:
+  - name: common
+    # x-release-please-start-version
+    version: 1.2.4
+    # x-release-please-end
+    repository: "https://entur.github.io/helm-charts"
+    alias: multi-1
+  - name: common
+    # x-release-please-start-version
+    version: 1.2.4
+    # x-release-please-end
+    repository: "https://entur.github.io/helm-charts"
+    alias: multi-2
+---
+apiVersion: v2
+name: simpe-app
+description: A Helm chart for basic Entur deployments
+version: 0.0.3
+appVersion: "0.0.1"
+dependencies:
+  - name: common
+    # x-release-please-start-version
+    version: 1.2.4
+    # x-release-please-end
+    repository: "https://entur.github.io/helm-charts"
+---
+apiVersion: v2
+name: typical-backend
+description: A Helm chart for basic Entur deployments
+type: application
+version: 0.0.3
+appVersion: "0.0.1"
+dependencies:
+  - name: common
+    # x-release-please-start-version
+    version: 1.2.4
+    # x-release-please-end
+    repository: "https://entur.github.io/helm-charts"
+---
+apiVersion: v2
+name: typical-frontend
+description: A Helm chart for basic Entur deployments
+type: application
+version: 0.0.3
+appVersion: "0.0.1"
+dependencies:
+  - name: common
+    # x-release-please-start-version
+    version: 1.2.4
     # x-release-please-end
     repository: "https://entur.github.io/helm-charts"

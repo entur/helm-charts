@@ -22,21 +22,13 @@ jobs:
 
       - name: Helm Release
         id: release
-        uses: google-github-actions/release-please-action@v3 # not compatible with v4 - monorepo-tags is not supported
+        uses: google-github-actions/release-please-action@v3 # not compatible with v4 - needs rewrite and use of release-please-config.json file to split the charts
         with:
           monorepo-tags: true
           package-name: ${{ matrix.chart }}
           path: charts/${{ matrix.chart }}
           release-type: helm
           draft-pull-request: true
-          extra-files: |
-            README.md
-            examples/common/grpc-app/Chart.yaml
-            examples/common/multi-container/Chart.yaml
-            examples/common/multi-deploy/Chart.yaml
-            examples/common/simple-app/Chart.yaml
-            examples/common/typical-backend/Chart.yaml
-            examples/common/typical-frontend/Chart.yaml
 
       - if: ${{ steps.release.outputs.releases_created }}
         name: Publish Helm charts
@@ -47,33 +39,44 @@ jobs:
           target_dir: "archive"
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: ${{ steps.release.outputs.releases_created }}
-        name: Run helm-docs
-        id: helm-docs
-        uses: addnab/docker-run-action@4f65fabd2431ebc8d299f8e5a018d79a769ae185 # v3
-        with:
-          image: jnorwood/helm-docs:v1.14.2
-          options: -v ${{ github.workspace }}:/helm-docs
-          run: |
-            helm-docs
-      - if: ${{ steps.release.outputs.releases_created }}
-        name: Add helm-docs changes
-        id: helm-docs-changes
+      - if: ${{ ! steps.release.outputs.releases_created }}
+        name: Add helm-docs common changes to release branch
+        env:
+          VERSION: "${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}"
         run: |
+          printf "Updating Helm chart documentation for version %s\n" $VERSION
+
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
+          # get the latest changes
+          git pull
+          # luckily the release branch is always the same
+          git switch release-please--branches--main--components--common
+
+          # Update the version in examples directory
+          all_charts=$(find ./examples -name Chart.yaml)
+          for chart in $all_charts; do
+            yq -e -i '(.dependencies[] | select(.name == "common") | .version) = "${VERSION}"' "${chart}"
+          done
+
+          # Install and run helm-docs
+          go install github.com/norwoodj/helm-docs/cmd/helm-docs@37d3055fece566105cf8cff7c17b7b2355a01677 # 1.14.2
+          export PATH=${PATH}:`go env GOPATH`/bin
+          helm-docs
+
           if [ -n "$(git status --porcelain '*.md')" ]; then
-            git add **/*.md
+            git add \*README.md
+            git add \*Chart.yaml
             git commit -m "docs: update Helm chart documentation"
             git push
           else
-            echo "Helm-docs are up to date"
+            echo "Helm versions are up to date"
+            exit 0
           fi
-      - if: failure()
+      - if: ${{ ! steps.release.outputs.releases_created }} && failure()
         name: Create issue if failure
         run: |
-          gh issue create --title "Auto-docs update failed" \
-          --body "Auto-docs update failed, please check the logs" \
-          --assignee @${{ github.actor }} --label "auto-docs"
+          gh issue create --title "helm-docs update failed" \
+          --body "Helm-docs update failed, please check the [logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
