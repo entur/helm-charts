@@ -40,7 +40,8 @@ jobs:
           target_dir: "archive"
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Add helm-docs common changes to release branch
+      - if: ${{ steps.release.outputs.major != '' }} && ${{ steps.release.outputs.minor != '' }} && ${{ steps.release.outputs.patch != ''  }}
+        name: Add helm-docs common changes to release branch
         env:
           VERSION: "${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}"
         run: |
