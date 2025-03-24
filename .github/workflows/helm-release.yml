@@ -23,7 +23,7 @@ jobs:
 
       - name: Helm Release
         id: release
-        uses: google-github-actions/release-please-action@v3 # not compatible with v4 - needs rewrite and use of release-please-config.json file to split the charts
+        uses: google-github-actions/release-please-action@v4 # not compatible with v4 - needs rewrite and use of release-please-config.json file to split the charts
         with:
           monorepo-tags: true
           package-name: ${{ matrix.chart }}
