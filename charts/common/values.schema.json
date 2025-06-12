@@ -1,0 +1,896 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "app": {
+      "default": "",
+      "description": "Application name, typically on the form `the-application`",
+      "required": [],
+      "title": "app",
+      "type": "null"
+    },
+    "configmap": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "description": "Set data for configmap",
+          "required": [],
+          "title": "data",
+          "type": "object"
+        },
+        "enabled": {
+          "default": false,
+          "description": "Enable or disable the configmap",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        }
+      },
+      "required": ["enabled", "data"],
+      "title": "configmap",
+      "type": "object"
+    },
+    "container": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "default": "",
+          "description": "Optionally set the arguments that will be passed to the command, e.g. [\"arg1\",\"arg2\"].",
+          "required": [],
+          "title": "args",
+          "type": "null"
+        },
+        "command": {
+          "default": "",
+          "description": "Optionally set the command that will run in the pod. If not set, the entrypoint for the container-image is used (recommended for most Java-apps).",
+          "required": [],
+          "title": "command",
+          "type": "null"
+        },
+        "cpu": {
+          "default": 0.1,
+          "description": "Set CPU without any unit. 100m is 0.1",
+          "required": [],
+          "title": "cpu",
+          "type": "number"
+        },
+        "cpuLimit": {
+          "default": "",
+          "description": "(float) Set CPU limit without any unit. 100m is 0.1",
+          "required": [],
+          "title": "cpuLimit",
+          "type": "null"
+        },
+        "env": {
+          "description": "- secretRef:\n    name: app-psql-credentials\nSpecify `env` entries for your container",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "env",
+          "type": "array"
+        },
+        "envFrom": {
+          "description": "Attach secrets and configmaps to your `env`",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "envFrom",
+          "type": "array"
+        },
+        "forceReplicas": {
+          "default": "",
+          "description": "(int) Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy",
+          "required": [],
+          "title": "forceReplicas",
+          "type": "null"
+        },
+        "labels": {
+          "additionalProperties": false,
+          "description": "Add labels to your pods",
+          "required": [],
+          "title": "labels",
+          "type": "object"
+        },
+        "lifecycle": {
+          "additionalProperties": false,
+          "description": "Set pod lifecycle handlers",
+          "required": [],
+          "title": "lifecycle",
+          "type": "object"
+        },
+        "maxReplicas": {
+          "default": "",
+          "description": "(int) Set the maxReplicas for your HPA",
+          "required": [],
+          "title": "maxReplicas",
+          "type": "null"
+        },
+        "memory": {
+          "default": 16,
+          "description": "Set memory without any unit, `Mi` is inferred",
+          "required": [],
+          "title": "memory",
+          "type": "integer"
+        },
+        "memoryLimit": {
+          "default": "",
+          "description": "Set memory limit without any unit, `Mi` is inferred",
+          "required": [],
+          "title": "memoryLimit",
+          "type": "null"
+        },
+        "minAvailable": {
+          "default": "",
+          "description": "(string) Set the minimal available replicas, used by PDB",
+          "required": [],
+          "title": "minAvailable",
+          "type": "null"
+        },
+        "name": {
+          "default": "",
+          "description": "Name of container",
+          "required": [],
+          "title": "name",
+          "type": "null"
+        },
+        "probes": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": true,
+              "description": "Enable or disable probes",
+              "required": [],
+              "title": "enabled",
+              "type": "boolean"
+            },
+            "liveness": {
+              "additionalProperties": false,
+              "description": "livenessProbe:\n  successThreshold: 1\n  tcpSocket:\n    port: admin",
+              "properties": {
+                "failureThreshold": {
+                  "default": 6,
+                  "description": "Set the failure threshold",
+                  "required": [],
+                  "title": "failureThreshold",
+                  "type": "integer"
+                },
+                "grpc": {
+                  "default": "",
+                  "description": "Specify grpc probes for a port. Needs `port` child stanza",
+                  "required": [],
+                  "title": "grpc",
+                  "type": "null"
+                },
+                "initialDelaySeconds": {
+                  "default": 0,
+                  "description": "Set the initial delay for the probe",
+                  "required": [],
+                  "title": "initialDelaySeconds",
+                  "type": "integer"
+                },
+                "path": {
+                  "default": "/actuator/health/liveness",
+                  "description": "Set the path for liveness probe",
+                  "required": [],
+                  "title": "path",
+                  "type": "string"
+                },
+                "periodSeconds": {
+                  "default": 5,
+                  "description": "Set the period of checking",
+                  "required": [],
+                  "title": "periodSeconds",
+                  "type": "integer"
+                },
+                "successThreshold": {
+                  "default": 1,
+                  "description": "Set the success threshold",
+                  "required": [],
+                  "title": "successThreshold",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "path",
+                "initialDelaySeconds",
+                "successThreshold",
+                "failureThreshold",
+                "periodSeconds",
+                "grpc"
+              ],
+              "title": "liveness",
+              "type": "object"
+            },
+            "readiness": {
+              "additionalProperties": false,
+              "properties": {
+                "failureThreshold": {
+                  "default": 6,
+                  "description": "Set the failure threshold",
+                  "required": [],
+                  "title": "failureThreshold",
+                  "type": "integer"
+                },
+                "grpc": {
+                  "default": "",
+                  "description": "Specify grpc probes for a port. Needs `port` child stanza",
+                  "required": [],
+                  "title": "grpc",
+                  "type": "null"
+                },
+                "initialDelaySeconds": {
+                  "default": 0,
+                  "description": "Set the initial delay for the probe",
+                  "required": [],
+                  "title": "initialDelaySeconds",
+                  "type": "integer"
+                },
+                "path": {
+                  "default": "/actuator/health/readiness",
+                  "description": "Set the path for liveness probe",
+                  "required": [],
+                  "title": "path",
+                  "type": "string"
+                },
+                "periodSeconds": {
+                  "default": 5,
+                  "description": "Set the period of checking",
+                  "required": [],
+                  "title": "periodSeconds",
+                  "type": "integer"
+                },
+                "successThreshold": {
+                  "default": 1,
+                  "description": "Set the success threshold",
+                  "required": [],
+                  "title": "successThreshold",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "path",
+                "initialDelaySeconds",
+                "successThreshold",
+                "failureThreshold",
+                "periodSeconds",
+                "grpc"
+              ],
+              "title": "readiness",
+              "type": "object"
+            },
+            "spec": {
+              "default": "",
+              "description": "Override with k8s spec for custom probes",
+              "required": [],
+              "title": "spec",
+              "type": "null"
+            },
+            "startup": {
+              "additionalProperties": false,
+              "properties": {
+                "failureThreshold": {
+                  "default": 300,
+                  "description": "Set the failure threshold",
+                  "required": [],
+                  "title": "failureThreshold",
+                  "type": "integer"
+                },
+                "grpc": {
+                  "default": "",
+                  "description": "Specify grpc probes for a port. Needs `port` child stanza",
+                  "required": [],
+                  "title": "grpc",
+                  "type": "null"
+                },
+                "periodSeconds": {
+                  "default": 1,
+                  "description": "Set the period of checking",
+                  "required": [],
+                  "title": "periodSeconds",
+                  "type": "integer"
+                }
+              },
+              "required": ["failureThreshold", "periodSeconds", "grpc"],
+              "title": "startup",
+              "type": "object"
+            }
+          },
+          "required": ["enabled", "spec", "liveness", "readiness", "startup"],
+          "title": "probes",
+          "type": "object"
+        },
+        "prometheus": {
+          "additionalProperties": false,
+          "description": "- name: PORT\n  value: \"{{ .Values.service.internalPort }}\"",
+          "properties": {
+            "enabled": {
+              "default": false,
+              "description": "Enable or disable Prometheus",
+              "required": [],
+              "title": "enabled",
+              "type": "boolean"
+            },
+            "path": {
+              "default": "/actuator/prometheus",
+              "description": "Set the path for scraping metrics",
+              "required": [],
+              "title": "path",
+              "type": "string"
+            },
+            "port": {
+              "default": "",
+              "description": "(int) Set the port for prometheus scraping",
+              "required": [],
+              "title": "port",
+              "type": "null"
+            }
+          },
+          "required": ["enabled", "path", "port"],
+          "title": "prometheus",
+          "type": "object"
+        },
+        "replicas": {
+          "default": "",
+          "description": "(int) Set the target replica count, if equal to 1 the PDB minAvailable will be set to 100%",
+          "required": [],
+          "title": "replicas",
+          "type": "null"
+        },
+        "terminationGracePeriodSeconds": {
+          "default": "",
+          "description": "(int) Override pod terminationGracePeriodSeconds (default 30s).",
+          "required": [],
+          "title": "terminationGracePeriodSeconds",
+          "type": "null"
+        },
+        "uid": {
+          "default": 1000,
+          "description": "Set the uid that your user runs with",
+          "required": [],
+          "title": "uid",
+          "type": "integer"
+        },
+        "volumeMounts": {
+          "description": "Configure volume mounts, accepts kubernetes syntax",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "volumeMounts",
+          "type": "array"
+        },
+        "volumes": {
+          "description": "Configure volume, accepts kubernetes syntax",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "volumes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "labels",
+        "command",
+        "args",
+        "cpu",
+        "cpuLimit",
+        "memory",
+        "memoryLimit",
+        "uid",
+        "replicas",
+        "forceReplicas",
+        "minAvailable",
+        "maxReplicas",
+        "envFrom",
+        "env",
+        "prometheus",
+        "probes",
+        "volumeMounts",
+        "volumes",
+        "terminationGracePeriodSeconds",
+        "lifecycle"
+      ],
+      "title": "container",
+      "type": "object"
+    },
+    "containers": {
+      "description": "Takes a list of `container` entries, you must add a `name` field for each entry",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "containers",
+      "type": "array"
+    },
+    "cron": {
+      "additionalProperties": false,
+      "properties": {
+        "concurrencyPolicy": {
+          "default": "",
+          "description": "Concurrency policy",
+          "required": [],
+          "title": "concurrencyPolicy",
+          "type": "null"
+        },
+        "enabled": {
+          "default": false,
+          "description": "Enable or disable the cron job",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "failedJobsHistoryLimit": {
+          "default": "",
+          "description": "(int) Failed jobs history limit",
+          "required": [],
+          "title": "failedJobsHistoryLimit",
+          "type": "null"
+        },
+        "labels": {
+          "additionalProperties": false,
+          "description": "Add labels to your pods",
+          "required": [],
+          "title": "labels",
+          "type": "object"
+        },
+        "restartPolicy": {
+          "default": "",
+          "description": "Override pod restartPolicy (default OnFailure).",
+          "required": [],
+          "title": "restartPolicy",
+          "type": "null"
+        },
+        "schedule": {
+          "default": "",
+          "description": "Required crontab schedule `* * * * * *`",
+          "required": [],
+          "title": "schedule",
+          "type": "null"
+        },
+        "serviceAccountName": {
+          "default": "",
+          "description": "Override pod serviceAccountName (default application).",
+          "required": [],
+          "title": "serviceAccountName",
+          "type": "null"
+        },
+        "successfulJobsHistoryLimit": {
+          "default": "",
+          "description": "(int) Successful jobs history limit",
+          "required": [],
+          "title": "successfulJobsHistoryLimit",
+          "type": "null"
+        },
+        "suspend": {
+          "default": "",
+          "description": "Suspend flag",
+          "required": [],
+          "title": "suspend",
+          "type": "null"
+        },
+        "terminationGracePeriodSeconds": {
+          "default": "",
+          "description": "(int) Override pod terminationGracePeriodSeconds (default 30s).",
+          "required": [],
+          "title": "terminationGracePeriodSeconds",
+          "type": "null"
+        },
+        "volumes": {
+          "description": "Configure volume, accepts kubernetes syntax",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "volumes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "enabled",
+        "concurrencyPolicy",
+        "failedJobsHistoryLimit",
+        "schedule",
+        "successfulJobsHistoryLimit",
+        "suspend",
+        "labels",
+        "volumes",
+        "terminationGracePeriodSeconds",
+        "restartPolicy",
+        "serviceAccountName"
+      ],
+      "title": "cron",
+      "type": "object"
+    },
+    "deployment": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "description": "Enable or disable the deployment",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "forceReplicas": {
+          "default": "",
+          "description": "(int) Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy",
+          "required": [],
+          "title": "forceReplicas",
+          "type": "null"
+        },
+        "labels": {
+          "additionalProperties": false,
+          "description": "Add labels to your pods",
+          "required": [],
+          "title": "labels",
+          "type": "object"
+        },
+        "maxReplicas": {
+          "default": "",
+          "description": "Set the max replica count",
+          "required": [],
+          "title": "maxReplicas",
+          "type": "null"
+        },
+        "maxSurge": {
+          "default": "",
+          "description": "Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas.",
+          "required": [],
+          "title": "maxSurge",
+          "type": "null"
+        },
+        "maxUnavailable": {
+          "default": "",
+          "description": "Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas.",
+          "required": [],
+          "title": "maxUnavailable",
+          "type": "null"
+        },
+        "minAvailable": {
+          "default": "",
+          "description": "(string) Set minimum available %",
+          "required": [],
+          "title": "minAvailable",
+          "type": "null"
+        },
+        "minReadySeconds": {
+          "default": 0,
+          "description": "See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds",
+          "required": [],
+          "title": "minReadySeconds",
+          "type": "integer"
+        },
+        "replicas": {
+          "default": "",
+          "description": "Prometheus\nprometheus: same as container.prometheus stanza\nSet the target replica count",
+          "required": [],
+          "title": "replicas",
+          "type": "null"
+        },
+        "serviceAccountName": {
+          "default": "",
+          "description": "Override pod serviceAccountName (default application).",
+          "required": [],
+          "title": "serviceAccountName",
+          "type": "null"
+        },
+        "terminationGracePeriodSeconds": {
+          "default": "",
+          "description": "(int) Override pod terminationGracePeriodSeconds (default 30s).",
+          "required": [],
+          "title": "terminationGracePeriodSeconds",
+          "type": "null"
+        },
+        "volumes": {
+          "description": "Configure volume, accepts kubernetes syntax",
+          "items": {
+            "required": []
+          },
+          "required": [],
+          "title": "volumes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "enabled",
+        "labels",
+        "volumes",
+        "replicas",
+        "maxReplicas",
+        "forceReplicas",
+        "terminationGracePeriodSeconds",
+        "minAvailable",
+        "maxSurge",
+        "maxUnavailable",
+        "serviceAccountName",
+        "minReadySeconds"
+      ],
+      "title": "deployment",
+      "type": "object"
+    },
+    "env": {
+      "default": "",
+      "description": "The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd`",
+      "required": [],
+      "title": "env",
+      "type": "null"
+    },
+    "global": {
+      "description": "Global values are values that can be accessed from any chart or subchart by exactly the same name.",
+      "required": [],
+      "title": "global",
+      "type": "object"
+    },
+    "grpc": {
+      "default": false,
+      "description": "Enable gRPC which will add an annotation and use grpc probes",
+      "required": [],
+      "title": "grpc",
+      "type": "boolean"
+    },
+    "hpa": {
+      "additionalProperties": false,
+      "properties": {
+        "spec": {
+          "additionalProperties": false,
+          "description": "Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas.\nps: Reason why we have set 100% cpu as default is because the java applications are resource hogs during startup.\n    If you have good startupProbe/readinessProbes in place you can lower the cpu average utilization to ie 50/60%.\n    - Or scale on other (custom) metrics.",
+          "required": [],
+          "title": "spec",
+          "type": "object"
+        }
+      },
+      "required": ["spec"],
+      "title": "hpa",
+      "type": "object"
+    },
+    "ingress": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": false,
+          "description": "Optionally set annotations for the ingress",
+          "required": [],
+          "title": "annotations",
+          "type": "object"
+        },
+        "enabled": {
+          "default": true,
+          "description": "Enable or disable the ingress",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "host": {
+          "default": "",
+          "description": "Set the host name, do this in your `values-kub-ent-$env.yaml` files",
+          "required": [],
+          "title": "host",
+          "type": "null"
+        },
+        "trafficType": {
+          "default": "",
+          "description": "Set the traffic type (`api`,`public` or `http2` for gRPC)",
+          "required": [],
+          "title": "trafficType",
+          "type": "null"
+        }
+      },
+      "required": ["enabled", "host", "trafficType", "annotations"],
+      "title": "ingress",
+      "type": "object"
+    },
+    "ingresses": {
+      "description": "Specify a list of `ingress` specs",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "ingresses",
+      "type": "array"
+    },
+    "initContainers": {
+      "description": "Takes a list of initContainers\nSee: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "initContainers",
+      "type": "array"
+    },
+    "labels": {
+      "additionalProperties": false,
+      "description": "Specify additional labels for every resource",
+      "required": [],
+      "title": "labels",
+      "type": "object"
+    },
+    "pdb": {
+      "additionalProperties": false,
+      "properties": {
+        "minAvailable": {
+          "default": "",
+          "description": "(string) Set minimum available %, this overrides pdb setting minAvailable in deployment/container",
+          "required": [],
+          "title": "minAvailable",
+          "type": "null"
+        }
+      },
+      "required": ["minAvailable"],
+      "title": "pdb",
+      "type": "object"
+    },
+    "postgres": {
+      "additionalProperties": false,
+      "properties": {
+        "connectionConfig": {
+          "default": "",
+          "description": "Override name for connection configmap. This must at least contain `INSTANCES`.",
+          "required": [],
+          "title": "connectionConfig",
+          "type": "null"
+        },
+        "cpu": {
+          "default": 0.05,
+          "description": "Configure cpu request for proxy",
+          "required": [],
+          "title": "cpu",
+          "type": "number"
+        },
+        "cpuLimit": {
+          "default": "",
+          "description": "(float) Configure optional cpu limit for proxy",
+          "required": [],
+          "title": "cpuLimit",
+          "type": "null"
+        },
+        "credentialsSecret": {
+          "default": "",
+          "description": "Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`.",
+          "required": [],
+          "title": "credentialsSecret",
+          "type": "null"
+        },
+        "enabled": {
+          "default": false,
+          "description": "Enable or disable the proxy",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "memory": {
+          "default": 16,
+          "description": "Configure memory request for proxy without units, `Mi` inferred",
+          "required": [],
+          "title": "memory",
+          "type": "integer"
+        },
+        "memoryLimit": {
+          "default": 16,
+          "description": "Configure memoryLimit for proxy without units, `Mi` inferred",
+          "required": [],
+          "title": "memoryLimit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "enabled",
+        "cpu",
+        "cpuLimit",
+        "memory",
+        "memoryLimit",
+        "connectionConfig",
+        "credentialsSecret"
+      ],
+      "title": "postgres",
+      "type": "object"
+    },
+    "releaseName": {
+      "default": "",
+      "description": "Override release name, useful for multiple deployments",
+      "required": [],
+      "title": "releaseName",
+      "type": "null"
+    },
+    "secrets": {
+      "additionalProperties": false,
+      "description": "Add externalSecret to sync secrets from secret manager",
+      "required": [],
+      "title": "secrets",
+      "type": "object"
+    },
+    "service": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": false,
+          "description": "Optionally set annotations for the service",
+          "required": [],
+          "title": "annotations",
+          "type": "object"
+        },
+        "enabled": {
+          "default": true,
+          "description": "Enable or disable the service",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "externalPort": {
+          "default": 80,
+          "description": "Set the external port for your service",
+          "required": [],
+          "title": "externalPort",
+          "type": "integer"
+        },
+        "internalPort": {
+          "default": 8080,
+          "description": "Set the internal port for your service",
+          "required": [],
+          "title": "internalPort",
+          "type": "integer"
+        }
+      },
+      "required": ["enabled", "externalPort", "internalPort", "annotations"],
+      "title": "service",
+      "type": "object"
+    },
+    "shortname": {
+      "default": "",
+      "description": "`id` for GCP 2.0, typically on the form `theapp`. Max 10 characters",
+      "required": [],
+      "title": "shortname",
+      "type": "null"
+    },
+    "team": {
+      "default": "",
+      "description": "Your team name, without a `team-` prefix",
+      "required": [],
+      "title": "team",
+      "type": "null"
+    },
+    "vpa": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "description": "Enable Vertical Pod Autoscaler to get resource requirement and limit recommendations",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        }
+      },
+      "required": ["enabled"],
+      "title": "vpa",
+      "type": "object"
+    }
+  },
+  "required": [
+    "app",
+    "shortname",
+    "team",
+    "env",
+    "releaseName",
+    "labels",
+    "ingress",
+    "ingresses",
+    "grpc",
+    "deployment",
+    "cron",
+    "hpa",
+    "pdb",
+    "service",
+    "containers",
+    "container",
+    "initContainers",
+    "postgres",
+    "configmap",
+    "secrets",
+    "vpa"
+  ],
+  "type": "object"
+}
