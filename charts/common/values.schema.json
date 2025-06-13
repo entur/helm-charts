@@ -14,7 +14,6 @@
       "additionalProperties": false,
       "properties": {
         "data": {
-          "additionalProperties": false,
           "description": "Set data for configmap",
           "type": "object"
         },
@@ -94,7 +93,7 @@
         },
         "minAvailable": {
           "description": "Set the minimal available replicas, used by PDB",
-          "type": ["string", "null"]
+          "type": ["integer", "string", "null"]
         },
         "name": {
           "description": "Name of container",
@@ -283,7 +282,6 @@
           "type": ["integer", "null"]
         },
         "labels": {
-          "additionalProperties": false,
           "description": "Add labels to your pods",
           "type": "object"
         },
