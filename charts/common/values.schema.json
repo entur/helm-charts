@@ -438,7 +438,7 @@
           "type": "array"
         }
       },
-      "required": ["host", "trafficType"],
+      "required": ["trafficType"],
       "type": "object"
     },
     "ingresses": {
