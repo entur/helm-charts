@@ -71,6 +71,9 @@
           "description": "Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy",
           "type": ["integer", "null"]
         },
+        "image": {
+          "type": ["string", "null"]
+        },
         "labels": {
           "description": "Add labels to your pods",
           "type": "object"
@@ -100,6 +103,13 @@
           "description": "Name of container",
           "type": ["string", "null"]
         },
+        "ports": {
+          "description": "Set ports for your container, accepts kubernetes syntax",
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
         "probes": {
           "additionalProperties": false,
           "properties": {
@@ -110,7 +120,7 @@
             },
             "liveness": {
               "additionalProperties": false,
-              "description": "livenessProbe:\n  successThreshold: 1\n  tcpSocket:\n    port: admin",
+              "description": "Configure liveness probes",
               "properties": {
                 "failureThreshold": {
                   "default": 6,
@@ -140,6 +150,10 @@
                   "default": 1,
                   "description": "Set the success threshold",
                   "type": "integer"
+                },
+                "port": {
+                  "description": "Set the port for liveness probe",
+                  "type": ["integer", "null"]
                 }
               },
               "type": "object"
@@ -175,6 +189,10 @@
                   "default": 1,
                   "description": "Set the success threshold",
                   "type": "integer"
+                },
+                "port": {
+                  "description": "Set the port for liveness probe",
+                  "type": ["integer", "null"]
                 }
               },
               "type": "object"
@@ -199,6 +217,10 @@
                   "default": 1,
                   "description": "Set the period of checking",
                   "type": "integer"
+                },
+                "port": {
+                  "description": "Set the port for liveness probe",
+                  "type": ["integer", "null"]
                 }
               },
               "type": "object"
@@ -208,7 +230,7 @@
         },
         "prometheus": {
           "additionalProperties": false,
-          "description": "- name: PORT\n  value: \"{{ .Values.service.internalPort }}\"",
+          "description": "Enable Prometheus scraping for this container",
           "properties": {
             "enabled": {
               "default": false,
@@ -255,7 +277,6 @@
           "type": "array"
         }
       },
-      "required": ["image"],
       "type": "object"
     },
     "containers": {
@@ -318,7 +339,6 @@
           "type": "array"
         }
       },
-      "required": ["schedule"],
       "type": "object"
     },
     "deployment": {
@@ -344,7 +364,7 @@
         },
         "maxSurge": {
           "description": "Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas.",
-          "type": ["string", "null"]
+          "type": ["integer", "string", "null"]
         },
         "maxUnavailable": {
           "description": "Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas.",
@@ -358,6 +378,9 @@
           "default": 0,
           "description": "See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds",
           "type": "integer"
+        },
+        "prometheus": {
+          "$ref": "#/properties/container/properties/prometheus"
         },
         "replicas": {
           "description": "Set the target replica count",
@@ -394,7 +417,6 @@
       "additionalProperties": false,
       "properties": {
         "spec": {
-          "additionalProperties": false,
           "description": "Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas.\nps: Reason why we have set 100% cpu as default is because the java applications are resource hogs during startup.\n    If you have good startupProbe/readinessProbes in place you can lower the cpu average utilization to ie 50/60%.\n    - Or scale on other (custom) metrics.",
           "type": "object"
         }
@@ -405,7 +427,6 @@
       "additionalProperties": false,
       "properties": {
         "annotations": {
-          "additionalProperties": false,
           "description": "Optionally set annotations for the ingress",
           "type": "object"
         },
@@ -421,6 +442,13 @@
         "trafficType": {
           "description": "Set the traffic type (`api`,`public` or `http2` for gRPC)",
           "type": ["string", "null"]
+        },
+        "rules": {
+          "description": "Set rules for the ingress, accepts kubernetes syntax",
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
         }
       },
       "required": ["host", "trafficType"],
