@@ -530,6 +530,16 @@
       },
       "type": "object"
     },
+    "serviceAccount": {
+      "additionalProperties": false,
+      "properties": {
+        "create": {
+          "description": "Create a service account for this application",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
     "shortname": {
       "description": "`id` for GCP 2.0, typically on the form `theapp`. Max 10 characters",
       "type": ["string", "null"]
