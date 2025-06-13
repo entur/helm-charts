@@ -106,7 +106,7 @@
         },
         "minAvailable": {
           "description": "Set the minimal available replicas, used by PDB",
-          "type": ["integer", "string", "null"]
+          "type": ["string", "integer", "null"]
         },
         "name": {
           "description": "Name of container",
@@ -362,7 +362,7 @@
         },
         "minAvailable": {
           "description": "Set minimum available %",
-          "type": ["string", "null"]
+          "type": ["string", "integer", "null"]
         },
         "minReadySeconds": {
           "description": "See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds",
@@ -463,7 +463,7 @@
       "properties": {
         "minAvailable": {
           "description": "Set minimum available %, this overrides pdb setting minAvailable in deployment/container",
-          "type": ["string", "null"]
+          "type": ["string", "integer", "null"]
         }
       },
       "type": "object"
@@ -476,11 +476,11 @@
         },
         "cpu": {
           "description": "Configure cpu request for proxy",
-          "type": "number"
+          "type": ["string", "number", "null"]
         },
         "cpuLimit": {
           "description": "Configure optional cpu limit for proxy",
-          "type": ["number", "null"]
+          "type": ["string", "number", "null"]
         },
         "credentialsSecret": {
           "description": "Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`.",
