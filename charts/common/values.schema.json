@@ -64,11 +64,24 @@
           },
           "type": "array"
         },
+        "ephemeralStorage": {
+          "description": "Set ephemeral storage",
+          "type": ["string", "null"]
+        },
+        "ephemeralStorageLimit": {
+          "description": "Set ephemeral storage limit",
+          "type": ["string", "null"]
+        },
         "forceReplicas": {
           "description": "Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy",
           "type": ["integer", "null"]
         },
+        "grpc": {
+          "description": "Enable gRPC which will add an annotation and use grpc probes",
+          "type": ["boolean"]
+        },
         "image": {
+          "description": "Set the image for your container",
           "type": ["string", "null"]
         },
         "labels": {
