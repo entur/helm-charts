@@ -46,7 +46,6 @@ tests:
   - it: must use default with 2 maxreplicas or more in prod
     set:
       env: prd
-      maxReplicas: 3
     asserts:
       - equal:
           path: spec.minAvailable
