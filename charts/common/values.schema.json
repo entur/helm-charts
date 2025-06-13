@@ -19,7 +19,6 @@
           "type": "object"
         },
         "enabled": {
-          "default": false,
           "description": "Enable or disable the configmap",
           "type": "boolean"
         }
@@ -45,7 +44,6 @@
           }
         },
         "cpu": {
-          "default": 0.1,
           "description": "Set CPU without any unit. 100m is 0.1",
           "type": ["string", "number"]
         },
@@ -87,7 +85,6 @@
           "type": ["integer", "null"]
         },
         "memory": {
-          "default": 16,
           "description": "Set memory without any unit, `Mi` is inferred",
           "type": "integer"
         },
@@ -114,7 +111,6 @@
           "additionalProperties": false,
           "properties": {
             "enabled": {
-              "default": true,
               "description": "Enable or disable probes",
               "type": "boolean"
             },
@@ -123,7 +119,6 @@
               "description": "Configure liveness probes",
               "properties": {
                 "failureThreshold": {
-                  "default": 6,
                   "description": "Set the failure threshold",
                   "type": "integer"
                 },
@@ -132,22 +127,18 @@
                   "type": ["object", "null"]
                 },
                 "initialDelaySeconds": {
-                  "default": 0,
                   "description": "Set the initial delay for the probe",
                   "type": "integer"
                 },
                 "path": {
-                  "default": "/actuator/health/liveness",
                   "description": "Set the path for liveness probe",
                   "type": "string"
                 },
                 "periodSeconds": {
-                  "default": 5,
                   "description": "Set the period of checking",
                   "type": "integer"
                 },
                 "successThreshold": {
-                  "default": 1,
                   "description": "Set the success threshold",
                   "type": "integer"
                 },
@@ -162,7 +153,6 @@
               "additionalProperties": false,
               "properties": {
                 "failureThreshold": {
-                  "default": 6,
                   "description": "Set the failure threshold",
                   "type": "integer"
                 },
@@ -171,22 +161,18 @@
                   "type": ["object", "null"]
                 },
                 "initialDelaySeconds": {
-                  "default": 0,
                   "description": "Set the initial delay for the probe",
                   "type": "integer"
                 },
                 "path": {
-                  "default": "/actuator/health/readiness",
                   "description": "Set the path for liveness probe",
                   "type": "string"
                 },
                 "periodSeconds": {
-                  "default": 5,
                   "description": "Set the period of checking",
                   "type": "integer"
                 },
                 "successThreshold": {
-                  "default": 1,
                   "description": "Set the success threshold",
                   "type": "integer"
                 },
@@ -205,7 +191,6 @@
               "additionalProperties": false,
               "properties": {
                 "failureThreshold": {
-                  "default": 300,
                   "description": "Set the failure threshold",
                   "type": "integer"
                 },
@@ -214,7 +199,6 @@
                   "type": ["object", "null"]
                 },
                 "periodSeconds": {
-                  "default": 1,
                   "description": "Set the period of checking",
                   "type": "integer"
                 },
@@ -233,12 +217,10 @@
           "description": "Enable Prometheus scraping for this container",
           "properties": {
             "enabled": {
-              "default": false,
               "description": "Enable or disable Prometheus",
               "type": "boolean"
             },
             "path": {
-              "default": "/actuator/prometheus",
               "description": "Set the path for scraping metrics",
               "type": "string"
             },
@@ -258,7 +240,6 @@
           "type": ["integer", "null"]
         },
         "uid": {
-          "default": 1000,
           "description": "Set the uid that your user runs with",
           "type": "integer"
         },
@@ -294,7 +275,6 @@
           "type": ["string", "null"]
         },
         "enabled": {
-          "default": false,
           "description": "Enable or disable the cron job",
           "type": "boolean"
         },
@@ -345,7 +325,6 @@
       "additionalProperties": false,
       "properties": {
         "enabled": {
-          "default": true,
           "description": "Enable or disable the deployment",
           "type": "boolean"
         },
@@ -375,7 +354,6 @@
           "type": ["string", "null"]
         },
         "minReadySeconds": {
-          "default": 0,
           "description": "See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds",
           "type": "integer"
         },
@@ -409,7 +387,6 @@
       "type": ["string"]
     },
     "grpc": {
-      "default": false,
       "description": "Enable gRPC which will add an annotation and use grpc probes",
       "type": "boolean"
     },
@@ -431,7 +408,6 @@
           "type": "object"
         },
         "enabled": {
-          "default": true,
           "description": "Enable or disable the ingress",
           "type": "boolean"
         },
@@ -488,7 +464,6 @@
           "type": ["string", "null"]
         },
         "cpu": {
-          "default": 0.05,
           "description": "Configure cpu request for proxy",
           "type": "number"
         },
@@ -501,17 +476,14 @@
           "type": ["string", "null"]
         },
         "enabled": {
-          "default": false,
           "description": "Enable or disable the proxy",
           "type": "boolean"
         },
         "memory": {
-          "default": 16,
           "description": "Configure memory request for proxy without units, `Mi` inferred",
           "type": "integer"
         },
         "memoryLimit": {
-          "default": 16,
           "description": "Configure memoryLimit for proxy without units, `Mi` inferred",
           "type": "integer"
         }
@@ -533,17 +505,14 @@
           "type": "object"
         },
         "enabled": {
-          "default": true,
           "description": "Enable or disable the service",
           "type": "boolean"
         },
         "externalPort": {
-          "default": 80,
           "description": "Set the external port for your service",
           "type": "integer"
         },
         "internalPort": {
-          "default": 8080,
           "description": "Set the internal port for your service",
           "type": "integer"
         }
@@ -562,7 +531,6 @@
       "additionalProperties": false,
       "properties": {
         "enabled": {
-          "default": true,
           "description": "Enable Vertical Pod Autoscaler to get resource requirement and limit recommendations",
           "type": "boolean"
         }
