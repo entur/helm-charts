@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.4](https://github.com/entur/helm-charts/compare/common-v1.20.3...common-v1.20.4) (2025-07-30)
+
+
+### Bug Fixes
+
+* allow manual run to bump versions ([#214](https://github.com/entur/helm-charts/issues/214)) ([0b1bbe9](https://github.com/entur/helm-charts/commit/0b1bbe97278ea81ce36bfdc476fc6f13c7e53183))
+
 ## [1.20.3](https://github.com/entur/helm-charts/compare/common-v1.20.2...common-v1.20.3) (2025-03-18)
 
 
