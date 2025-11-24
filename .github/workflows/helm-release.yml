@@ -7,57 +7,59 @@ on:
   workflow_dispatch:
 
 jobs:
-  helm-release:
-    name: helm release
-    runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        chart: [common]
+  release:
+    name: Release
+    uses: entur/gha-meta/.github/workflows/release.yml@v1
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    with:
+      release_type: manifest # use release-please-config.json and .release-please-manifest.json
+      config_file: .github/release-please-config.json # default /release-please-config.json
+      manifest_file: .github/release-please-manifest.json # default /.release-please-manifest.json
 
+  release-debug:
+    needs: release
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Output release-please manifest
+        run: |
+          echo '${{ toJson(needs) }}'
+
+  helm-doc-example-update:
+    if: ${{ needs.release.result == 'success' && needs.release.outputs.releases_created  != 'true' }}
+    name: Update helm chart versions in examples and docs
+    runs-on: ubuntu-24.04
+    needs: release
+    permissions:
+      contents: write
     steps:
       - name: Checkout source code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
-
-      - name: Helm Release
-        id: release
-        uses: google-github-actions/release-please-action@v3 # not compatible with v4 - needs rewrite and use of release-please-config.json file to split the charts
-        with:
-          monorepo-tags: true
-          package-name: ${{ matrix.chart }}
-          path: charts/${{ matrix.chart }}
-          release-type: helm
-          draft-pull-request: true
-
-      - if: ${{ steps.release.outputs.releases_created }}
-        name: Publish Helm charts
-        uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260 # v1.7.0
-        with:
-          index_dir: "."
-          linting: "off"
-          target_dir: "archive"
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - if: ${{ steps.release.outputs.major != '' }} && ${{ steps.release.outputs.minor != '' }} && ${{ steps.release.outputs.patch != ''  }}
-        name: Add helm-docs common changes to release branch
-        env:
-          VERSION: "${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}"
+      - name: Add helm-docs common changes to release branch
         run: |
-          printf "Updating Helm chart documentation for version %s\n" $VERSION
+          CUR_CHART="common" # TODO get from release-please manifest output
 
+          printf "Updating Helm chart %s documentation for version %s\n" $CUR_CHART $VERSION
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
           # get the latest changes
           git pull
           # luckily the release branch is always the same
-          git switch release-please--branches--main--components--common
+          git switch release-please--branches--main--components--$CUR_CHART
+
+          # get version from release-please-manifest.json
+          export VERSION=$(jq -r '.["charts/'"$CUR_CHART"'"]' .github/release-please-manifest.json)
+          printf "Version: %s\n" $VERSION
 
           # Update the version in examples directory
-          all_charts=$(find ./examples -name Chart.yaml)
+          all_charts=$(find ./examples/$CUR_CHART -name Chart.yaml)
           for chart in $all_charts; do
-            yq -e -i '(.dependencies[] | select(.name == "common") | .version) = env(VERSION)' "${chart}"
+            yq -e -i '(.dependencies[] | select(.name == "'$CUR_CHART'") | .version) = env(VERSION)' "${chart}"
           done
 
           # Install and run helm-docs
@@ -74,3 +76,24 @@ jobs:
             echo "Helm versions are up to date"
             exit 0
           fi
+
+  helm-release:
+    if: ${{ needs.release.outputs.releases_created == 'true' }}
+    name: helm release
+    runs-on: ubuntu-24.04
+    needs: release
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - name: Publish Helm charts
+        uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260 # v1.7.0
+        with:
+          index_dir: "."
+          linting: "off"
+          target_dir: "archive"
+          token: ${{ secrets.GITHUB_TOKEN }}

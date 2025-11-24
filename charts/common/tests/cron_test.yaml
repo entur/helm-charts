@@ -110,7 +110,7 @@ tests:
           value: 60
   - it: spec does not contain terminationGracePeriodSeconds if missing from values
     asserts:
-      - isNull:
+      - notExists:
           path: spec.jobTemplate.spec.template.spec.terminationGracePeriodSeconds
   - it: command use correct value
     set:
@@ -124,7 +124,7 @@ tests:
           value: ["/bin/sh"]
   - it: spec does not contain command if missing from values
     asserts:
-      - isNull:
+      - notExists:
           path: spec.jobTemplate.spec.template.spec.containers[0].command
   - it: args use correct value
     set:
@@ -138,7 +138,7 @@ tests:
           value: ["-c", "gcloud sql export"]
   - it: spec does not contain args if missing from values
     asserts:
-      - isNull:
+      - notExists:
           path: spec.jobTemplate.spec.template.spec.containers[0].args
   - it: restartPolicy use correct default value
     set:
@@ -221,3 +221,22 @@ tests:
       - equal:
           path: spec.schedule
           value: "30 04 * * *"
+  - it: activeDeadlineSeconds use correct default value
+    set:
+      cron:
+        enabled: true
+        schedule: "30 04 * ? *"
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.activeDeadlineSeconds
+          value: 86300
+  - it: activeDeadlineSeconds use correct value when overridden
+    set:
+      cron:
+        enabled: true
+        schedule: "30 04 * ? *"
+        activeDeadlineSeconds: 1200
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.activeDeadlineSeconds
+          value: 1200

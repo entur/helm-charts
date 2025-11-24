@@ -1,0 +1,17 @@
+{
+  "include-component-in-tag": true,
+  "include-v-in-tag": true,
+  "separate-pull-requests": true,
+  "packages": {
+    "charts/common": {
+      "component": "common",
+      "package-name": "common",
+      "commit-search-depth": 100,
+      "labels": ["helm-chart: common"],
+      "release-type": "helm",
+      "pull-request-title-pattern": "chore(common): release v${version}",
+      "extra-files": ["README.md"]
+    }
+  },
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+}

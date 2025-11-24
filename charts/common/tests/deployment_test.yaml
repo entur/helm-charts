@@ -130,7 +130,7 @@ tests:
         replicas: 3
         maxReplicas: 8
     asserts:
-      - isNull:
+      - notExists:
           path: spec.replicas
   - it: must use 1 replica if forceReplicas is 1 and recreate
     set:
@@ -239,7 +239,7 @@ tests:
           value: 60
   - it: spec does not contain terminationGracePeriodSeconds if missing from values
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.terminationGracePeriodSeconds
   - it: override credentialsSecret
     set:
@@ -273,7 +273,7 @@ tests:
           value: ["/bin/sh"]
   - it: spec does not contain command if missing from values
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.containers[0].command
   - it: args use correct value
     set:
@@ -289,7 +289,7 @@ tests:
           value: ["-c", "gcloud sql export"]
   - it: spec does not contain args if missing from values
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.containers[0].args
   - it: set lifecycle hooks
     set:
@@ -336,7 +336,7 @@ tests:
           probes:
             enabled: false
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.containers[0].livenessProbe
   - it: can override probes
     set:
@@ -393,7 +393,7 @@ tests:
           value: override-two-secrets
   - it: has no envFrom with no secrets
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.containers[0].envFrom
   - it: Spec secret RUDDER_SECRET must be set
     values:
@@ -407,7 +407,7 @@ tests:
       container:
         image: img
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.terminationGracePeriodSeconds
   - it: must adopt for gRPC
     set:
@@ -433,7 +433,7 @@ tests:
         enabled: true
         cpu: 0.1
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.containers[1].resources.limits.cpu
   - it: must use 3 replicas if replicas is 3
     set:
@@ -496,7 +496,7 @@ tests:
         prometheus:
           enabled: false
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.metadata.annotations["prometheus.io/scrape"]
   - it: must mount envFrom if postgres enabled
     set:
@@ -536,7 +536,7 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
           value: rudder-test-psql-connection
-      - isNull:
+      - notExists:
           path: spec.template.spec.containers[3]
   - it: postgres cpu limit can be overridden
     release: {}
