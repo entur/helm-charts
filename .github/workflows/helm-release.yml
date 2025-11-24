@@ -27,60 +27,7 @@ jobs:
         run: |
           echo '${{ toJson(needs) }}'
 
-  helm-doc-example-update:
-    # if release was successful, but no new releases were created, and not on main branch -> release branch
-    if: ${{ needs.release.result == 'success' && needs.release.outputs.releases_created  != 'true' && github.ref != 'refs/heads/main' }}
-    name: Update helm chart versions in examples and docs
-    runs-on: ubuntu-24.04
-    needs: release
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
-      - name: Add helm-docs common changes to release branch
-        run: |
-          CUR_CHART="common" # TODO get from release-please manifest output
-
-          printf "Updating Helm chart %s documentation for version %s\n" $CUR_CHART $VERSION
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          # get the latest changes
-          git pull
-          # luckily the release branch is always the same
-          git switch release-please--branches--main--components--$CUR_CHART
-
-          # get version from release-please-manifest.json
-          export VERSION=$(jq -r '.["charts/'"$CUR_CHART"'"]' .github/release-please-manifest.json)
-          printf "Version: %s\n" $VERSION
-
-          # Update the version in examples directory
-          all_charts=$(find ./examples/$CUR_CHART -name Chart.yaml)
-          for chart in $all_charts; do
-            yq -e -i '(.dependencies[] | select(.name == "'$CUR_CHART'") | .version) = env(VERSION)' "${chart}"
-          done
-
-          # Install and run helm-docs
-          go install github.com/norwoodj/helm-docs/cmd/helm-docs@37d3055fece566105cf8cff7c17b7b2355a01677 # 1.14.2
-          export PATH=${PATH}:`go env GOPATH`/bin
-          helm-docs
-
-          if [ -n "$(git status --porcelain '*.md')" ]; then
-            git add \*README.md
-            git add \*Chart.yaml
-            git commit -m "docs: update Helm chart documentation"
-            git push
-          else
-            echo "Helm versions are up to date"
-            exit 0
-          fi
-
   helm-release:
-    # release helm chart only on main branch
-    if: ${{ github.ref == 'refs/heads/main' }}
     name: helm release
     runs-on: ubuntu-24.04
     needs: release
