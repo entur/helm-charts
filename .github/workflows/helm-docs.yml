@@ -1,4 +1,4 @@
-name: release
+name: helm-docs-and-examples-update
 
 on:
   pull_request:
