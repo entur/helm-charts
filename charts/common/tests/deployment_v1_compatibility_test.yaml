@@ -69,7 +69,7 @@ tests:
         image: img
         cpu: 0.1
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.containers[0].resources.limits.cpu
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
@@ -152,7 +152,7 @@ tests:
         enabled: true
         cpu: 0.1
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.containers[1].resources.limits.cpu
   - it: must use 3 replicas if replicas is 3
     set:
@@ -215,5 +215,5 @@ tests:
       container:
         image: img
     asserts:
-      - isNull:
+      - notExists:
           path: spec.template.spec.terminationGracePeriodSeconds

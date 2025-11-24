@@ -12,6 +12,7 @@
 {{- $cronjob := .Values.cron -}}
 {{- if $cronjob.enabled -}}
 {{- /* YAML Spec */}}
+
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -38,6 +39,7 @@ spec:
         {{- toYaml $cronjob.labels | nindent 8 }}
         {{- end }}
     spec:
+      activeDeadlineSeconds: {{ $cronjob.activeDeadlineSeconds | default 86300 }} # default 24 hours (minus 100 seconds)
       template:
         metadata:
           annotations:

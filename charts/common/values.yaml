@@ -95,7 +95,8 @@ cron:
   # -- Override pod serviceAccountName (default application).
   # @default -- application
   serviceAccountName:
-
+  # -- (int) Active deadline seconds for the job, default 24 hours (86300s)
+  activeDeadlineSeconds:
 hpa:
   # -- Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas.
   # ps: Reason why we have set 100% cpu as default is because the java applications are resource hogs during startup.
