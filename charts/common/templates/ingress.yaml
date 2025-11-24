@@ -8,7 +8,7 @@
 
 {{- /* YAML Spec */}}
 {{ range $ingresses }}
-{{- $checkTrafficType := .trafficType | required "ingress.trafficType is required." -}}
+{{- $checkTrafficType := .trafficType | required ".Values.common.ingress.trafficType is required." -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

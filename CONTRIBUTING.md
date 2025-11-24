@@ -35,6 +35,10 @@ helm plugin install https://github.com/helm-unittest/helm-unittest.git
 helm unittest ./charts/common
 ```
 
+### Update `values.schema.json` [JSON schema](https://json-schema.org/learn) if needed
+
+The `values.schema.json` file is used to validate the values files. You need to update it if you add new values or change existing ones.
+
 ### Render test values files
 
 Verify that the test value files generate ok

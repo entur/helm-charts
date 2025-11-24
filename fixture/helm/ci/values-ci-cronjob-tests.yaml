@@ -16,7 +16,7 @@ service:
 
 container:
   image: nginxinc/nginx-unprivileged:latest
-  commmand: ["/bin/sh", "-c", "echo hello world"]
+  command: ["/bin/sh", "-c", "echo hello world"]
   labels:
     version: v1.2.3
   cpu: 0.2
