@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/entur/helm-charts/compare/common-v1.21.0...common-v1.21.1) (2025-11-24)
+
+
+### Bug Fixes
+
+* switch to use v1 of external-secrets🎉 ([#230](https://github.com/entur/helm-charts/issues/230)) ([f798b3d](https://github.com/entur/helm-charts/commit/f798b3ddbe7d0164994b337a940216e154408a0b))
+
 ## [1.21.0](https://github.com/entur/helm-charts/compare/common-v1.20.3...common-v1.21.0) (2025-11-24)
 
 
