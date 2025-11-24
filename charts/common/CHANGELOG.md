@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.21.0](https://github.com/entur/helm-charts/compare/common-v1.20.3...common-v1.21.0) (2025-11-24)
+
+
+### Features
+
+* set Active deadline seconds for cronjob (fixes [#223](https://github.com/entur/helm-charts/issues/223)) ([#226](https://github.com/entur/helm-charts/issues/226)) ([599bbfe](https://github.com/entur/helm-charts/commit/599bbfe3e620d0a3c641a9317ff5e323bf3b6092))
+
+
+### Bug Fixes
+
+* allow manual run to bump versions ([#214](https://github.com/entur/helm-charts/issues/214)) ([0b1bbe9](https://github.com/entur/helm-charts/commit/0b1bbe97278ea81ce36bfdc476fc6f13c7e53183))
+
 ## [1.20.3](https://github.com/entur/helm-charts/compare/common-v1.20.2...common-v1.20.3) (2025-03-18)
 
 
