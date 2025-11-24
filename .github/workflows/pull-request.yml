@@ -4,25 +4,20 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - opened
-      - synchronize
-      - ready_for_review
+      - "!release-please--branches--**"
+    types: [opened, synchronize, reopened, ready_for_review] # all but draft
 
 jobs:
   verify-pr:
     name: Verify PR
-    if: ${{ github.event_name == 'pull_request' }}
     uses: entur/gha-meta/.github/workflows/verify-pr.yml@v1
 
   unittest-common-chart:
-    if: startsWith(github.head_ref, 'release-please--branches') == false
     uses: entur/gha-helm/.github/workflows/unittest.yml@v1
     with:
       chart: charts/common
 
   helm-install-test:
-    if: startsWith(github.head_ref, 'release-please--branches') == false
     name: helm install
     runs-on: ubuntu-24.04
     needs: unittest-common-chart
@@ -51,7 +46,6 @@ jobs:
           helm install --generate-name --dependency-update --wait --timeout 5m0s charts/common --values fixture/helm/ci/values-ci-cronjob-tests.yaml
 
   validate-examples:
-    if: startsWith(github.head_ref, 'release-please--branches') == false
     runs-on: ubuntu-24.04
     strategy:
       matrix:
