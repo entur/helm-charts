@@ -328,6 +328,10 @@
             "type": "object"
           },
           "type": "array"
+        },
+        "activeDeadlineSeconds": {
+          "description": "Active deadline seconds for job",
+          "type": ["integer", "null"]
         }
       },
       "type": "object"
