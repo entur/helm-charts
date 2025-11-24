@@ -28,7 +28,8 @@ jobs:
           echo '${{ toJson(needs) }}'
 
   helm-doc-example-update:
-    if: ${{ needs.release.result == 'success' && needs.release.outputs.releases_created  != 'true' }}
+    # if release was successful, but no new releases were created, and not on main branch -> release branch
+    if: ${{ needs.release.result == 'success' && needs.release.outputs.releases_created  != 'true' && github.ref != 'refs/heads/main' }}
     name: Update helm chart versions in examples and docs
     runs-on: ubuntu-24.04
     needs: release

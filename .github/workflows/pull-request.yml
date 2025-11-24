@@ -78,22 +78,3 @@ jobs:
         working-directory: examples/common/${{ matrix.example }}
         run: |
           helm template --dependency-update . -f env/values-kub-ent-${{ matrix.env }}.yaml
-  # tmp
-  helm-release:
-    name: helm release
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
-      - name: Publish Helm charts
-        uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260 # v1.7.0
-        with:
-          index_dir: "."
-          linting: "off"
-          target_dir: "archive"
-          token: ${{ secrets.GITHUB_TOKEN }}
