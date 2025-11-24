@@ -8,7 +8,7 @@ A Helm chart for basic Entur deployments
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://entur.github.io/helm-charts | common | 1.21.0 |
+| https://entur.github.io/helm-charts | common | 1.21.1 |
 
 ## Values
 
