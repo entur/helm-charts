@@ -1,39 +1,36 @@
-multi-1:
-  app: multi-1
-  shortname: mult1
-  team: example
-  env: dev
-  releaseName: multi1
+multi-1: # must match the multi-1 alias in Chart.yaml
+  releaseName: my-rest-api # the secret sauce to divide the two apps into separate releases
+
+  app: my-rest-api
+  shortname: myappid1 # appID, let this be the same for both multi-1 and multi-2.
+  team: team-excellence
+
   ingress:
-    trafficType: public
-  service:
-    internalPort: 9000
+    trafficType: api
   container:
     image: <+artifacts.primary.image>
-  configmap:
-    enabled: true
-    data:
-      APP1CONF: yes
+    env:
+      - name: CONTAINER_ROLE
+        value: rest-api
   secrets:
     auth-credentials: # k8s secret name "multi-1-auth-credentials"
       - MNG_AUTH0_INT_CLIENT_ID
       - MNG_AUTH0_INT_CLIENT_SECRET
-multi-2:
-  app: multi-2
-  shortname: mult2
-  team: example
-  env: dev
-  releaseName: multi2
+
+multi-2: # must match the multi-2 alias in Chart.yaml
+  releaseName: my-kafka-consumer # the secret sauce to divide the two apps into separate releases
+
+  app: my-kafka-consumer
+  shortname: myappid1 # appID, let this be the same for both multi-1 and multi-2.
+  team: team-excellence
+
   ingress:
-    trafficType: public
-  service:
-    internalPort: 9000
+    enabled: false
   container:
     image: <+artifacts.primary.image>
-  configmap:
-    enabled: true
-    data:
-      APP2CONF: yes
+    env:
+      - name: CONTAINER_ROLE
+        value: kafka-consumer
   secrets:
     auth-credentials: # k8s secret name "multi-2-auth-credentials"
       - MNG_AUTH0_INT_CLIENT_ID
