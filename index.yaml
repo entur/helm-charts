@@ -3,7 +3,7 @@ entries:
   common:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2026-02-03T09:25:41.482447973Z"
+    created: "2026-02-27T12:13:27.409751644Z"
     description: 'A Helm chart for Entur''s Kubernetes workloads  ## Highlighted features  *
       Defaults typically match a properly configured Spring Boot project * Automatic
       HA with HPA and PDB in `prd` * Enforces explicit setting of important aspecs
@@ -21,7 +21,7 @@ entries:
       Utilization               averageUtilization: 60       behavior:         scaleUp:           stabilizationWindowSeconds:
       60           policies:             - type: Pods               value: 1               periodSeconds:
       60       maxReplicas: 7       minReplicas: 2  ``` </details> '
-    digest: ba0b616b7d4a5332e6b9d6067e5957d5d413dcbaa8728c5fff5e6a42c03e0769
+    digest: 4198367ae81a0a4ad344f47efb15f0551cbafab2d83cf3b73ae2342281e4dcb8
     name: common
     type: application
     urls:
@@ -945,4 +945,4 @@ entries:
     urls:
     - https://github.com/entur/helm-charts/releases/download/common-1.0.0/common-1.0.0.tgz
     version: 1.0.0
-generated: "2026-02-03T09:25:41.481323899Z"
+generated: "2026-02-27T12:13:27.408640162Z"
