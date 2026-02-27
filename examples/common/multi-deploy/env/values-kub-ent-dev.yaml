@@ -2,13 +2,6 @@ multi-1:
   env: dev
   ingress:
     host: multi1.dev.entur.io
-  configmap:
-    data:
-      LOG_LEVEL: warn
 multi-2:
   env: dev
-  ingress:
-    host: multi2.dev.entur.io
-  configmap:
-    data:
-      LOG_LEVEL: warn
+
