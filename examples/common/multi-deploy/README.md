@@ -8,6 +8,20 @@ This way the application code can pick up the environment variable (CONTAINER_RO
 
 In the example - one is a basic rest api, and the other is a kafka queue consumer.
 
+## GitHub Actions CD
+
+When using Enturs shared [gha-helm](https://github.com/entur/gha-helm/blob/main/README-deploy.md) reusable workflow we also need define the `image:` path being replaced during deploy.
+
+```yaml
+helm-deploy:
+  uses: entur/gha-helm/.github/workflows/deploy.yml@v1
+  with:
+    environment: dev
+    image: amazing-app:2.3.1
+    image_set_path: "multi-1.container.image,multi-2.container.image"
+  secrets: inherit
+```
+
 ## Requirements
 
 | Repository                          | Name            | Version |
