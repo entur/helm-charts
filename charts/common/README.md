@@ -8,13 +8,13 @@ A Helm chart for Entur's Kubernetes workloads
 
 * Defaults typically match a properly configured Spring Boot project
 * Automatic HA with HPA and PDB in `prd`
-* Enforces explicit setting of important aspecs such as traffic type
+* Enforces explicit setting of important aspects such as traffic type
 * Rule based safety net, a chart that breaks business rules will fail with a helpful message
 * Convention based automatic limit configuration. Cpu is 5x request, and memory is +20%.
 
 ## Take full control
 
-* Most properties can be overriden to your specific needs.
+* Most properties can be overridden to your specific needs.
 * Read the values.yaml file to get template documentation.
 ### Fully customize `container.probes.spec` and `hpa.spec` with literal Kubernetes configuration
 <details>
@@ -96,7 +96,7 @@ common:
 | container.probes.readiness.failureThreshold | int | 6 | Set the failure threshold |
 | container.probes.readiness.grpc | string | `nil` | Specify grpc probes for a port. Needs `port` child stanza |
 | container.probes.readiness.initialDelaySeconds | int | `0` | Set the initial delay for the probe |
-| container.probes.readiness.path | string | /actuator/health/readiness | Set the path for liveness probe |
+| container.probes.readiness.path | string | /actuator/health/readiness | Set the path for readiness probe |
 | container.probes.readiness.periodSeconds | int | 5 | Set the period of checking |
 | container.probes.readiness.successThreshold | int | 1 | Set the success threshold |
 | container.probes.spec | string | `nil` | Override with k8s spec for custom probes |
@@ -114,17 +114,17 @@ common:
 | containers | list | `[]` | Takes a list of `container` entries, you must add a `name` field for each entry |
 | cron.activeDeadlineSeconds | int | `nil` | Active deadline seconds for the job, default 24 hours (86300s) |
 | cron.concurrencyPolicy | string | Forbid | Concurrency policy |
-| cron.enabled | bool | `false` | Enable or disable the cron job |
+| cron.enabled | bool | `false` | Generate a CronJob resource. Requires `cron.schedule` to be set. Set `deployment.enabled: false` if you only want a CronJob. |
 | cron.failedJobsHistoryLimit | int | 1 | Failed jobs history limit |
 | cron.labels | object | `{}` | Add labels to your pods |
 | cron.restartPolicy | string | OnFailure | Override pod restartPolicy (default OnFailure). |
-| cron.schedule | string | `nil` | Required crontab schedule `* * * * * *` |
+| cron.schedule | string | `nil` | Required crontab schedule `* * * * *` |
 | cron.serviceAccountName | string | application | Override pod serviceAccountName (default application). |
 | cron.successfulJobsHistoryLimit | int | 1 | Successful jobs history limit |
 | cron.suspend | string | false | Suspend flag |
 | cron.terminationGracePeriodSeconds | int | false | Override pod terminationGracePeriodSeconds (default 30s). |
 | cron.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
-| deployment.enabled | bool | `true` | Enable or disable the deployment |
+| deployment.enabled | bool | `true` | Generate a Deployment resource |
 | deployment.forceReplicas | int | `nil` | Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy |
 | deployment.labels | object | `{}` | Add labels to your pods |
 | deployment.maxReplicas | string | 10 | Set the max replica count |

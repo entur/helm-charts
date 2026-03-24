@@ -26,7 +26,7 @@ Update version in Chart.yaml and run `helm dependency update`
 
 ## Development
 
-After changes do the following to verify that all possible outcomes is working as it should.
+After changes do the following to verify that all possible outcomes are working as it should.
 
 ### Install helm chart unit test plugin and run unit tests
 
@@ -40,8 +40,8 @@ helm unittest ./charts/common
 Verify that the test value files generate ok
 
 ```bash
-helm template charts/common -f fixture/helm//values-minimal.yaml
-helm template charts/common -f fixture/helm//values-cron.yaml
+helm template charts/common -f fixture/helm/values-minimal.yaml
+helm template charts/common -f fixture/helm/values-cron.yaml
 helm template charts/common -f fixture/helm/values-secrets.yaml
 helm template charts/common -f fixture/helm/values-postgres.yaml
 ```
