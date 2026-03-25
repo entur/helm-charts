@@ -2,7 +2,7 @@ multi-1: # must match the multi-1 alias in Chart.yaml
   releaseName: my-rest-api # the secret sauce to divide the two apps into separate releases
 
   app: my-rest-api
-  shortname: myappid1 # appID, let this be the same for both multi-1 and multi-2.
+  appId: myappid1 # appID, let this be the same for both multi-1 and multi-2.
   team: team-excellence
 
   ingress:
@@ -21,7 +21,7 @@ multi-2: # must match the multi-2 alias in Chart.yaml
   releaseName: my-kafka-consumer # the secret sauce to divide the two apps into separate releases
 
   app: my-kafka-consumer
-  shortname: myappid1 # appID, let this be the same for both multi-1 and multi-2.
+  appId: myappid1 # appID, let this be the same for both multi-1 and multi-2.
   team: team-excellence
 
   ingress:

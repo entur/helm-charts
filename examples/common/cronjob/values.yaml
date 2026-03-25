@@ -1,6 +1,6 @@
 common:
   app: my-cronjob
-  shortname: mycron
+  appId: mycron
   team: example
   deployment:
     enabled: false

@@ -1,6 +1,6 @@
 common:
   app: typical-backend
-  shortname: typbak
+  appId: typbak
   team: team-example
   ingress:
     enabled: true

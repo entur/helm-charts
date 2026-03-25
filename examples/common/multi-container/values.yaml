@@ -1,6 +1,6 @@
 common:
   app: multi-container
-  shortname: multcont
+  appId: multcont
   team: example
   env: dev
 

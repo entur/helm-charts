@@ -1,6 +1,6 @@
 common:
   app: typical-frontend
-  shortname: typfro
+  appId: typfro
   team: example
   ingress:
     enabled: true

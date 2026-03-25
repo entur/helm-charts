@@ -1,6 +1,6 @@
 common:
   app: grpc-app
-  shortname: grpcapp
+  appId: grpcapp
   team: example
   grpc: true # -- Enable gRPC which will add an annotation and use grpc probes
   ingress:
