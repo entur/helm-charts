@@ -32,13 +32,15 @@ jobs:
         with:
           node_image: kindest/node:v1.32.3
 
-      - name: Configure metrics and VPA
+      - name: Configure metrics, VPA and StartupCPUBoost
         run: |
           helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+          helm repo add cowboysysop https://cowboysysop.github.io/charts/
+          helm repo add kube-startup-cpu-boost https://google.github.io/kube-startup-cpu-boost
           helm repo update
           helm install --set args={--kubelet-insecure-tls} metrics-server metrics-server/metrics-server --namespace kube-system
-          helm repo add cowboysysop https://cowboysysop.github.io/charts/
           helm -n kube-system install vertical-pod-autoscaler cowboysysop/vertical-pod-autoscaler
+          helm install kube-startup-cpu-boost kube-startup-cpu-boost/kube-startup-cpu-boost --namespace kube-startup-cpu-boost-system --create-namespace
 
       - name: Install helm chart
         run: |
