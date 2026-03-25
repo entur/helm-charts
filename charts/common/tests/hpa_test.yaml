@@ -75,6 +75,16 @@ tests:
       - equal:
           path: spec.metrics[0].resource.target.averageUtilization
           value: 100
+  - it: deployment.cpuUtilization overrides default
+    set:
+      container:
+        maxReplicas: 5
+      deployment:
+        cpuUtilization: 60
+    asserts:
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 60
   - it: Must use minimum two replicas in prod, max 10
     set:
       env: prd

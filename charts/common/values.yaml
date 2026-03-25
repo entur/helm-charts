@@ -61,6 +61,9 @@ deployment:
   # -- Override pod serviceAccountName (default application).
   # @default -- application
   serviceAccountName:
+  # -- Set the target CPU average utilization (%) for HPA scaling. Default is 100% because Java apps are resource heavy during startup. Lower to 50-60% if you have good startup/readiness probes.
+  # @default -- 100
+  cpuUtilization:
   # -- See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
   # @default -- 0
   minReadySeconds: 0

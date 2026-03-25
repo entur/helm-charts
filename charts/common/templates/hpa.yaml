@@ -5,7 +5,7 @@
 {{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
 {{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas }}
 {{- $hpa := .Values.hpa | default dict }}
-{{- $cpuUtilization := .Values.cpuUtilization | default 100 }}
+{{- $cpuUtilization := .Values.deployment.cpuUtilization | default .Values.cpuUtilization | default 100 }}
 
 {{- if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true"  }}
   {{- /* Rules */}}
