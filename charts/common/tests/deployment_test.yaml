@@ -156,7 +156,7 @@ tests:
       - equal:
           path: spec.strategy.type
           value: RollingUpdate
-  - it: must adopt for gRPC
+  - it: must adopt for gRPC with native probes
     set:
       containers:
         - name: test
@@ -172,7 +172,7 @@ tests:
               periodSeconds: 1
     asserts:
       - isNotEmpty:
-          path: spec.template.spec.containers[0].livenessProbe.exec.command
+          path: spec.template.spec.containers[0].livenessProbe.grpc
   - it: must adopt for new gRPC probes 1.24
     set:
       containers:
@@ -412,14 +412,14 @@ tests:
     asserts:
       - notExists:
           path: spec.template.spec.terminationGracePeriodSeconds
-  - it: must adopt for gRPC
+  - it: must adopt for gRPC with native probes using internalPort
     set:
       grpc: true
       container:
         image: img
     asserts:
       - isNotEmpty:
-          path: spec.template.spec.containers[0].livenessProbe.exec.command
+          path: spec.template.spec.containers[0].livenessProbe.grpc
   - it: terminationGracePeriodSeconds use correct value from container
     set:
       deployment:
