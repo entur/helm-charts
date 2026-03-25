@@ -52,6 +52,9 @@ spec:
         spec:
           serviceAccountName: {{ .Values.cron.serviceAccountName | default "application" }}
           containers:
+          {{- if $postgres.enabled }}
+            {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app "releaseName" $releaseName) | indent 12 }}
+          {{- end }}
           {{ range $containers }}
             {{- $image := .image | required ".Values.common.container.image is required." -}}
             {{- printf "\n            " -}}
@@ -75,9 +78,6 @@ spec:
               lifecycle:
                 {{- toYaml .lifecycle | nindent 16 }}
               {{- end }}
-            {{- if $postgres.enabled }}
-              {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 12 }}
-            {{- end }}
           {{- end }}
           {{- if $cronjob.volumes }}
           volumes:
@@ -92,4 +92,6 @@ spec:
             runAsNonRoot: true
             runAsUser: {{ .Values.container.uid }}
             fsGroup: {{ .Values.container.uid }}
+            seccompProfile:
+              type: RuntimeDefault
 {{- end -}}

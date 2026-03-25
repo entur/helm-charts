@@ -20,7 +20,9 @@ metadata:
   annotations:
     {{- include "annotations" $chart |trim| nindent 4 }}
     kubernetes.io/ingress.class: traefik
-    {{- if $.Values.ingress.annotations }}
+    {{- if .annotations }}
+      {{- toYaml .annotations | nindent 4 }}
+    {{- else if $.Values.ingress.annotations }}
       {{- toYaml $.Values.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
