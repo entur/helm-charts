@@ -169,21 +169,18 @@ livenessProbe:
 {{- end }}
 
 {{- define "gcloud_sql_proxy" }}
+{{- if .postgres.connectionConfig }}
+  {{- fail "postgres.connectionConfig is deprecated. Use postgres.instances instead. See migration guide for Cloud SQL Proxy v2." }}
+{{- end }}
 - name: "{{ .app }}-sql-proxy"
-  image: eu.gcr.io/cloudsql-docker/gce-proxy:1.33.16
+  image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.21.2
   command:
-    - "/cloud_sql_proxy"
-    - "-verbose=false"
-    - "-log_debug_stdout=true"
-    - "-structured_logs=true"
-    - "-term_timeout=30s"
+    - "/cloud-sql-proxy"
+    - "--structured-logs"
+    - "--max-sigterm-delay=30s"
   envFrom:
-  - configMapRef:
-  {{- if .postgres.connectionConfig }}
-      name: {{ .postgres.connectionConfig }}
-  {{- else }}
-      name: {{ .app }}-psql-connection
-  {{- end }}
+  - secretRef:
+      name: {{ .releaseName }}-sql-proxy
   securityContext:
     runAsNonRoot: true
     allowPrivilegeEscalation: false
@@ -191,16 +188,15 @@ livenessProbe:
       drop: ["ALL"]
     seccompProfile:
       type: RuntimeDefault
+  {{- if .postgres.memoryLimit }}
+    {{- fail "postgres.memoryLimit is deprecated. Memory limit is now always equal to memory request. Remove memoryLimit and use postgres.memory instead." }}
+  {{- end }}
   resources:
     limits:
       {{- if .postgres.cpuLimit }}
       cpu: "{{ .postgres.cpuLimit }}"
       {{- end }}
-      {{- if .postgres.memoryLimt }}
-      memory: "{{ .postgres.memoryLimit }}Mi"
-      {{- else }}
       memory: "{{ .postgres.memory }}Mi"
-      {{- end }}
     requests:
       cpu: "{{ .postgres.cpu }}"
       memory: "{{ .postgres.memory }}Mi"

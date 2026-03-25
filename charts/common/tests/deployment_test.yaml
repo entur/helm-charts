@@ -245,20 +245,23 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
         credentialsSecret: my-secret
     asserts:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].secretRef.name
           value: my-secret
-  - it: override connectionConfig
+  - it: connectionConfig is deprecated
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
         connectionConfig: my-config
     asserts:
-      - equal:
-          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
-          value: my-config
+      - failedTemplate:
+          errorMessage: "postgres.connectionConfig is deprecated. Use postgres.instances instead. See migration guide for Cloud SQL Proxy v2."
   - it: command use correct value
     set:
       containers:
@@ -431,6 +434,8 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
         cpu: 0.1
     asserts:
       - notExists:
@@ -502,6 +507,8 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
     asserts:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].secretRef.name
@@ -510,12 +517,14 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
     asserts:
       - isNotEmpty:
           path: spec.template.spec.containers[1]
       - equal:
-          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
-          value: rudder-test-psql-connection
+          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: rudder-test-sql-proxy
   - it: must enable only one sidecar if postgres enabled for multiple containers
     set:
       container: {}
@@ -530,12 +539,14 @@ tests:
             enabled: false
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
     asserts:
       - isNotEmpty:
           path: spec.template.spec.containers[2]
       - equal:
-          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
-          value: rudder-test-psql-connection
+          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: rudder-test-sql-proxy
       - notExists:
           path: spec.template.spec.containers[3]
   - it: postgres cpu limit can be overridden
@@ -543,6 +554,8 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
         cpu: 0.1
         cpuLimit: 1
     asserts:

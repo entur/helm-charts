@@ -119,6 +119,8 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
     asserts:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].secretRef.name
@@ -127,16 +129,20 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
     asserts:
       - isNotEmpty:
           path: spec.template.spec.containers[1]
       - equal:
-          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
-          value: testsuite-psql-connection
+          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: RELEASE-NAME-sql-proxy
   - it: postgres cpu limit can be overridden
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
         cpu: "0.1"
         cpuLimit: "1"
     asserts:
@@ -150,6 +156,8 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - PGINSTANCES
         cpu: 0.1
     asserts:
       - notExists:

@@ -268,10 +268,14 @@ postgres:
   # -- Configure memory request for proxy without units, `Mi` inferred
   # @default -- 16
   memory: 16
-  # -- Configure memoryLimit for proxy without units, `Mi` inferred
-  # @default -- 16
-  memoryLimit: 16
-  # -- Override name for connection configmap. This must at least contain `INSTANCES`.
+  # -- (float) @deprecated memoryLimit is deprecated and will cause a deploy failure if set. Memory limit is now always equal to memory request. Use `postgres.memory` instead.
+  memoryLimit:
+  # -- List of Secret Manager keys containing Cloud SQL instance connection names. Supports multiple databases. Each key is mapped to `CSQL_PROXY_INSTANCE_CONNECTION_NAME_N` for the v2 proxy. The secret keys match those created by the `entur/terraform-google-sql-db` module (e.g. `PGINSTANCES`).
+  # @default -- []
+  instances: []
+    # - PGINSTANCES
+    # - ANALYTICS_PGINSTANCES
+  # -- @deprecated connectionConfig is deprecated. Use `postgres.instances` instead to source connection names from Secret Manager via External Secrets.
   connectionConfig:
   # -- Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`.
   credentialsSecret:

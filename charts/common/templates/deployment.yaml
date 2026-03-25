@@ -15,7 +15,7 @@
 {{- $volumes := .Values.deployment.volumes | default .Values.container.volumes }}
 {{- $enabled := .Values.deployment.enabled | default .Values.container.enabled }}
 {{- $prometheus := .Values.deployment.prometheus | default .Values.container.prometheus }}
-{{- $prometheusPath := (.Values.deployment.prometheus).path | default .Values.container.prometheus.path }}
+{{- $prometheusPath := (.Values.deployment.prometheus).path | default .Values.container.prometheus.path | default "/actuator/prometheus" }}
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
 {{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
 {{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas }}
@@ -75,7 +75,7 @@ spec:
 
       containers:
       {{- if $postgres.enabled }}
-        {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 8 }}
+        {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app "releaseName" $releaseName) | indent 8 }}
       {{- end }}
       {{ range $containers }}
         {{- $image := .image | required ".Values.common.container.image is required." -}}
