@@ -4,7 +4,8 @@
 
 {{- define "labels" }}
 app: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
-shortname: {{ .Values.shortname }}
+appId: {{ .Values.appId | default .Values.shortname }}
+shortname: {{ .Values.appId | default .Values.shortname }}
 team: {{ .Values.team }}
 common: {{ .Chart.Version }}
 environment: {{ .Values.env }}

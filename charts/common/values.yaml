@@ -1,6 +1,8 @@
 # -- Application name, typically on the form `the-application`
 app:
-# -- `id` for GCP 2.0, typically on the form `theapp`. Max 10 characters
+# -- App ID from GoogleCloudApplication `metadata.id`. Max 10 alphanumeric characters. See https://github.com/entur/tf-gcp-apps/blob/main/docs/manifests/GoogleCloudApplication.md
+appId:
+# -- @deprecated Use `appId` instead.
 shortname:
 # -- Your team name, without a `team-` prefix
 team:
