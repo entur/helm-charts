@@ -3,7 +3,7 @@ common:
   ingress:
     host:
       typical-frontend.entur.no
-  container:
+  deployment:
     replicas: 2
     maxReplicas: 10
   configmap:

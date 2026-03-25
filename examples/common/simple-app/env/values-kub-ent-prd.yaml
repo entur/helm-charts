@@ -2,7 +2,7 @@ common:
   env: prd
   ingress:
     host: simple-app.entur.io
-  container:
+  deployment:
     replicas: 2
     maxReplicas: 10
   configmap:
