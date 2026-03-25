@@ -58,6 +58,8 @@ jobs:
             typical-frontend,
             multi-container,
             multi-deploy,
+            cronjob,
+            grpc-app,
           ]
         env: [dev, tst, prd]
     steps:
@@ -73,4 +75,6 @@ jobs:
       - name: Helm verify examples
         working-directory: examples/common/${{ matrix.example }}
         run: |
-          helm template --dependency-update . -f env/values-kub-ent-${{ matrix.env }}.yaml
+          mkdir -p charts
+          cp -r ../../../charts/common charts/common
+          helm template . -f env/values-kub-ent-${{ matrix.env }}.yaml
