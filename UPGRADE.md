@@ -164,3 +164,17 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 - [ ] Run `helm dependency update`
 - [ ] Run `helm lint . -f env/values-kub-ent-dev.yaml` to catch unknown properties and schema errors
 - [ ] Run `helm template . -f env/values-kub-ent-dev.yaml` to verify rendered output
+
+## Using an AI agent to upgrade
+
+If you use an AI coding agent (Claude Code, Copilot, Cursor, etc.), you can paste the following prompt to have it perform the migration for you:
+
+```
+Upgrade the Entur common Helm chart dependency from v1 to v2.
+
+First, read the migration guide:
+  https://raw.githubusercontent.com/entur/helm-charts/main/UPGRADE.md
+
+Then apply the "Quick Migration Checklist" to all values files in this repository.
+Run `helm dependency update` and `helm lint` to verify.
+```
