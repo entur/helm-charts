@@ -17,11 +17,22 @@ fixture/helm/            # Fixture values for template rendering validation
 .github/workflows/       # CI/CD (PR checks, release, docs generation)
 ```
 
+## Tools
+
+- **`helm`** — render templates, manage dependencies, package charts
+- **`helm unittest`** — run YAML-based unit tests (plugin: helm-unittest)
+- **`helm template`** — render and inspect template output with fixture values
+- **`helm-docs`** — auto-generate README.md from values.yaml comments
+- **`gh`** — GitHub CLI for issues, PRs, releases, and CI status
+
 ## Development Commands
 
 ```bash
-# Run unit tests (primary validation step)
+# Run unit tests (primary validation step — always run after any template/values change)
 helm unittest ./charts/common
+
+# Run a single test file
+helm unittest ./charts/common -f tests/pdb_test.yaml
 
 # Render templates with fixture values to verify output
 helm template charts/common -f fixture/helm/values-minimal.yaml
@@ -29,11 +40,21 @@ helm template charts/common -f fixture/helm/values-cron.yaml
 helm template charts/common -f fixture/helm/values-secrets.yaml
 helm template charts/common -f fixture/helm/values-postgres.yaml
 
+# Render a single template
+helm template test charts/common -f fixture/helm/values-minimal.yaml --show-only templates/pdb.yaml
+
+# Render with value overrides (useful for testing specific scenarios)
+helm template test charts/common -f fixture/helm/values-minimal.yaml --set env=prd --set container.replicas=2
+
 # Regenerate chart documentation (README.md files)
 helm-docs
 
 # Update dependencies for example charts after version bump
 helm dependency update examples/common/<example-name>
+
+# View GitHub issues
+gh issue view <number> --repo entur/helm-charts
+gh issue view <number> --repo entur/helm-charts --comments
 ```
 
 ## Testing
@@ -43,7 +64,7 @@ helm dependency update examples/common/<example-name>
 - **Shared test values**: `charts/common/tests/values/common-test-values.yaml`
 - **Snapshots**: `charts/common/tests/__snapshot__/`
 - **Always run `helm unittest ./charts/common` after modifying any template or values**
-- Tests cover: deployment, service, ingress, HPA, PDB, VPA, configmap, secrets, cron, and v1 backward compatibility
+- Tests cover: deployment, service, ingress, HPA, PDB, VPA, configmap, secrets, cron, startup-cpu-boost, sql-proxy, and v1 backward compatibility
 
 ## Key Conventions
 
@@ -57,16 +78,18 @@ Uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 ### Chart Design Principles
 - Environment-aware defaults: `prd` automatically enables HA (HPA, PDB)
 - Resource convention: CPU limit = 5x request, memory limit = 1.2x request
-- Security: non-root, no privilege escalation, drop all capabilities
+- Security: non-root, no privilege escalation, drop all capabilities, seccompProfile RuntimeDefault
 - Traffic types must be explicit: `api`, `public`, or `http2`
 - Template helpers are in `charts/common/templates/_helpers.tpl`
+- Deprecated values use `fail` to give clear migration messages
 
 ### Values Patterns
-- Required fields: `app`, `team`, `env`, `container.image`
+- Required fields: `app`, `appId` (or `shortname`), `team`, `env`, `container.image`
 - Environment values: `dev`, `tst`, `prd`
 - Single container: use `container:` key
 - Multiple containers: use `containers:` list
 - Environment-specific overrides go in `env/values-kub-ent-{dev,tst,prd}.yaml`
+- Postgres/Cloud SQL: use `postgres.instances` with Secret Manager keys via External Secrets
 
 ## CI/CD
 
