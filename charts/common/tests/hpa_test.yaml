@@ -85,6 +85,31 @@ tests:
       - equal:
           path: spec.metrics[0].resource.target.averageUtilization
           value: 60
+  - it: custom metrics are appended alongside CPU metric
+    set:
+      env: prd
+      hpa:
+        metrics:
+          - type: Pods
+            pods:
+              metric:
+                name: prometheus.googleapis.com|http_requests|gauge
+              target:
+                type: AverageValue
+                averageValue: 100
+    asserts:
+      - equal:
+          path: spec.metrics[0].type
+          value: Resource
+      - equal:
+          path: spec.metrics[1].type
+          value: Pods
+      - equal:
+          path: spec.metrics[1].pods.metric.name
+          value: "prometheus.googleapis.com|http_requests|gauge"
+      - equal:
+          path: spec.metrics[1].pods.target.averageValue
+          value: 100
   - it: Must use minimum two replicas in prod, max 10
     set:
       env: prd

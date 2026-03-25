@@ -112,10 +112,44 @@ cron:
   # -- (int) Active deadline seconds for the job, default 24 hours (86300s)
   activeDeadlineSeconds:
 hpa:
-  # -- Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas.
-  # ps: Reason why we have set 100% cpu as default is because the java applications are resource hogs during startup.
-  #     If you have good startupProbe/readinessProbes in place you can lower the cpu average utilization to ie 50/60%.
-  #     - Or scale on other (custom) metrics.
+  # -- Additional HPA metrics appended alongside the default CPU metric. Accepts standard `autoscaling/v2` metric entries (Pods, Object, External).
+  # Use for scaling on custom metrics from Cloud Monitoring, Prometheus (GMP), or Pub/Sub. When multiple metrics are specified, HPA picks the one demanding the most replicas.
+  # @default -- []
+  metrics: []
+    # Pods type (per-pod custom metric, averaged across pods — supports AverageValue only):
+    # - type: Pods
+    #   pods:
+    #     metric:
+    #       name: prometheus.googleapis.com|http_requests_total|gauge
+    #     target:
+    #       type: AverageValue
+    #       averageValue: 100
+    #
+    # External type (e.g. Pub/Sub queue depth — supports Value and AverageValue):
+    # - type: External
+    #   external:
+    #     metric:
+    #       name: pubsub.googleapis.com|subscription|num_undelivered_messages
+    #       selector:
+    #         matchLabels:
+    #           resource.labels.subscription_id: my-subscription
+    #     target:
+    #       type: AverageValue
+    #       averageValue: 5
+    #
+    # Object type (metric from another K8s object — supports Value and AverageValue):
+    # - type: Object
+    #   object:
+    #     metric:
+    #       name: requests-per-second
+    #     describedObject:
+    #       apiVersion: networking.k8s.io/v1
+    #       kind: Ingress
+    #       name: main-route
+    #     target:
+    #       type: Value
+    #       value: 10k
+  # -- Full custom spec for HPA, replaces default metrics and min/max replicas. Inherits `scaleTargetRef`.
   spec:
     {}
     # Example for custom spec where cpu scaling is set to 60%:
