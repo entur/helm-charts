@@ -65,6 +65,11 @@ spec:
         prometheus.io/path: "{{ $prometheusPath }}"
         prometheus.io/port: "{{ $prometheus.port | default .Values.service.internalPort | required "Must set deployment.prometheus.port" }}"
         {{- end }}
+        {{- if $postgres.enabled }}
+        prometheus.io/scrape-sql-proxy: "true"
+        prometheus.io/sql-proxy-port: "9801"
+        prometheus.io/sql-proxy-path: "/metrics"
+        {{- end }}
       labels:
         {{- include "labels" . |trim| nindent 8 }}
         {{- if $labels }}
