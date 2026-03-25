@@ -1,5 +1,5 @@
 app: mycronjobtest
-shortname: mycrntst
+appId: mycrntst
 team: team
 
 env: dev

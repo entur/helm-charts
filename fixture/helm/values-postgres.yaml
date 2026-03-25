@@ -1,5 +1,5 @@
 app: my-app
-shortname: myapp
+appId: myapp
 team: mat
 env: dev
 

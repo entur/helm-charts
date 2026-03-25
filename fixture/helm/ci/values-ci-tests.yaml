@@ -1,5 +1,5 @@
 app: mytest
-shortname: mytst
+appId: mytst
 team: team
 
 env: dev

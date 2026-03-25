@@ -24,4 +24,4 @@ container:
       periodSeconds: 1
   prometheus:
     enabled: true
-shortname: rudder
+appId: rudder

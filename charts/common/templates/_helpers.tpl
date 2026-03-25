@@ -4,8 +4,11 @@
 
 {{- define "labels" }}
 app: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
-appId: {{ .Values.appId | default .Values.shortname }}
-shortname: {{ .Values.appId | default .Values.shortname }}
+{{- if and (not .Values.appId) .Values.shortname }}
+  {{- fail "shortname is deprecated. Use appId instead." }}
+{{- end }}
+appId: {{ .Values.appId }}
+shortname: {{ .Values.appId }}
 team: {{ .Values.team }}
 common: {{ .Chart.Version }}
 environment: {{ .Values.env }}
@@ -154,27 +157,6 @@ livenessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
 {{- end }}
-{{- define "grpcexecprobes" }}
-startupProbe:
-  exec:
-    command: ["/bin/grpc_health_probe", "-addr=:{{ .internalPort }}", "-service=ready"]
-  initialDelaySeconds: 10
-  failureThreshold: 30
-  periodSeconds: 10
-readinessProbe:
-  exec:
-    command: ["/bin/grpc_health_probe", "-addr=:{{ .internalPort }}", "-service=ready"]
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  timeoutSeconds: 5
-livenessProbe:
-  exec:
-    command: ["/bin/grpc_health_probe", "-addr=:{{ .internalPort }}", "-service=health"]
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  timeoutSeconds: 5
-{{- end }}
-
 {{- define "gcloud_sql_proxy" }}
 {{- if .postgres.connectionConfig }}
   {{- fail "postgres.connectionConfig is deprecated. Use postgres.instances instead. See migration guide for Cloud SQL Proxy v2." }}

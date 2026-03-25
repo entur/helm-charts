@@ -1,7 +1,7 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 {{- $app := .Values.app | required ".Values.common.app is required." -}}
-{{- $appId := (.Values.appId | default .Values.shortname) | required ".Values.common.appId is required." -}}
+{{- $appId := .Values.appId | required ".Values.common.appId is required." -}}
 {{- $team := .Values.team | required ".Values.common.team is required." -}}
 
 {{- $releaseName := include "name" . -}}

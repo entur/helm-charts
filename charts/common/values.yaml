@@ -2,8 +2,6 @@
 app:
 # -- App ID from GoogleCloudApplication `metadata.id`. Max 10 alphanumeric characters. See https://github.com/entur/tf-gcp-apps/blob/main/docs/manifests/GoogleCloudApplication.md
 appId:
-# -- @deprecated Use `appId` instead.
-shortname:
 # -- Your team name, without a `team-` prefix
 team:
 # -- The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd`
@@ -264,7 +262,7 @@ container:
       grpc:
         # port: 8080
     readiness:
-      # -- Set the path for liveness probe
+      # -- Set the path for readiness probe
       # @default -- /actuator/health/readiness
       path: "/actuator/health/readiness"
       # -- Set the initial delay for the probe
