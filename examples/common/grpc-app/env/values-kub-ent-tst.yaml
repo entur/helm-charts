@@ -1,0 +1,4 @@
+common:
+  env: tst
+  ingress:
+    host: grpc-app.tst.entur.io

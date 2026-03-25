@@ -16,5 +16,7 @@ common:
     memory: 512 # Adjust this to your application needs, a java application might need more memory to start like 1024 or 2048 or +++
   postgres: # sets up a postgres proxy so you can connect to your postgresql instance via localhost on the pod
     enabled: true
+    instances:
+      - PGINSTANCES  # Secret Manager key from entur/terraform-google-sql-db containing the instance connection name
     cpu: 0.1  # PostgreSQL Proxy setting, this usually is enough for most applications
     memory: 32  # PostgreSQL Proxy setting, this usually is enough for most applications
