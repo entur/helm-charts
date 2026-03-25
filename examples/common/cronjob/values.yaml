@@ -13,7 +13,7 @@ common:
     schedule: "0 */6 * * *"
   container:
     image: <+artifacts.primary.image>
-    command: "['/bin/sh']"
+    command: ["/bin/sh"]
     args:
       - "-c"
       - "echo 'Hello from CronJob'"
