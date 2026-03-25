@@ -2,7 +2,7 @@
 
 A few examples of how to use our [common](https://github.com/entur/helm-charts/tree/main/charts/common) chart.
 
-Please inspec the one closest to what you need.
+Please inspect the one closest to what you need.
 
 ## Quickstart
 
@@ -10,7 +10,7 @@ Fetch dependencies
 
 ```bash
 helm dependency build
-````
+```
 
 Template
 

@@ -2,7 +2,7 @@ common:
   env: dev
   ingress:
     host:
-      typical-frontend.dev.entur.org
+      typical-frontend.dev.entur.no
   configmap:
     enabled: true
     data:

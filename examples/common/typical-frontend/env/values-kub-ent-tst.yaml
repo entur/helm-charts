@@ -2,7 +2,7 @@ common:
   env: tst
   ingress:
     host:
-      typical-frontend.staging.entur.org
+      typical-frontend.staging.entur.no
   configmap:
     enabled: true
     data:

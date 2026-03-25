@@ -1,6 +1,6 @@
 apiVersion: v2
-name: simple-app
-description: A Helm chart for basic Entur deployments
+name: cronjob
+description: A Helm chart for Entur CronJob workloads
 version: 0.0.3
 appVersion: "0.0.1"
 dependencies:

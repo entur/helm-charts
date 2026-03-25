@@ -1,0 +1,19 @@
+common:
+  app: my-cronjob
+  shortname: mycron
+  team: example
+  deployment:
+    enabled: false
+  ingress:
+    enabled: false
+  service:
+    enabled: false
+  cron:
+    enabled: true
+    schedule: "0 */6 * * *"
+  container:
+    image: <+artifacts.primary.image>
+    command: "['/bin/sh']"
+    args:
+      - "-c"
+      - "echo 'Hello from CronJob'"
