@@ -40,7 +40,7 @@ tests:
           count: 0
   - it: hpa must be generated if maxReplicas > 1 and must have labels
     set:
-      container:
+      deployment:
         maxReplicas: 2
     asserts:
       - isNotEmpty:
@@ -48,9 +48,10 @@ tests:
   - it: must have minReplicas 2 if not set
     set:
       env: prd
+      deployment:
+        maxReplicas: 5
       container:
         image: img
-        maxReplicas: 5
     asserts:
       - equal:
           path: spec.minReplicas
@@ -69,7 +70,7 @@ tests:
   # #TODO 100% cpu target is set as default?
   - it: uses 70 % as default target cpu
     set:
-      container:
+      deployment:
         maxReplicas: 5
     asserts:
       - equal:
@@ -77,9 +78,8 @@ tests:
           value: 70
   - it: deployment.cpuUtilization overrides default
     set:
-      container:
-        maxReplicas: 5
       deployment:
+        maxReplicas: 5
         cpuUtilization: 60
     asserts:
       - equal:
@@ -113,8 +113,9 @@ tests:
   - it: Must use minimum two replicas in prod, max 10
     set:
       env: prd
-      container:
+      deployment:
         replicas: 1 # even if 1, this must be 2 in prod
+      container:
         image: img
     asserts:
       - equal:
@@ -126,10 +127,11 @@ tests:
   - it: Must not use hpa if forceReplicas is set
     set:
       env: prd
-      container:
-        image: some
+      deployment:
         maxReplicas: 5 # should not matter
         forceReplicas: 1
+      container:
+        image: some
       hpa:
         spec:
           maxReplicas: 199 # should not matter

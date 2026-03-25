@@ -420,10 +420,9 @@ tests:
     asserts:
       - isNotEmpty:
           path: spec.template.spec.containers[0].livenessProbe.exec.command
-  - it: terminationGracePeriodSeconds use correct value
+  - it: terminationGracePeriodSeconds use correct value from container
     set:
-      container:
-        image: img
+      deployment:
         terminationGracePeriodSeconds: 60
     asserts:
       - equal:
@@ -443,9 +442,10 @@ tests:
   - it: must use 3 replicas if replicas is 3
     set:
       env: dev
+      deployment:
+        replicas: 3
       container:
         image: testimg
-        replicas: 3
     asserts:
       - equal:
           path: spec.replicas
@@ -456,9 +456,10 @@ tests:
   - it: must use 1 replica if forceReplicas is 1 and recreate
     set:
       env: prd
+      deployment:
+        forceReplicas: 1
       container:
         image: some
-        forceReplicas: 1
     asserts:
       - equal:
           path: spec.replicas
@@ -469,9 +470,10 @@ tests:
   - it: must use 3 replica if forceReplicas is 3
     set:
       env: prd
+      deployment:
+        forceReplicas: 3
       container:
         image: some
-        forceReplicas: 3
     asserts:
       - equal:
           path: spec.replicas

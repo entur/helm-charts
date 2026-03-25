@@ -1,16 +1,16 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 {{- $releaseName := include "name" . -}}
-{{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
-{{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
-{{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas }}
+{{- $replicas := .Values.deployment.replicas }}
+{{- $forceReplicas := .Values.deployment.forceReplicas }}
+{{- $maxReplicas := .Values.deployment.maxReplicas }}
 {{- $hpa := .Values.hpa | default dict }}
 {{- $cpuUtilization := .Values.deployment.cpuUtilization | default 70 }}
 
 {{- if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true"  }}
   {{- /* Rules */}}
   {{- if (eq 1 (int $maxReplicas)) }}
-    {{- required ".Values.common.container.maxReplicas must be more than 1." .Values.error -}}
+    {{- required ".Values.common.deployment.maxReplicas must be more than 1." .Values.error -}}
   {{- else }}
 
 {{- /* YAML Spec */}}

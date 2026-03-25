@@ -2,12 +2,12 @@
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 {{- $releaseName := include "name" . -}}
 {{- $releaseNamespace := .Release.Namespace -}}
-{{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas -}}
-{{- $minAvailable := .Values.deployment.minAvailable | default .Values.container.minAvailable -}}
+{{- $forceReplicas := .Values.deployment.forceReplicas -}}
+{{- $minAvailable := .Values.deployment.minAvailable -}}
 {{- $minAvailablePDB := .Values.pdb.minAvailable -}}
-{{- $replicas := .Values.deployment.replicas | default .Values.container.replicas -}}
+{{- $replicas := .Values.deployment.replicas -}}
 {{- $hpa := .Values.hpa | default dict -}}
-{{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas -}}
+{{- $maxReplicas := .Values.deployment.maxReplicas -}}
 {{- /*
   Determine effective replica count to decide if PDB should protect pods.
   - forceReplicas: exact count, no HPA
@@ -44,7 +44,7 @@ spec:
   {{- /* In this case we set the minAvailable to 0% so it behaves the same way as a PDB does not exist. */}}
   minAvailable: 0%
   {{- else if ($minAvailablePDB) }}
-  {{- /* PDB.minAvailable takes precedence over deployment/container.minAvailable */}}
+  {{- /* PDB.minAvailable takes precedence over deployment.minAvailable */}}
   minAvailable: {{ $minAvailablePDB }}
   {{- else }}
   minAvailable: {{ $minAvailable | default "50%" }}

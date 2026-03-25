@@ -51,7 +51,7 @@ tests:
   - it: must use default with 2 replicas or more
     set:
       env: prd
-      container:
+      deployment:
         replicas: 2
     asserts:
       - equal:
@@ -68,7 +68,7 @@ tests:
   - it: use minAvailable from container if not set on pdb
     set:
       env: prd
-      container:
+      deployment:
         replicas: 2
         minAvailable: 27%
     asserts:
@@ -93,9 +93,6 @@ tests:
       deployment:
         replicas: 2
         minAvailable: 30%
-      container:
-        replicas: 2
-        minAvailable: 50%
       containers:
         - image: app
     asserts:
@@ -107,7 +104,7 @@ tests:
       env: prd
       pdb:
         minAvailable: 25%
-      container:
+      deployment:
         replicas: 2
       containers:
         - image: app
@@ -119,9 +116,10 @@ tests:
   - it: if container replicas is 1 in prd, HPA is active so minAvailable must be 50%
     set:
       env: prd
+      deployment:
+        replicas: 1
       container:
         image: some
-        replicas: 1
     asserts:
       - equal:
           path: spec.minAvailable
@@ -141,9 +139,10 @@ tests:
   - it: if container replicas is 1 in dev without HPA, minAvailable must be 0%
     set:
       env: dev
+      deployment:
+        replicas: 1
       container:
         image: some
-        replicas: 1
     asserts:
       - equal:
           path: spec.minAvailable
@@ -163,9 +162,10 @@ tests:
   - it: if container forceReplicas is set to 1, minAvailable must be 0%
     set:
       env: prd
+      deployment:
+        forceReplicas: 1
       container:
         image: some
-        forceReplicas: 1
     asserts:
       - equal:
           path: spec.minAvailable
@@ -185,9 +185,10 @@ tests:
   - it: if container forceReplicas is 2, minAvailable must be 50%
     set:
       env: prd
+      deployment:
+        forceReplicas: 2
       container:
         image: some
-        forceReplicas: 2
     asserts:
       - equal:
           path: spec.minAvailable
@@ -206,9 +207,10 @@ tests:
   - it: if container forceReplicas is 3, minAvailable must be 50%
     set:
       env: prd
+      deployment:
+        forceReplicas: 3
       container:
         image: some
-        forceReplicas: 3
     asserts:
       - equal:
           path: spec.minAvailable
@@ -242,8 +244,6 @@ tests:
       env: prd
       deployment:
         minAvailable: 4
-      container:
-        image: some
     asserts:
       - hasDocuments:
           count: 1
@@ -262,7 +262,7 @@ tests:
   - it: must use default with 2 maxReplicas or more
     set:
       env: tst
-      container:
+      deployment:
         maxReplicas: 5
     asserts:
       - equal:
@@ -271,7 +271,7 @@ tests:
   - it: must use default with 2 maxreplicas or more in tst
     set:
       env: tst
-      container:
+      deployment:
         maxReplicas: 3
     asserts:
       - equal:
@@ -280,7 +280,7 @@ tests:
   - it: use minAvailable from container if not set on pdb in tst
     set:
       env: tst
-      container:
+      deployment:
         maxReplicas: 2
         minAvailable: 27%
     asserts:
@@ -290,7 +290,7 @@ tests:
   - it: minAvailable equals zero if no HPA and no replicas set in tst
     set:
       env: tst
-      container:
+      deployment:
         replicas: null
     asserts:
       - equal:
@@ -299,7 +299,7 @@ tests:
   - it: minAvailable equals zero if no HPA and no replicas set on deployment in tst
     set:
       env: tst
-      container:
+      deployment:
         replicas: null
     asserts:
       - equal:
@@ -308,7 +308,7 @@ tests:
   - it: minAvailable equals zero if no HPA and no replicas set in dev
     set:
       env: dev
-      container:
+      deployment:
         replicas: null
     asserts:
       - equal:
@@ -317,7 +317,7 @@ tests:
   - it: minAvailable from container is used when 2 replicas in dev without HPA
     set:
       env: dev
-      container:
+      deployment:
         replicas: 2
         minAvailable: 24%
     asserts:
@@ -327,7 +327,7 @@ tests:
   - it: use minAvailable from container if not set on pdb in dev
     set:
       env: dev
-      container:
+      deployment:
         maxReplicas: 2
         minAvailable: 29%
     asserts:
@@ -338,10 +338,11 @@ tests:
   - it: if replicas is 1 but maxReplicas set in dev, HPA is active so minAvailable must be 50%
     set:
       env: dev
-      container:
-        image: some
+      deployment:
         replicas: 1
         maxReplicas: 4
+      container:
+        image: some
     asserts:
       - equal:
           path: spec.minAvailable
@@ -350,9 +351,10 @@ tests:
   - it: if replicas is 2 without HPA in dev, minAvailable must be 50%
     set:
       env: dev
+      deployment:
+        replicas: 2
       container:
         image: some
-        replicas: 2
     asserts:
       - equal:
           path: spec.minAvailable

@@ -167,6 +167,12 @@ livenessProbe:
     - "/cloud-sql-proxy"
     - "--structured-logs"
     - "--max-sigterm-delay=30s"
+    - "--http-port=9801"
+    - "--prometheus"
+  ports:
+    - name: metrics
+      containerPort: 9801
+      protocol: TCP
   envFrom:
   - secretRef:
       name: {{ .releaseName }}-sql-proxy
