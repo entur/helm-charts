@@ -40,7 +40,7 @@ jobs:
           helm repo update
           helm install --set args={--kubelet-insecure-tls} metrics-server metrics-server/metrics-server --namespace kube-system
           helm -n kube-system install vertical-pod-autoscaler cowboysysop/vertical-pod-autoscaler
-          helm install kube-startup-cpu-boost kube-startup-cpu-boost/kube-startup-cpu-boost --namespace kube-startup-cpu-boost-system --create-namespace
+          helm install kube-startup-cpu-boost kube-startup-cpu-boost/kube-startup-cpu-boost --namespace kube-startup-cpu-boost-system --create-namespace --wait --timeout 2m0s
 
       - name: Install helm chart
         run: |
