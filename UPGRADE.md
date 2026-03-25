@@ -95,6 +95,33 @@ common:
     ingressClassName: nginx
 ```
 
+### 5. `configmap.toEnv` is removed
+
+If you get a schema error like `configmap.toEnv is no longer valid in v2`, switch to `container.envFrom` to mount the configmap as environment variables:
+
+```yaml
+# v1
+common:
+  configmap:
+    enabled: true
+    toEnv: true
+    data:
+      MY_CONFIG: "value"
+
+# v2
+common:
+  configmap:
+    enabled: true
+    data:
+      MY_CONFIG: "value"
+  container:
+    envFrom:
+      - configMapRef:
+          name: my-app  # matches your release name
+```
+
+Note: The configmap is automatically mounted via `envFrom` when `configmap.enabled: true`. You only need explicit `envFrom` if you renamed the configmap or need additional control.
+
 ## New Features (no action required)
 
 ### PDB improvements
