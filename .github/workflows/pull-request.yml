@@ -77,4 +77,5 @@ jobs:
         run: |
           mkdir -p charts
           cp -r ../../../charts/common charts/common
+          helm lint . -f env/values-kub-ent-${{ matrix.env }}.yaml
           helm template . -f env/values-kub-ent-${{ matrix.env }}.yaml
