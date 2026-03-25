@@ -1,7 +1,6 @@
 app: rudder-test
 releaseName: rudder-test
 env: dev
-appname: rudder-test
 team: platform
 ingress:
   host: test.dev.entur.io

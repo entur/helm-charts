@@ -139,12 +139,10 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
-  - it: Uses maxReplicas from deployment before container settings
+  - it: Uses maxReplicas from deployment
     set:
       deployment:
         maxReplicas: 99
-      containers:
-        - maxReplicas: 2
     asserts:
       - equal:
           path: spec.maxReplicas

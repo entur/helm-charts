@@ -98,7 +98,7 @@ tests:
     set:
       env: dev
       app: testsuite
-      shortname: tstsut
+      appId: tstsut
       team: common
       service:
         externalPort: 8080
