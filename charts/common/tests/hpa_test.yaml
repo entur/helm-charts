@@ -67,14 +67,14 @@ tests:
           path: spec.minReplicas
           value: 4
   # #TODO 100% cpu target is set as default?
-  - it: uses 100 % as target cpu
+  - it: uses 70 % as default target cpu
     set:
       container:
         maxReplicas: 5
     asserts:
       - equal:
           path: spec.metrics[0].resource.target.averageUtilization
-          value: 100
+          value: 70
   - it: deployment.cpuUtilization overrides default
     set:
       container:

@@ -61,9 +61,15 @@ deployment:
   # -- Override pod serviceAccountName (default application).
   # @default -- application
   serviceAccountName:
-  # -- Set the target CPU average utilization (%) for HPA scaling. Default is 100% because Java apps are resource heavy during startup. Lower to 50-60% if you have good startup/readiness probes.
-  # @default -- 100
+  # -- Set the target CPU average utilization (%) for HPA scaling. With startupCPUBoost enabled, 70% is a good default. Without it, 100% may be needed for Java apps with heavy startup CPU usage.
+  # @default -- 70
   cpuUtilization:
+  startupCPUBoost:
+    # -- Enable GKE Startup CPU Boost to temporarily increase CPU during pod startup. Requires the kube-startup-cpu-boost operator installed in the cluster. Boost is reverted when the pod becomes Ready.
+    enabled: true
+    # -- (int) Percentage to increase CPU requests during startup
+    # @default -- 50
+    percentageIncrease: 50
   # -- See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
   # @default -- 0
   minReadySeconds: 0
