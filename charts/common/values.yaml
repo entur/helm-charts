@@ -147,6 +147,9 @@ hpa:
     #     target:
     #       type: Value
     #       value: 10k
+  # -- (int) Seconds to wait before scaling up after a metric spike. Only applied when startupCPUBoost is disabled, to avoid scaling on startup CPU spikes. Tune this to match your application's typical startup time (e.g. 60s for a fast app, 300s for a heavy Spring Boot app with cache warming).
+  # @default -- 120
+  stabilizationWindowSeconds:
   # -- Full custom spec for HPA, replaces default metrics and min/max replicas. Inherits `scaleTargetRef`.
   spec:
     {}

@@ -40,7 +40,7 @@ spec:
   {{- if not ((.Values.deployment).startupCPUBoost).enabled }}
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: 120
+      stabilizationWindowSeconds: {{ ((.Values.hpa).stabilizationWindowSeconds) | default 120 }}
   {{- end }}
   maxReplicas: {{ $maxReplicas | default 10 }}
   minReplicas: {{ max 2 $replicas }}

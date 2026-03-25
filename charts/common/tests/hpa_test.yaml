@@ -85,6 +85,31 @@ tests:
       - equal:
           path: spec.metrics[0].resource.target.averageUtilization
           value: 60
+  - it: adds 120s stabilization window when startupCPUBoost is disabled
+    set:
+      env: prd
+    asserts:
+      - equal:
+          path: spec.behavior.scaleUp.stabilizationWindowSeconds
+          value: 120
+  - it: uses custom stabilizationWindowSeconds when set
+    set:
+      env: prd
+      hpa:
+        stabilizationWindowSeconds: 300
+    asserts:
+      - equal:
+          path: spec.behavior.scaleUp.stabilizationWindowSeconds
+          value: 300
+  - it: no stabilization window when startupCPUBoost is enabled
+    set:
+      env: prd
+      deployment:
+        startupCPUBoost:
+          enabled: true
+    asserts:
+      - notExists:
+          path: spec.behavior
   - it: custom metrics are appended alongside CPU metric
     set:
       env: prd
