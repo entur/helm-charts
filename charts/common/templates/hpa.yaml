@@ -37,6 +37,11 @@ spec:
   {{- range ((.Values.hpa).metrics) }}
   - {{ toYaml . | nindent 4 }}
   {{- end }}
+  {{- if not ((.Values.deployment).startupCPUBoost).enabled }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 120
+  {{- end }}
   maxReplicas: {{ $maxReplicas | default 10 }}
   minReplicas: {{ max 2 $replicas }}
   {{- end }}
