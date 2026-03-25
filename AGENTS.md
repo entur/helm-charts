@@ -4,6 +4,8 @@
 
 This repository contains Entur's opinionated Helm charts for deploying applications to Kubernetes. The primary chart is `common` (in `charts/common/`), which provides a convention-over-configuration approach for Spring Boot apps and general workloads. Example charts in `examples/common/` demonstrate usage patterns.
 
+Compatible with Helm 3 and Helm 4.
+
 ## Repository Structure
 
 ```
@@ -44,7 +46,7 @@ helm template charts/common -f fixture/helm/values-postgres.yaml
 helm template test charts/common -f fixture/helm/values-minimal.yaml --show-only templates/pdb.yaml
 
 # Render with value overrides (useful for testing specific scenarios)
-helm template test charts/common -f fixture/helm/values-minimal.yaml --set env=prd --set container.replicas=2
+helm template test charts/common -f fixture/helm/values-minimal.yaml --set env=prd --set deployment.replicas=2
 
 # Regenerate chart documentation (README.md files)
 helm-docs
@@ -64,7 +66,7 @@ gh issue view <number> --repo entur/helm-charts --comments
 - **Shared test values**: `charts/common/tests/values/common-test-values.yaml`
 - **Snapshots**: `charts/common/tests/__snapshot__/`
 - **Always run `helm unittest ./charts/common` after modifying any template or values**
-- Tests cover: deployment, service, ingress, HPA, PDB, VPA, configmap, secrets, cron, startup-cpu-boost, sql-proxy, and v1 backward compatibility
+- Tests cover: deployment, service, ingress, HPA, PDB, VPA, configmap, secrets, cron, and v1 backward compatibility
 
 ## Key Conventions
 
@@ -82,14 +84,18 @@ Uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 - Traffic types must be explicit: `api`, `public`, or `http2`
 - Template helpers are in `charts/common/templates/_helpers.tpl`
 - Deprecated values use `fail` to give clear migration messages
+- Scaling fields (replicas, maxReplicas, forceReplicas, minAvailable) belong under `deployment.*` only — not `container.*`
+- Container-specific fields (cpu, memory, image, probes, env, ports, lifecycle) belong under `container.*`
 
 ### Values Patterns
-- Required fields: `app`, `appId` (or `shortname`), `team`, `env`, `container.image`
+- Required fields: `app`, `appId`, `team`, `env`, `container.image`
 - Environment values: `dev`, `tst`, `prd`
 - Single container: use `container:` key
 - Multiple containers: use `containers:` list
 - Environment-specific overrides go in `env/values-kub-ent-{dev,tst,prd}.yaml`
 - Postgres/Cloud SQL: use `postgres.instances` with Secret Manager keys via External Secrets
+- gRPC: set `grpc: true` — native K8s gRPC probes are used automatically with `service.internalPort`
+- Custom HPA metrics: use `hpa.metrics` list to add Pods/External/Object metrics alongside default CPU
 
 ## CI/CD
 
@@ -104,3 +110,5 @@ Uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 - Example charts pin their dependency on `common` — update both `Chart.yaml` version and run `helm dependency update` when changing
 - The chart supports both Deployment and CronJob workloads (mutually exclusive via `deployment.enabled` / `cron.enabled`)
 - Fixture values in `fixture/helm/` are used for CI template rendering validation
+- `shortname` is removed — use `appId` (matches GoogleCloudApplication `metadata.id`)
+- `postgres.connectionConfig` is removed — use `postgres.instances` with Secret Manager keys
