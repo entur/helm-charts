@@ -22,7 +22,7 @@
     "env": {
       "description": "The current env: `dev`, `tst` or `prd`",
       "type": "string",
-      "enum": ["dev", "tst", "prd"]
+      "enum": ["sbx", "dev", "tst", "prd"]
     },
     "releaseName": {
       "description": "Override release name, useful for multiple deployments",
