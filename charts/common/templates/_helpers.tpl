@@ -121,8 +121,14 @@ readinessProbe:
   failureThreshold: {{ .probes.readiness.failureThreshold | default 6 }}
   periodSeconds: {{ .probes.readiness.periodSeconds | default 5 }}
 startupProbe:
+  {{- if .probes.startup.path }}
+  httpGet:
+    path: {{ .probes.startup.path }}
+    port: {{ .probes.startup.port | default .internalPort }}
+  {{- else }}
   tcpSocket:
     port: {{ .probes.startup.port | default .internalPort }}
+  {{- end }}
   failureThreshold: {{ .probes.startup.failureThreshold | default 300  }}
   periodSeconds: {{ .probes.startup.periodSeconds | default 1 }}
 {{- end }}

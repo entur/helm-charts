@@ -243,6 +243,8 @@ container:
       grpc:
         # port: 8080
     startup:
+      # -- Set the path for startup probe. If set, uses httpGet instead of tcpSocket. Useful when startup includes long-running tasks like cache warming.
+      path:
       # -- Set the failure threshold
       # @default -- 300
       failureThreshold: 300
