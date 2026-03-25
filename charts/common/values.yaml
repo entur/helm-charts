@@ -18,7 +18,7 @@ ingress:
   enabled: true
   # -- Set the host name, do this in your `values-kub-ent-$env.yaml` files
   host:
-  # -- Set the traffic type (`api`,`public` or `http2` for gRPC)
+  # -- Set the traffic type (`api`,`public` or `http2` for gRPC). Note: changing this value will cause a couple of minutes of downtime while the ingress controller reconciles.
   trafficType:
   # -- Optionally set annotations for the ingress
   annotations: {}

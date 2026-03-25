@@ -142,7 +142,7 @@ common:
 | ingress.annotations | object | `{}` | Optionally set annotations for the ingress |
 | ingress.enabled | bool | `true` | Enable or disable the ingress |
 | ingress.host | string | `nil` | Set the host name, do this in your `values-kub-ent-$env.yaml` files |
-| ingress.trafficType | string | `nil` | Set the traffic type (`api`,`public` or `http2` for gRPC) |
+| ingress.trafficType | string | `nil` | Set the traffic type (`api`,`public` or `http2` for gRPC). Note: changing this value will cause a couple of minutes of downtime while the ingress controller reconciles. |
 | ingresses | list | `[]` | Specify a list of `ingress` specs |
 | initContainers | list | `[]` | See: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/ |
 | labels | object | `{ app shortname team common:version environment }` | Specify additional labels for every resource |
