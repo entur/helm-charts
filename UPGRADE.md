@@ -134,4 +134,6 @@ common:
 - [ ] Verify `kube-startup-cpu-boost` operator is installed, or set `deployment.startupCPUBoost.enabled: false`
 - [ ] If using gRPC: remove explicit `probes.*.grpc.port` settings (now defaults to `service.internalPort`)
 - [ ] Update `Chart.yaml` dependency version to v2
-- [ ] Run `helm dependency update` and `helm template` to verify
+- [ ] Run `helm dependency update`
+- [ ] Run `helm lint . -f env/values-kub-ent-dev.yaml` to catch unknown properties and schema errors
+- [ ] Run `helm template . -f env/values-kub-ent-dev.yaml` to verify rendered output
