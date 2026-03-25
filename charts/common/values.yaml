@@ -20,6 +20,9 @@ ingress:
   host:
   # -- Set the traffic type (`api`,`public` or `http2` for gRPC). Note: changing this value will cause a couple of minutes of downtime while the ingress controller reconciles.
   trafficType:
+  # -- Set the IngressClass name. Uses `spec.ingressClassName` (replaces the deprecated `kubernetes.io/ingress.class` annotation).
+  # @default -- traefik
+  ingressClassName:
   # -- Optionally set annotations for the ingress
   annotations: {}
   # rules: # k8s spec for ingress rules

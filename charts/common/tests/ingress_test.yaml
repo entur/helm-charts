@@ -45,7 +45,7 @@ tests:
           path: spec.rules[0].host
           value: test.dev.entur.io
       - equal:
-          path: metadata.annotations["kubernetes.io/ingress.class"]
+          path: spec.ingressClassName
           value: "traefik"
       - equal:
           path: metadata.labels.traffic-type

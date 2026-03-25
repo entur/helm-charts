@@ -19,13 +19,13 @@ metadata:
     traffic-type: {{.trafficType }}
   annotations:
     {{- include "annotations" $chart |trim| nindent 4 }}
-    kubernetes.io/ingress.class: traefik
     {{- if .annotations }}
       {{- toYaml .annotations | nindent 4 }}
     {{- else if $.Values.ingress.annotations }}
       {{- toYaml $.Values.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
+  ingressClassName: {{ .ingressClassName | default $.Values.ingress.ingressClassName | default "traefik" }}
   rules:
   {{- if .rules -}}
   {{ toYaml .rules | nindent 4 }}
