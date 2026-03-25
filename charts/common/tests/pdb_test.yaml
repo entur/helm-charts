@@ -34,6 +34,20 @@ tests:
       - equal:
           path: metadata.annotations["meta.helm.sh/release-namespace"]
           value: NAMESPACE
+  - it: must always have unhealthyPodEvictionPolicy AlwaysAllow
+    set:
+      env: prd
+    asserts:
+      - equal:
+          path: spec.unhealthyPodEvictionPolicy
+          value: AlwaysAllow
+  - it: must have unhealthyPodEvictionPolicy even when minAvailable is 0%
+    set:
+      env: dev
+    asserts:
+      - equal:
+          path: spec.unhealthyPodEvictionPolicy
+          value: AlwaysAllow
   - it: must use default with 2 replicas or more
     set:
       env: prd
@@ -88,7 +102,7 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "30%"
-  - it: use minAvailable from pdb if not set on pdb or container
+  - it: pdb.minAvailable takes precedence over container.minAvailable
     set:
       env: prd
       pdb:
@@ -101,7 +115,8 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "25%"
-  - it: if container Replicas is set to 1, minAvailable must be 0%
+  # replicas=1 with HPA enabled: HPA forces min 2 pods, PDB should protect
+  - it: if container replicas is 1 in prd, HPA is active so minAvailable must be 50%
     set:
       env: prd
       container:
@@ -110,8 +125,8 @@ tests:
     asserts:
       - equal:
           path: spec.minAvailable
-          value: "0%"
-  - it: if deployment Replicas is set to 1, minAvailable must be 0%
+          value: "50%"
+  - it: if deployment replicas is 1 in prd, HPA is active so minAvailable must be 50%
     set:
       env: prd
       deployment:
@@ -121,7 +136,30 @@ tests:
     asserts:
       - equal:
           path: spec.minAvailable
+          value: "50%"
+  # replicas=1 without HPA: truly single pod, PDB should be 0%
+  - it: if container replicas is 1 in dev without HPA, minAvailable must be 0%
+    set:
+      env: dev
+      container:
+        image: some
+        replicas: 1
+    asserts:
+      - equal:
+          path: spec.minAvailable
           value: "0%"
+  - it: if deployment replicas is 1 in dev without HPA, minAvailable must be 0%
+    set:
+      env: dev
+      deployment:
+        replicas: 1
+      container:
+        image: some
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  # forceReplicas=1: single pod, PDB should be 0%
   - it: if container forceReplicas is set to 1, minAvailable must be 0%
     set:
       env: prd
@@ -143,27 +181,18 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "0%"
-  - it: must use pdb if forceReplicas is set to more than 1
+  # forceReplicas > 1: multiple pods, PDB should protect
+  - it: if container forceReplicas is 2, minAvailable must be 50%
     set:
       env: prd
       container:
         image: some
         forceReplicas: 2
-        replicas: 2
     asserts:
-      - hasDocuments:
-          count: 1
-  - it: must use pdb if forceReplicas is set to more than 1
-    set:
-      env: prd
-      container:
-        image: some
-        forceReplicas: 2
-        replicas: 2
-    asserts:
-      - hasDocuments:
-          count: 1
-  - it: must use pdb if forceReplicas is set to more than 1 on deployment
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: if deployment forceReplicas is 2, minAvailable must be 50%
     set:
       env: prd
       deployment:
@@ -171,9 +200,34 @@ tests:
       containers:
         - image: some
     asserts:
-      - hasDocuments:
-          count: 1
-  - it: must use pdb if forceReplicas is set to 1 on deployment
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: if container forceReplicas is 3, minAvailable must be 50%
+    set:
+      env: prd
+      container:
+        image: some
+        forceReplicas: 3
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: if deployment forceReplicas is 3 with custom minAvailable, must use custom value
+    set:
+      env: prd
+      pdb:
+        minAvailable: 33%
+      deployment:
+        forceReplicas: 3
+      containers:
+        - image: some
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "33%"
+  # PDB document always exists (helm can't delete previous config)
+  - it: must have pdb document when forceReplicas is 1 on deployment
     set:
       env: prd
       deployment:
@@ -233,33 +287,43 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "27%"
-  - it: minAvailable equals zero even if minAvailable is set on container if only one pod in tst
+  - it: minAvailable equals zero if no HPA and no replicas set in tst
     set:
       env: tst
       container:
-        minAvailable: 24%
+        replicas: null
     asserts:
       - equal:
           path: spec.minAvailable
           value: "0%"
-  - it: minAvailable equals zero even if minAvailable is set on container if only one pod in tst
+  - it: minAvailable equals zero if no HPA and no replicas set on deployment in tst
     set:
       env: tst
-      deployment:
-        minAvailable: 24%
+      container:
+        replicas: null
     asserts:
       - equal:
           path: spec.minAvailable
           value: "0%"
-  - it: minAvailable equals zero even if minAvailable is set on container if only one pod in dev
+  - it: minAvailable equals zero if no HPA and no replicas set in dev
     set:
       env: dev
       container:
-        minAvailable: 24%
+        replicas: null
     asserts:
       - equal:
           path: spec.minAvailable
           value: "0%"
+  - it: minAvailable from container is used when 2 replicas in dev without HPA
+    set:
+      env: dev
+      container:
+        replicas: 2
+        minAvailable: 24%
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "24%"
   - it: use minAvailable from container if not set on pdb in dev
     set:
       env: dev
@@ -270,3 +334,26 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "29%"
+  # replicas=1 with HPA via maxReplicas in non-prd: HPA active, PDB should protect
+  - it: if replicas is 1 but maxReplicas set in dev, HPA is active so minAvailable must be 50%
+    set:
+      env: dev
+      container:
+        image: some
+        replicas: 1
+        maxReplicas: 4
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  # replicas > 1 without HPA in non-prd
+  - it: if replicas is 2 without HPA in dev, minAvailable must be 50%
+    set:
+      env: dev
+      container:
+        image: some
+        replicas: 2
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"

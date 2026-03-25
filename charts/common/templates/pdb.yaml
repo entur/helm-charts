@@ -8,6 +8,23 @@
 {{- $replicas := .Values.deployment.replicas | default .Values.container.replicas -}}
 {{- $hpa := .Values.hpa | default dict -}}
 {{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas -}}
+{{- /*
+  Determine effective replica count to decide if PDB should protect pods.
+  - forceReplicas: exact count, no HPA
+  - HPA enabled: always >= 2 replicas (hpa.yaml enforces minReplicas: max(2, replicas))
+  - Otherwise: use configured replicas
+  PDB is set to 0% only when effective replicas <= 1.
+*/}}
+{{- $protected := false -}}
+{{- if $forceReplicas -}}
+  {{- if gt (int $forceReplicas) 1 -}}
+    {{- $protected = true -}}
+  {{- end -}}
+{{- else if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true" -}}
+  {{- $protected = true -}}
+{{- else if and $replicas (gt (int $replicas) 1) -}}
+  {{- $protected = true -}}
+{{- end -}}
 {{- /* YAML Spec */}}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -19,8 +36,10 @@ metadata:
   annotations:
     {{- include "annotations" . |trim| nindent 4 }}
 spec:
-  {{- if (or (eq (int $replicas) 1) (eq "false" (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)))) }}
-  {{- /* We set PDB even if forceReplicas or replicas = 1 or if hpa is disabled */}}
+  {{- /* Allow eviction of unhealthy pods regardless of budget to prevent blocking node drains */}}
+  unhealthyPodEvictionPolicy: AlwaysAllow
+  {{- if not $protected }}
+  {{- /* We set PDB even if only 1 effective replica or if hpa is disabled */}}
   {{- /* This is because helm is not able to delete unknown-previous config. */}}
   {{- /* In this case we set the minAvailable to 0% so it behaves the same way as a PDB does not exist. */}}
   minAvailable: 0%
