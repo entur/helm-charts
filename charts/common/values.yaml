@@ -68,7 +68,7 @@ deployment:
   # @default -- 70
   cpuUtilization:
   startupCPUBoost:
-    # -- Enable GKE Startup CPU Boost to temporarily increase CPU during pod startup. Requires the kube-startup-cpu-boost operator installed in the cluster. Boost is reverted when the pod becomes Ready.
+    # -- Enable GKE Startup CPU Boost to temporarily increase CPU during pod startup. Requires the kube-startup-cpu-boost operator installed in the cluster. Boost is reverted when the pod becomes Ready. When enabled, a CPU limit of 1.3x the CPU request is automatically set (unless `container.cpuLimit` is explicitly configured).
     enabled: false
     # -- (int) Percentage to increase CPU requests during startup
     # @default -- 50
