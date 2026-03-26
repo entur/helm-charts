@@ -14,6 +14,7 @@ charts/common/           # The main Helm chart (source of truth)
   tests/                 # helm-unittest test suites
   tests/values/          # Shared test values
   values.yaml            # Default values (heavily documented)
+  values.schema.json     # JSON Schema for values validation
 examples/common/         # 7 example charts showing usage patterns
 fixture/helm/            # Fixture values for template rendering validation
 .github/workflows/       # CI/CD (PR checks, release, docs generation)
@@ -24,7 +25,8 @@ fixture/helm/            # Fixture values for template rendering validation
 - **`helm`** — render templates, manage dependencies, package charts
 - **`helm unittest`** — run YAML-based unit tests (plugin: helm-unittest)
 - **`helm template`** — render and inspect template output with fixture values
-- **`helm-docs`** — auto-generate README.md from values.yaml comments
+- **`helm lint`** — validate chart structure and values against JSON Schema
+- **`helm-docs`** — auto-generate README.md from values.yaml comments and Chart.yaml description
 - **`gh`** — GitHub CLI for issues, PRs, releases, and CI status
 
 ## Development Commands
@@ -36,6 +38,9 @@ helm unittest ./charts/common
 # Run a single test file
 helm unittest ./charts/common -f tests/pdb_test.yaml
 
+# Lint chart with schema validation
+helm lint charts/common -f fixture/helm/values-minimal.yaml
+
 # Render templates with fixture values to verify output
 helm template charts/common -f fixture/helm/values-minimal.yaml
 helm template charts/common -f fixture/helm/values-cron.yaml
@@ -46,9 +51,9 @@ helm template charts/common -f fixture/helm/values-postgres.yaml
 helm template test charts/common -f fixture/helm/values-minimal.yaml --show-only templates/pdb.yaml
 
 # Render with value overrides (useful for testing specific scenarios)
-helm template test charts/common -f fixture/helm/values-minimal.yaml --set env=prd --set deployment.replicas=2
+helm template test charts/common -f fixture/helm/values-minimal.yaml --set env=prd --set deployment.minReplicas=3
 
-# Regenerate chart documentation (README.md files)
+# Regenerate chart documentation (README.md files) — run after changing values.yaml or Chart.yaml
 helm-docs
 
 # Update dependencies for example charts after version bump
@@ -78,18 +83,18 @@ Uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 - `docs:` / `ci:` / `chore:` — no version bump
 
 ### Chart Design Principles
-- Environment-aware defaults: `prd` automatically enables HA (HPA, PDB)
-- Resource convention: CPU limit = 5x request, memory limit = 1.2x request
+- HPA is always enabled with `minReplicas: 2` by default (use `forceReplicas` to opt out)
+- Memory limit always equals memory request
 - Security: non-root, no privilege escalation, drop all capabilities, seccompProfile RuntimeDefault
 - Traffic types must be explicit: `api`, `public`, or `http2`
 - Template helpers are in `charts/common/templates/_helpers.tpl`
 - Deprecated values use `fail` to give clear migration messages
-- Scaling fields (replicas, maxReplicas, forceReplicas, minAvailable) belong under `deployment.*` only — not `container.*`
+- Scaling fields (minReplicas, maxReplicas, forceReplicas, minAvailable) belong under `deployment.*` only — not `container.*`
 - Container-specific fields (cpu, memory, image, probes, env, ports, lifecycle) belong under `container.*`
 
 ### Values Patterns
 - Required fields: `app`, `appId`, `team`, `env`, `container.image`
-- Environment values: `dev`, `tst`, `prd`
+- Environment values: `sbx`, `dev`, `tst`, `prd`
 - Single container: use `container:` key
 - Multiple containers: use `containers:` list
 - Environment-specific overrides go in `env/values-kub-ent-{dev,tst,prd}.yaml`
@@ -97,10 +102,16 @@ Uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 - gRPC: set `grpc: true` — native K8s gRPC probes are used automatically with `service.internalPort`
 - Custom HPA metrics: use `hpa.metrics` list to add Pods/External/Object metrics alongside default CPU
 
+### Documentation
+- `README.md` files in `charts/` and `examples/` are **auto-generated** by `helm-docs` — never edit them manually
+- To update documentation: edit `values.yaml` comments (use `# --` prefix for helm-docs) or `Chart.yaml` description, then run `helm-docs`
+- After any change to `values.yaml`, `Chart.yaml`, or `values.schema.json`: run `helm-docs` to regenerate README.md files
+- `values.schema.json` must be updated manually when adding/removing/renaming values fields
+
 ## CI/CD
 
-- **PR checks**: lint, unit tests, kind cluster install tests across all examples and environments
-- **Release**: automated via release-please with semantic versioning; tags like `common-v1.21.1`
+- **PR checks**: lint, unit tests (Helm 3 + 4), kind cluster install tests (Helm 3 + 4), example validation (Helm 3 + 4)
+- **Release**: automated via release-please with semantic versioning; tags like `common-v2.0.0`
 - **Docs**: auto-generated on release branches via helm-docs workflow
 - **Ownership**: `@entur/team-plattform` (see CODEOWNERS)
 
@@ -112,3 +123,6 @@ Uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 - Fixture values in `fixture/helm/` are used for CI template rendering validation
 - `shortname` is removed — use `appId` (matches GoogleCloudApplication `metadata.id`)
 - `postgres.connectionConfig` is removed — use `postgres.instances` with Secret Manager keys
+- `deployment.replicas` is removed — use `deployment.minReplicas` (HPA controls pod count)
+- `container.memoryLimit` is removed — memory limit always equals memory request
+- `pdb.minAvailable` is removed — use `deployment.minAvailable`
