@@ -18,8 +18,8 @@
 {{- $prometheusPath := (.Values.deployment.prometheus).path | default .Values.container.prometheus.path | default "/actuator/prometheus" }}
 {{- $forceReplicas := .Values.deployment.forceReplicas }}
 {{- $terminationGracePeriodSeconds := .Values.deployment.terminationGracePeriodSeconds }}
-{{- $maxSurge := .Values.deployment.maxSurge | default "25%" }}
-{{- $maxUnavailable := .Values.deployment.maxUnavailable | default "25%" }}
+{{- $maxSurge := .Values.deployment.maxSurge | default 1 }}
+{{- $maxUnavailable := .Values.deployment.maxUnavailable | default 1 }}
 {{- $startupCPUBoostEnabled := ((.Values.deployment).startupCPUBoost).enabled }}
 {{- if $enabled }}
 {{- /* YAML Spec */}}

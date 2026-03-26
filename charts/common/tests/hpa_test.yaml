@@ -38,14 +38,14 @@ tests:
     asserts:
       - hasDocuments:
           count: 1
-  - it: HPA minReplicas defaults to 1 in dev
+  - it: HPA minReplicas defaults to 2
     set:
       deployment:
         minReplicas: null
     asserts:
       - equal:
           path: spec.minReplicas
-          value: 1
+          value: 2
   - it: hpa must have labels
     set:
       deployment:

@@ -42,7 +42,8 @@ deployment:
   volumes: []
   # -- Prometheus
   #prometheus: same as container.prometheus stanza
-  # -- (int) Set the minimum replica count for HPA. Defaults to 1 for sbx/dev/tst and 2 for prd.
+  # -- (int) Set the minimum replica count for HPA.
+  # @default -- 2
   minReplicas:
   # -- (int) Set the max replica count for HPA
   # @default -- 10
@@ -51,14 +52,14 @@ deployment:
   forceReplicas:
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
-  # -- (string) Set minimum available %
+  # -- (string) Set minimum available % for PDB
   # @default -- 50%
   minAvailable:
-  # -- Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas.
-  # @default -- 25%
+  # -- Limit max surge for rolling updates. Accepts an integer (pod count) or a string percentage (e.g. "25%"). Not in use when using forceReplicas.
+  # @default -- 1
   maxSurge:
-  # -- Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas.
-  # @default -- 25%
+  # -- Limit max unavailable for rolling updates. Accepts an integer (pod count) or a string percentage (e.g. "25%"). Not in use when using forceReplicas.
+  # @default -- 1
   maxUnavailable:
   # -- Override pod serviceAccountName (default application).
   # @default -- application
@@ -163,10 +164,7 @@ hpa:
     #   maxReplicas: 10
     #   minReplicas: 2
 
-pdb:
-  # -- (string) Set minimum available %, this overrides pdb setting minAvailable in deployment/container
-  # @default -- 50%
-  minAvailable:
+pdb: {}
 
 service:
   # -- Enable or disable the service

@@ -205,12 +205,6 @@ livenessProbe:
 {{- end -}}
 
 {{- define "hpa.minReplicas" -}}
-  {{- if .replicas -}}
-    {{- .replicas -}}
-  {{- else if eq "prd" .env -}}
-    {{- 2 -}}
-  {{- else -}}
-    {{- 1 -}}
-  {{- end -}}
+  {{- .replicas | default 2 -}}
 {{- end -}}
 

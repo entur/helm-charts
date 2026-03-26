@@ -93,7 +93,7 @@
           "$ref": "#/properties/container/properties/prometheus"
         },
         "minReplicas": {
-          "description": "Set the minimum replica count for HPA. Defaults to 1 for sbx/dev/tst and 2 for prd.",
+          "description": "Set the minimum replica count for HPA. Default: 2.",
           "type": ["integer", "null"]
         },
         "maxReplicas": {
@@ -224,13 +224,7 @@
       "type": "object"
     },
     "pdb": {
-      "additionalProperties": false,
-      "properties": {
-        "minAvailable": {
-          "description": "Set minimum available %, overrides deployment.minAvailable",
-          "type": ["string", "integer", "null"]
-        }
-      },
+      "description": "PDB is automatically configured based on minReplicas. Use deployment.minAvailable to override the default 50%.",
       "type": "object"
     },
     "service": {

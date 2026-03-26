@@ -4,13 +4,11 @@
 {{- $releaseNamespace := .Release.Namespace -}}
 {{- $forceReplicas := .Values.deployment.forceReplicas -}}
 {{- $minAvailable := .Values.deployment.minAvailable -}}
-{{- $minAvailablePDB := .Values.pdb.minAvailable -}}
 {{- $minReplicas := .Values.deployment.minReplicas -}}
-{{- $maxReplicas := .Values.deployment.maxReplicas -}}
 {{- /*
   Determine if PDB should protect pods.
   - forceReplicas: exact count, no HPA — protect if > 1
-  - HPA: protect if minReplicas > 1 (prd defaults to 2, dev/tst to 1)
+  - HPA: protect if minReplicas > 1 (default 2)
   PDB is set to 0% only when effective replicas <= 1.
 */}}
 {{- $protected := false -}}
@@ -19,7 +17,7 @@
     {{- $protected = true -}}
   {{- end -}}
 {{- else -}}
-  {{- $effectiveMinReplicas := int (include "hpa.minReplicas" (dict "env" $env "replicas" $minReplicas)) -}}
+  {{- $effectiveMinReplicas := int (include "hpa.minReplicas" (dict "replicas" $minReplicas)) -}}
   {{- if gt $effectiveMinReplicas 1 -}}
     {{- $protected = true -}}
   {{- end -}}
@@ -42,9 +40,6 @@ spec:
   {{- /* This is because helm is not able to delete unknown-previous config. */}}
   {{- /* In this case we set the minAvailable to 0% so it behaves the same way as a PDB does not exist. */}}
   minAvailable: 0%
-  {{- else if ($minAvailablePDB) }}
-  {{- /* PDB.minAvailable takes precedence over deployment.minAvailable */}}
-  minAvailable: {{ $minAvailablePDB }}
   {{- else }}
   minAvailable: {{ $minAvailable | default "50%" }}
   {{- end }}

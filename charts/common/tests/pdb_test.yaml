@@ -100,13 +100,12 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "30%"
-  - it: pdb.minAvailable takes precedence over container.minAvailable
+  - it: deployment.minAvailable overrides default 50%
     set:
       env: prd
-      pdb:
-        minAvailable: 25%
       deployment:
         minReplicas: 2
+        minAvailable: 25%
       containers:
         - image: app
     asserts:
@@ -217,10 +216,9 @@ tests:
   - it: if deployment forceReplicas is 3 with custom minAvailable, must use custom value
     set:
       env: prd
-      pdb:
-        minAvailable: 33%
       deployment:
         forceReplicas: 3
+        minAvailable: 33%
       containers:
         - image: some
     asserts:
@@ -286,7 +284,7 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "27%"
-  - it: minAvailable equals zero if no HPA and no replicas set in tst
+  - it: default minReplicas 2 means PDB is 50% even without explicit config
     set:
       env: tst
       deployment:
@@ -294,21 +292,21 @@ tests:
     asserts:
       - equal:
           path: spec.minAvailable
-          value: "0%"
-  - it: minAvailable equals zero if no HPA and no replicas set on deployment in tst
+          value: "50%"
+  - it: minAvailable equals zero if minReplicas is 1 in tst
     set:
       env: tst
       deployment:
-        minReplicas: null
+        minReplicas: 1
     asserts:
       - equal:
           path: spec.minAvailable
           value: "0%"
-  - it: minAvailable equals zero if no HPA and no replicas set in dev
+  - it: minAvailable equals zero if minReplicas is 1 in dev
     set:
       env: dev
       deployment:
-        minReplicas: null
+        minReplicas: 1
     asserts:
       - equal:
           path: spec.minAvailable
