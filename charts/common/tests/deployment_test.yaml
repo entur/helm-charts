@@ -48,6 +48,36 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
           value: "1"
+  - it: CPU limit is auto-set to 1.3x request when startupCPUBoost is enabled
+    set:
+      deployment:
+        startupCPUBoost:
+          enabled: true
+      container:
+        cpu: 0.5
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: "0.65"
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: "0.5"
+  - it: explicit cpuLimit takes precedence over startupCPUBoost auto-limit
+    set:
+      deployment:
+        startupCPUBoost:
+          enabled: true
+      container:
+        cpu: 0.5
+        cpuLimit: 2
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: "2"
+  - it: no CPU limit when startupCPUBoost is disabled and no cpuLimit set
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].resources.limits.cpu
   # #TODO mem req/limit should be equal
   - it: memory limit is 120 percent of request
     set:

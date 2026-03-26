@@ -68,6 +68,17 @@ tests:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
           value: "0.1"
+  - it: CPU limit is auto-set to 1.3x request when startupCPUBoost is enabled
+    set:
+      deployment:
+        startupCPUBoost:
+          enabled: true
+      container:
+        cpu: 0.2
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
+          value: "0.26"
   # #TODO mem req/limit should be equal
   - it: memory limit is 120 percent of request
     release: {}
