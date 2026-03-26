@@ -23,6 +23,7 @@
 {{- $maxSurge := .Values.deployment.maxSurge | default "25%" }}
 {{- $maxUnavailable := .Values.deployment.maxUnavailable | default "25%" }}
 {{- $hpa := .Values.hpa | default dict }}
+{{- $startupCPUBoostEnabled := ((.Values.deployment).startupCPUBoost).enabled }}
 {{- if $enabled }}
 {{- /* YAML Spec */}}
 apiVersion: apps/v1
@@ -102,7 +103,7 @@ spec:
             - containerPort: {{ $internalPort }}
               protocol: TCP
             {{- end }}
-          {{- include "resources" . | nindent 10 }}
+          {{- include "resources" (merge (dict "startupCPUBoostEnabled" $startupCPUBoostEnabled) .) | nindent 10 }}
           {{- include "securitycontext" . | nindent 10 }}
           {{- if or $grpc .grpc }}
             {{- include "grpcprobes" (dict "internalPort" $internalPort "probes" .probes) | nindent 10 -}}

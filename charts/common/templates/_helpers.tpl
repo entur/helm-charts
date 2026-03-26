@@ -57,6 +57,8 @@ resources:
   limits:
     {{- if .cpuLimit }}
     cpu: "{{ .cpuLimit| float64 }}"
+    {{- else if .startupCPUBoostEnabled }}
+    cpu: "{{ divf (mulf .cpu 13) 10 }}"
     {{- end }}
     {{- if .memoryLimit }}
     memory: "{{ .memoryLimit }}Mi"
