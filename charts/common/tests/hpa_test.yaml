@@ -41,7 +41,7 @@ tests:
   - it: HPA minReplicas defaults to 1 in dev
     set:
       deployment:
-        replicas: null
+        minReplicas: null
     asserts:
       - equal:
           path: spec.minReplicas
@@ -67,7 +67,7 @@ tests:
   - it: use minReplicas from deployment if not set on container
     set:
       deployment:
-        replicas: 4
+        minReplicas: 4
         maxReplicas: 5
       containers:
         - image: img

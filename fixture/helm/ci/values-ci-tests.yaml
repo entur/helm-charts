@@ -18,7 +18,7 @@ service:
   internalPort: 8080
 
 deployment:
-  replicas: 1
+  minReplicas: 1
   maxReplicas: 2
 
 container:

@@ -4,7 +4,7 @@ common:
     host:
       typical-frontend.entur.no
   deployment:
-    replicas: 2
+    minReplicas: 2
     maxReplicas: 10
   configmap:
     enabled: true

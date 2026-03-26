@@ -92,8 +92,8 @@
         "prometheus": {
           "$ref": "#/properties/container/properties/prometheus"
         },
-        "replicas": {
-          "description": "Set the target replica count",
+        "minReplicas": {
+          "description": "Set the minimum replica count for HPA. Defaults to 1 for sbx/dev/tst and 2 for prd.",
           "type": ["integer", "null"]
         },
         "maxReplicas": {

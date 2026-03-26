@@ -129,7 +129,7 @@ tests:
     set:
       env: dev
       deployment:
-        replicas: 3
+        minReplicas: 3
     asserts:
       - notExists:
           path: spec.replicas
@@ -140,7 +140,7 @@ tests:
     set:
       env: prd
       deployment:
-        replicas: 3
+        minReplicas: 3
         maxReplicas: 8
     asserts:
       - notExists:
@@ -456,7 +456,7 @@ tests:
     set:
       env: dev
       deployment:
-        replicas: 3
+        minReplicas: 3
       container:
         image: testimg
     asserts:

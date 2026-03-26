@@ -52,7 +52,7 @@ tests:
     set:
       env: prd
       deployment:
-        replicas: 2
+        minReplicas: 2
     asserts:
       - equal:
           path: spec.minAvailable
@@ -70,7 +70,7 @@ tests:
     set:
       env: prd
       deployment:
-        replicas: 2
+        minReplicas: 2
         minAvailable: 27%
     asserts:
       - equal:
@@ -80,7 +80,7 @@ tests:
     set:
       env: prd
       deployment:
-        replicas: 2
+        minReplicas: 2
         minAvailable: 26%
       containers:
         - image: app
@@ -92,7 +92,7 @@ tests:
     set:
       env: prd
       deployment:
-        replicas: 2
+        minReplicas: 2
         minAvailable: 30%
       containers:
         - image: app
@@ -106,7 +106,7 @@ tests:
       pdb:
         minAvailable: 25%
       deployment:
-        replicas: 2
+        minReplicas: 2
       containers:
         - image: app
     asserts:
@@ -118,7 +118,7 @@ tests:
     set:
       env: prd
       deployment:
-        replicas: 1
+        minReplicas: 1
       container:
         image: some
     asserts:
@@ -139,7 +139,7 @@ tests:
     set:
       env: dev
       deployment:
-        replicas: 1
+        minReplicas: 1
       container:
         image: some
     asserts:
@@ -150,7 +150,7 @@ tests:
     set:
       env: dev
       deployment:
-        replicas: 1
+        minReplicas: 1
       container:
         image: some
     asserts:
@@ -290,7 +290,7 @@ tests:
     set:
       env: tst
       deployment:
-        replicas: null
+        minReplicas: null
     asserts:
       - equal:
           path: spec.minAvailable
@@ -299,7 +299,7 @@ tests:
     set:
       env: tst
       deployment:
-        replicas: null
+        minReplicas: null
     asserts:
       - equal:
           path: spec.minAvailable
@@ -308,7 +308,7 @@ tests:
     set:
       env: dev
       deployment:
-        replicas: null
+        minReplicas: null
     asserts:
       - equal:
           path: spec.minAvailable
@@ -317,7 +317,7 @@ tests:
     set:
       env: dev
       deployment:
-        replicas: 2
+        minReplicas: 2
         minAvailable: 24%
     asserts:
       - equal:
@@ -338,7 +338,7 @@ tests:
     set:
       env: dev
       deployment:
-        replicas: 1
+        minReplicas: 1
       container:
         image: some
     asserts:
@@ -350,7 +350,7 @@ tests:
     set:
       env: dev
       deployment:
-        replicas: 2
+        minReplicas: 2
       container:
         image: some
     asserts:

@@ -10,7 +10,7 @@ common:
   deployment:
     prometheus:
       enabled: true
-    replicas: 2
+    minReplicas: 2
   container:
     image: <+artifacts.primary.image>
     cpu: 0.3

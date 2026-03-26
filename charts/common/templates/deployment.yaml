@@ -16,13 +16,10 @@
 {{- $enabled := .Values.deployment.enabled }}
 {{- $prometheus := .Values.deployment.prometheus | default .Values.container.prometheus }}
 {{- $prometheusPath := (.Values.deployment.prometheus).path | default .Values.container.prometheus.path | default "/actuator/prometheus" }}
-{{- $replicas := .Values.deployment.replicas }}
 {{- $forceReplicas := .Values.deployment.forceReplicas }}
-{{- $maxReplicas := .Values.deployment.maxReplicas }}
 {{- $terminationGracePeriodSeconds := .Values.deployment.terminationGracePeriodSeconds }}
 {{- $maxSurge := .Values.deployment.maxSurge | default "25%" }}
 {{- $maxUnavailable := .Values.deployment.maxUnavailable | default "25%" }}
-{{- $hpa := .Values.hpa | default dict }}
 {{- $startupCPUBoostEnabled := ((.Values.deployment).startupCPUBoost).enabled }}
 {{- if $enabled }}
 {{- /* YAML Spec */}}
@@ -42,11 +39,8 @@ spec:
   minReadySeconds: {{ .Values.deployment.minReadySeconds }}
   {{- if $forceReplicas }}
   replicas: {{ $forceReplicas }}
-  {{- else if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true" }}
-  # intentionally skip replicas
-  {{- else }}
-  replicas: {{ $replicas }}
   {{- end }}
+  {{- /* When HPA is enabled (no forceReplicas), replicas is omitted so HPA controls the pod count */}}
   strategy:
     {{- if (eq (int $forceReplicas) 1) }}
     type: Recreate

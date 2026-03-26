@@ -42,13 +42,12 @@ deployment:
   volumes: []
   # -- Prometheus
   #prometheus: same as container.prometheus stanza
-  # -- Set the target replica count
-  # @default -- container.replicas
-  replicas:
-  # -- Set the max replica count
+  # -- (int) Set the minimum replica count for HPA. Defaults to 1 for sbx/dev/tst and 2 for prd.
+  minReplicas:
+  # -- (int) Set the max replica count for HPA
   # @default -- 10
   maxReplicas:
-  # -- (int) Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy
+  # -- (int) Force a fixed replica count, disables HPA and PDB. If set to 1 it will use Recreate strategy.
   forceReplicas:
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:

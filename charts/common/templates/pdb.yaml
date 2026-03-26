@@ -5,14 +5,12 @@
 {{- $forceReplicas := .Values.deployment.forceReplicas -}}
 {{- $minAvailable := .Values.deployment.minAvailable -}}
 {{- $minAvailablePDB := .Values.pdb.minAvailable -}}
-{{- $replicas := .Values.deployment.replicas -}}
-{{- $hpa := .Values.hpa | default dict -}}
+{{- $minReplicas := .Values.deployment.minReplicas -}}
 {{- $maxReplicas := .Values.deployment.maxReplicas -}}
 {{- /*
-  Determine effective replica count to decide if PDB should protect pods.
-  - forceReplicas: exact count, no HPA
-  - HPA enabled: always >= 2 replicas (hpa.yaml enforces minReplicas: max(2, replicas))
-  - Otherwise: use configured replicas
+  Determine if PDB should protect pods.
+  - forceReplicas: exact count, no HPA — protect if > 1
+  - HPA: protect if minReplicas > 1 (prd defaults to 2, dev/tst to 1)
   PDB is set to 0% only when effective replicas <= 1.
 */}}
 {{- $protected := false -}}
@@ -21,8 +19,8 @@
     {{- $protected = true -}}
   {{- end -}}
 {{- else -}}
-  {{- $minReplicas := int (include "hpa.minReplicas" (dict "env" $env "replicas" $replicas)) -}}
-  {{- if gt $minReplicas 1 -}}
+  {{- $effectiveMinReplicas := int (include "hpa.minReplicas" (dict "env" $env "replicas" $minReplicas)) -}}
+  {{- if gt $effectiveMinReplicas 1 -}}
     {{- $protected = true -}}
   {{- end -}}
 {{- end -}}

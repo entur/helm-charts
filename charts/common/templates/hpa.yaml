@@ -1,13 +1,13 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 {{- $releaseName := include "name" . -}}
-{{- $replicas := .Values.deployment.replicas }}
+{{- $minReplicas := .Values.deployment.minReplicas }}
 {{- $forceReplicas := .Values.deployment.forceReplicas }}
 {{- $maxReplicas := .Values.deployment.maxReplicas }}
 {{- $hpa := .Values.hpa | default dict }}
 {{- $cpuUtilization := .Values.deployment.cpuUtilization | default 70 }}
 
-{{- if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true"  }}
+{{- if eq (include "hpa.enabled" (dict "forceReplicas" $forceReplicas)) "true"  }}
   {{- /* Rules */}}
   {{- if (eq 1 (int $maxReplicas)) }}
     {{- required ".Values.common.deployment.maxReplicas must be more than 1." .Values.error -}}
@@ -43,7 +43,7 @@ spec:
       stabilizationWindowSeconds: {{ ((.Values.hpa).stabilizationWindowSeconds) | default 120 }}
   {{- end }}
   maxReplicas: {{ $maxReplicas | default 10 }}
-  minReplicas: {{ include "hpa.minReplicas" (dict "env" $env "replicas" $replicas) }}
+  minReplicas: {{ include "hpa.minReplicas" (dict "env" $env "replicas" $minReplicas) }}
   {{- end }}
   scaleTargetRef:
     apiVersion: apps/v1
