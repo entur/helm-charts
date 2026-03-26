@@ -117,7 +117,7 @@ common:
 
 ### 5. `ingress.class` annotation replaced with `spec.ingressClassName`
 
-The deprecated `kubernetes.io/ingress.class` annotation is removed. Ingress now uses `spec.ingressClassName` (defaults to `traefik`). No action needed if you use traefik.
+The deprecated `kubernetes.io/ingress.class` annotation is removed. Ingress now uses `spec.ingressClassName` (defaults to `traefik`).
 
 ### 6. `configmap.toEnv` is removed
 
