@@ -43,7 +43,7 @@ spec:
       stabilizationWindowSeconds: {{ ((.Values.hpa).stabilizationWindowSeconds) | default 120 }}
   {{- end }}
   maxReplicas: {{ $maxReplicas | default 10 }}
-  minReplicas: {{ max 2 $replicas }}
+  minReplicas: {{ include "hpa.minReplicas" (dict "env" $env "replicas" $replicas) }}
   {{- end }}
   scaleTargetRef:
     apiVersion: apps/v1

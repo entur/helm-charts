@@ -20,10 +20,11 @@
   {{- if gt (int $forceReplicas) 1 -}}
     {{- $protected = true -}}
   {{- end -}}
-{{- else if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true" -}}
-  {{- $protected = true -}}
-{{- else if and $replicas (gt (int $replicas) 1) -}}
-  {{- $protected = true -}}
+{{- else -}}
+  {{- $minReplicas := int (include "hpa.minReplicas" (dict "env" $env "replicas" $replicas)) -}}
+  {{- if gt $minReplicas 1 -}}
+    {{- $protected = true -}}
+  {{- end -}}
 {{- end -}}
 {{- /* YAML Spec */}}
 apiVersion: policy/v1

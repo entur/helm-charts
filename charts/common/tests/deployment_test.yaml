@@ -125,15 +125,14 @@ tests:
       - equal:
           path: spec.template.metadata.annotations["prometheus.io/port"]
           value: "8080"
-  - it: must use 3 replicas if replicas is 3
+  - it: replicas field is skipped when HPA is enabled
     set:
       env: dev
       deployment:
         replicas: 3
     asserts:
-      - equal:
+      - notExists:
           path: spec.replicas
-          value: 3
       - equal:
           path: spec.strategy.type
           value: RollingUpdate
@@ -453,7 +452,7 @@ tests:
     asserts:
       - notExists:
           path: spec.template.spec.containers[1].resources.limits.cpu
-  - it: must use 3 replicas if replicas is 3
+  - it: replicas field is skipped when HPA is enabled (v1 compat)
     set:
       env: dev
       deployment:
@@ -461,9 +460,8 @@ tests:
       container:
         image: testimg
     asserts:
-      - equal:
+      - notExists:
           path: spec.replicas
-          value: 3
       - equal:
           path: spec.strategy.type
           value: RollingUpdate

@@ -114,7 +114,7 @@ tests:
           path: spec.minAvailable
           value: "25%"
   # replicas=1 with HPA enabled: HPA forces min 2 pods, PDB should protect
-  - it: if container replicas is 1 in prd, HPA is active so minAvailable must be 50%
+  - it: if replicas is 1 in prd, minAvailable must be 0% (single pod)
     set:
       env: prd
       deployment:
@@ -124,12 +124,10 @@ tests:
     asserts:
       - equal:
           path: spec.minAvailable
-          value: "50%"
-  - it: if deployment replicas is 1 in prd, HPA is active so minAvailable must be 50%
+          value: "0%"
+  - it: prd defaults to minAvailable 50% when replicas not set (minReplicas=2)
     set:
       env: prd
-      deployment:
-        replicas: 1
       container:
         image: some
     asserts:
@@ -336,19 +334,18 @@ tests:
           path: spec.minAvailable
           value: "29%"
   # replicas=1 with HPA via maxReplicas in non-prd: HPA active, PDB should protect
-  - it: if replicas is 1 but maxReplicas set in dev, HPA is active so minAvailable must be 50%
+  - it: if replicas is 1 in dev, minAvailable must be 0% (single pod)
     set:
       env: dev
       deployment:
         replicas: 1
-        maxReplicas: 4
       container:
         image: some
     asserts:
       - equal:
           path: spec.minAvailable
-          value: "50%"
-  # replicas > 1 without HPA in non-prd
+          value: "0%"
+  # replicas > 1 in non-prd
   - it: if replicas is 2 without HPA in dev, minAvailable must be 50%
     set:
       env: dev
