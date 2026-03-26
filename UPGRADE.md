@@ -5,8 +5,8 @@ This guide covers all breaking changes and required migration steps when upgradi
 ## Prerequisites
 
 - Helm 3.x or Helm 4.x
-- The [kube-startup-cpu-boost](https://github.com/google/kube-startup-cpu-boost) operator installed in your cluster (enabled by default in v2). If not available, set `deployment.startupCPUBoost.enabled: false`.
 - External Secrets Operator installed (required if using `postgres` or `secrets`)
+- Optionally: [kube-startup-cpu-boost](https://github.com/google/kube-startup-cpu-boost) operator for CPU boost feature
 
 ## Breaking Changes
 
@@ -26,17 +26,24 @@ common:
 
 The Kubernetes label `shortname` is still emitted for backwards compatibility alongside the new `appId` label.
 
-### 2. Scaling fields moved from `container.*` to `deployment.*`
+### 2. Scaling fields replaced
 
-The following fields are removed from `container` and must be set under `deployment`:
+Scaling fields have been removed from `container.*` and consolidated under `deployment.*`. Additionally, `deployment.replicas` is replaced by `deployment.minReplicas`.
+
+**HPA is now always enabled** (unless `forceReplicas` is set). The Deployment spec never emits `replicas` — HPA controls the pod count in all environments. This prevents the v1 bug where `helm upgrade` would reset HPA-managed replica counts.
 
 | Removed (v1) | Replacement (v2) |
 |---|---|
-| `container.replicas` | `deployment.replicas` |
+| `container.replicas` | `deployment.minReplicas` |
+| `deployment.replicas` | `deployment.minReplicas` |
 | `container.maxReplicas` | `deployment.maxReplicas` |
 | `container.forceReplicas` | `deployment.forceReplicas` |
 | `container.minAvailable` | `deployment.minAvailable` |
 | `container.terminationGracePeriodSeconds` | `deployment.terminationGracePeriodSeconds` |
+
+Default `minReplicas` by environment:
+- `sbx`/`dev`/`tst`: **1** (scales down to single pod in low traffic)
+- `prd`: **2** (HA by default)
 
 ```yaml
 # v1
@@ -48,11 +55,36 @@ common:
 # v2
 common:
   deployment:
-    replicas: 2
-    maxReplicas: 5
+    minReplicas: 2   # HPA minimum
+    maxReplicas: 5   # HPA maximum
 ```
 
-### 3. Cloud SQL Proxy upgraded to v2
+To disable HPA and fix a specific replica count, use `forceReplicas`:
+
+```yaml
+common:
+  deployment:
+    forceReplicas: 3  # disables HPA, fixed at 3 pods
+```
+
+### 3. `container.memoryLimit` removed
+
+Memory limit is now always equal to memory request. The 1.2x multiplier and `memoryLimit` override are removed. Set `container.memory` to the value you need for both request and limit.
+
+```yaml
+# v1
+common:
+  container:
+    memory: 512
+    memoryLimit: 1024
+
+# v2
+common:
+  container:
+    memory: 1024  # sets both request and limit
+```
+
+### 4. Cloud SQL Proxy upgraded to v2
 
 The Cloud SQL Auth Proxy has been upgraded from v1 (1.33.16) to v2 (2.21.2). This changes how database connections are configured.
 
@@ -83,7 +115,7 @@ common:
 
 **`postgres.memoryLimit` is removed.** Memory limit is now always equal to memory request. Use `postgres.memory` to set both.
 
-### 4. `ingress.class` annotation replaced with `spec.ingressClassName`
+### 5. `ingress.class` annotation replaced with `spec.ingressClassName`
 
 The deprecated `kubernetes.io/ingress.class` annotation is removed. Ingress now uses `spec.ingressClassName` (defaults to `traefik`).
 
@@ -95,7 +127,7 @@ common:
     ingressClassName: nginx
 ```
 
-### 5. `configmap.toEnv` is removed
+### 6. `configmap.toEnv` is removed
 
 If you get a schema error like `configmap.toEnv is no longer valid in v2`, switch to `container.envFrom` to mount the configmap as environment variables:
 
@@ -124,14 +156,19 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 
 ## New Features (no action required)
 
+### HPA always enabled
+- HPA is now enabled in all environments, not just `prd`. Default `minReplicas` is 1 for sbx/dev/tst and 2 for prd.
+- When `startupCPUBoost` is disabled, a 120s scaleUp stabilization window prevents startup CPU spikes from triggering unnecessary scale-ups. Tune via `hpa.stabilizationWindowSeconds` to match your app's startup time.
+
 ### PDB improvements
 - `unhealthyPodEvictionPolicy: AlwaysAllow` prevents unhealthy pods from blocking cluster upgrades.
 - PDB now correctly protects pods when `forceReplicas > 1` (was incorrectly set to 0%).
 
 ### GKE Startup CPU Boost
-- Enabled by default. Temporarily increases CPU by 50% during startup, reverts when pod becomes Ready.
-- HPA default `cpuUtilization` lowered from 100% to 70% since startup spikes are handled by the boost.
-- Disable with `deployment.startupCPUBoost.enabled: false` if the operator is not installed.
+- Disabled by default. Enable with `deployment.startupCPUBoost.enabled: true` (requires the operator installed in the cluster).
+- Temporarily increases CPU by 50% during startup, reverts when pod becomes Ready.
+- When enabled, a CPU limit of 1.3x the CPU request is automatically set.
+- HPA default `cpuUtilization` lowered from 100% to 70%.
 
 ### gRPC native probes
 - Setting `grpc: true` now uses native Kubernetes gRPC probes by default, using `service.internalPort`.
@@ -144,6 +181,7 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 ### Custom HPA metrics
 - `hpa.metrics` — append custom metrics (Pods, External, Object) alongside default CPU scaling.
 - `deployment.cpuUtilization` — set HPA CPU target (default 70%).
+- `hpa.stabilizationWindowSeconds` — tune scaleUp delay (default 120s when CPU boost is disabled).
 
 ### Per-ingress annotations and ingressClassName
 - Each entry in `ingresses` list can now have its own `annotations` and `ingressClassName`.
@@ -155,10 +193,13 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 ## Quick Migration Checklist
 
 - [ ] Rename `shortname` to `appId` in all values files
-- [ ] Move `container.replicas` → `deployment.replicas` (and maxReplicas, forceReplicas, minAvailable, terminationGracePeriodSeconds)
+- [ ] Replace `container.replicas` / `deployment.replicas` → `deployment.minReplicas`
+- [ ] Replace `container.maxReplicas` → `deployment.maxReplicas`
+- [ ] Replace `container.forceReplicas` → `deployment.forceReplicas`
+- [ ] Replace `container.minAvailable` → `deployment.minAvailable`
+- [ ] Replace `container.terminationGracePeriodSeconds` → `deployment.terminationGracePeriodSeconds`
+- [ ] Remove `container.memoryLimit` / `postgres.memoryLimit` — set `memory` to the value you need
 - [ ] Replace `postgres.connectionConfig` with `postgres.instances: [PGINSTANCES]` (if using postgres)
-- [ ] Remove `postgres.memoryLimit` (if set) — use `postgres.memory` instead
-- [ ] Verify `kube-startup-cpu-boost` operator is installed, or set `deployment.startupCPUBoost.enabled: false`
 - [ ] If using gRPC: remove explicit `probes.*.grpc.port` settings (now defaults to `service.internalPort`)
 - [ ] Update `Chart.yaml` dependency version to v2
 - [ ] Run `helm dependency update`
