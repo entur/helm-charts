@@ -10,21 +10,25 @@ description: >
 
   * Defaults typically match a properly configured Spring Boot project
 
-  * Automatic HA with HPA and PDB in `prd`
+  * Automatic HA with HPA and PDB in all environments (minReplicas: 2 by default)
 
-  * Enforces explicit setting of important aspecs such as traffic type
+  * Enforces explicit setting of important aspects such as traffic type
 
   * Rule based safety net, a chart that breaks business rules will fail with a helpful message
 
-  * Convention based automatic limit configuration. Cpu is 5x request, and memory is +20%.
+  * JSON Schema validation catches typos and unknown properties on `helm lint`
+
+  * Compatible with Helm 3 and Helm 4
 
 
   ## Take full control
 
 
-  * Most properties can be overriden to your specific needs.
+  * Most properties can be overridden to your specific needs.
 
   * Read the values.yaml file to get template documentation.
+
+  * See [UPGRADE.md](../../UPGRADE.md) for migration guides between major versions.
 
   ### Fully customize `container.probes.spec` and `hpa.spec` with literal Kubernetes configuration
 

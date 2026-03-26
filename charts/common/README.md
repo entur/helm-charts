@@ -1,21 +1,23 @@
 # common
 
-![Version: 1.21.1](https://img.shields.io/badge/Version-1.21.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 A Helm chart for Entur's Kubernetes workloads
 
 ## Highlighted features
 
 * Defaults typically match a properly configured Spring Boot project
-* Automatic HA with HPA and PDB in `prd`
+* Automatic HA with HPA and PDB in all environments (minReplicas: 2 by default)
 * Enforces explicit setting of important aspects such as traffic type
 * Rule based safety net, a chart that breaks business rules will fail with a helpful message
-* Convention based automatic limit configuration. Cpu is 5x request, and memory is +20%.
+* JSON Schema validation catches typos and unknown properties on `helm lint`
+* Compatible with Helm 3 and Helm 4
 
 ## Take full control
 
 * Most properties can be overridden to your specific needs.
 * Read the values.yaml file to get template documentation.
+* See [UPGRADE.md](../../UPGRADE.md) for migration guides between major versions.
 ### Fully customize `container.probes.spec` and `hpa.spec` with literal Kubernetes configuration
 <details>
 
@@ -70,6 +72,7 @@ common:
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | app | string | `nil` | Application name, typically on the form `the-application` |
+| appId | string | `nil` | App ID from GoogleCloudApplication `metadata.id`. Max 10 alphanumeric characters. See https://github.com/entur/tf-gcp-apps/blob/main/docs/manifests/GoogleCloudApplication.md |
 | configmap.data | object | `{}` | Set data for configmap |
 | configmap.enabled | bool | false | Enable or disable the configmap |
 | container.args | string | `nil` | Optionally set the arguments that will be passed to the command, e.g. ["arg1","arg2"]. |
@@ -78,13 +81,10 @@ common:
 | container.cpuLimit | float | `5 x cpu` | Set CPU limit without any unit. 100m is 0.1 |
 | container.env | list | `[]` | Specify `env` entries for your container |
 | container.envFrom | list | `[]` | Attach secrets and configmaps to your `env` |
-| container.forceReplicas | int | `nil` | Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy |
 | container.labels | object | `{}` | Add labels to your pods |
 | container.lifecycle | object | `{}` | Set pod lifecycle handlers |
-| container.maxReplicas | int | `nil` | Set the maxReplicas for your HPA |
 | container.memory | int | 16 | Set memory without any unit, `Mi` is inferred |
-| container.memoryLimit | string | `1.2 * memory` | Set memory limit without any unit, `Mi` is inferred |
-| container.minAvailable | string | 50% | Set the minimal available replicas, used by PDB |
+| container.memoryLimit | string | `nil` | @deprecated memoryLimit is removed. Memory limit is now always equal to memory request. Use `container.memory` instead. |
 | container.name | string | .app | Name of container |
 | container.probes.enabled | bool | `true` | Enable or disable probes |
 | container.probes.liveness.failureThreshold | int | 6 | Set the failure threshold |
@@ -102,65 +102,72 @@ common:
 | container.probes.spec | string | `nil` | Override with k8s spec for custom probes |
 | container.probes.startup.failureThreshold | int | 300 | Set the failure threshold |
 | container.probes.startup.grpc | string | `nil` | Specify grpc probes for a port. Needs `port` child stanza |
+| container.probes.startup.path | string | `nil` | Set the path for startup probe. If set, uses httpGet instead of tcpSocket. Useful when startup includes long-running tasks like cache warming. |
 | container.probes.startup.periodSeconds | int | 1 | Set the period of checking |
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |
 | container.prometheus.path | string | /actuator/prometheus | Set the path for scraping metrics |
 | container.prometheus.port | int | service.internalPort | Set the port for prometheus scraping |
-| container.replicas | int | `nil` | Set the target replica count, if equal to 1 the PDB minAvailable will be set to 100% |
-| container.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | container.uid | int | 1000 | Set the uid that your user runs with |
 | container.volumeMounts | list | `[]` | Configure volume mounts, accepts kubernetes syntax |
 | container.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | containers | list | `[]` | Takes a list of `container` entries, you must add a `name` field for each entry |
 | cron.activeDeadlineSeconds | int | `nil` | Active deadline seconds for the job, default 24 hours (86300s) |
 | cron.concurrencyPolicy | string | Forbid | Concurrency policy |
-| cron.enabled | bool | `false` | Generate a CronJob resource. Requires `cron.schedule` to be set. Set `deployment.enabled: false` if you only want a CronJob. |
+| cron.enabled | bool | `false` | Enable or disable the cron job |
 | cron.failedJobsHistoryLimit | int | 1 | Failed jobs history limit |
 | cron.labels | object | `{}` | Add labels to your pods |
 | cron.restartPolicy | string | OnFailure | Override pod restartPolicy (default OnFailure). |
-| cron.schedule | string | `nil` | Required crontab schedule `* * * * *` |
+| cron.schedule | string | `nil` | Required crontab schedule `* * * * * *` |
 | cron.serviceAccountName | string | application | Override pod serviceAccountName (default application). |
 | cron.successfulJobsHistoryLimit | int | 1 | Successful jobs history limit |
 | cron.suspend | string | false | Suspend flag |
 | cron.terminationGracePeriodSeconds | int | false | Override pod terminationGracePeriodSeconds (default 30s). |
 | cron.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
-| deployment.enabled | bool | `true` | Generate a Deployment resource |
-| deployment.forceReplicas | int | `nil` | Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy |
+| deployment.cpuUtilization | string | 70 | Set the target CPU average utilization (%) for HPA scaling. With startupCPUBoost enabled, 70% is a good default. Without it, 100% may be needed for Java apps with heavy startup CPU usage. |
+| deployment.enabled | bool | `true` | Enable or disable the deployment |
+| deployment.forceReplicas | int | `nil` | Force a fixed replica count, disables HPA and PDB. If set to 1 it will use Recreate strategy. |
 | deployment.labels | object | `{}` | Add labels to your pods |
-| deployment.maxReplicas | string | 10 | Set the max replica count |
-| deployment.maxSurge | string | 25% | Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas. |
-| deployment.maxUnavailable | string | 25% | Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas. |
-| deployment.minAvailable | string | 50% | Set minimum available % |
+| deployment.maxReplicas | int | 10 | Set the max replica count for HPA |
+| deployment.maxSurge | string | 1 | Limit max surge for rolling updates. Accepts an integer (pod count) or a string percentage (e.g. "25%"). Not in use when using forceReplicas. |
+| deployment.maxUnavailable | string | 1 | Limit max unavailable for rolling updates. Accepts an integer (pod count) or a string percentage (e.g. "25%"). Not in use when using forceReplicas. |
+| deployment.minAvailable | string | 50% | Set minimum available % for PDB |
 | deployment.minReadySeconds | int | 0 | See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds |
-| deployment.replicas | string | container.replicas | Set the target replica count |
+| deployment.minReplicas | int | 2 | Set the minimum replica count for HPA. |
 | deployment.serviceAccountName | string | application | Override pod serviceAccountName (default application). |
+| deployment.startupCPUBoost.enabled | bool | `false` | Enable GKE Startup CPU Boost to temporarily increase CPU during pod startup. Requires the kube-startup-cpu-boost operator installed in the cluster. Boost is reverted when the pod becomes Ready. When enabled, a CPU limit of 1.3x the CPU request is automatically set (unless `container.cpuLimit` is explicitly configured). |
+| deployment.startupCPUBoost.percentageIncrease | int | 50 | Percentage to increase CPU requests during startup |
 | deployment.terminationGracePeriodSeconds | int | `nil` | Override pod terminationGracePeriodSeconds (default 30s). |
 | deployment.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | env | string | `nil` | The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd` |
 | grpc | bool | `false` | Enable gRPC which will add an annotation and use grpc probes |
-| hpa.spec | object | `{}` | Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas. ps: Reason why we have set 100% cpu as default is because the java applications are resource hogs during startup.     If you have good startupProbe/readinessProbes in place you can lower the cpu average utilization to ie 50/60%.     - Or scale on other (custom) metrics. |
+| hpa.metrics | list | [] | Additional HPA metrics appended alongside the default CPU metric. Accepts standard `autoscaling/v2` metric entries (Pods, Object, External). Use for scaling on custom metrics from Cloud Monitoring, Prometheus (GMP), or Pub/Sub. When multiple metrics are specified, HPA picks the one demanding the most replicas. |
+| hpa.spec | object | `{}` | Full custom spec for HPA, replaces default metrics and min/max replicas. Inherits `scaleTargetRef`. |
+| hpa.stabilizationWindowSeconds | int | 120 | Seconds to wait before scaling up after a metric spike. Only applied when startupCPUBoost is disabled, to avoid scaling on startup CPU spikes. Tune this to match your application's typical startup time (e.g. 60s for a fast app, 300s for a heavy Spring Boot app with cache warming). |
 | ingress.annotations | object | `{}` | Optionally set annotations for the ingress |
 | ingress.enabled | bool | `true` | Enable or disable the ingress |
 | ingress.host | string | `nil` | Set the host name, do this in your `values-kub-ent-$env.yaml` files |
+| ingress.ingressClassName | string | traefik | Set the IngressClass name. Uses `spec.ingressClassName` (replaces the deprecated `kubernetes.io/ingress.class` annotation). |
 | ingress.trafficType | string | `nil` | Set the traffic type (`api`,`public` or `http2` for gRPC). Note: changing this value will cause a couple of minutes of downtime while the ingress controller reconciles. |
 | ingresses | list | `[]` | Specify a list of `ingress` specs |
 | initContainers | list | `[]` | See: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/ |
 | labels | object | `{ app shortname team common:version environment }` | Specify additional labels for every resource |
-| pdb.minAvailable | string | 50% | Set minimum available %, this overrides pdb setting minAvailable in deployment/container |
-| postgres.connectionConfig | string | `nil` | Override name for connection configmap. This must at least contain `INSTANCES`. |
+| pdb | object | `{}` |  |
+| postgres.connectionConfig | string | `nil` | @deprecated connectionConfig is deprecated. Use `postgres.instances` instead to source connection names from Secret Manager via External Secrets. |
 | postgres.cpu | float | 0.05 | Configure cpu request for proxy |
 | postgres.cpuLimit | float | `nil` | Configure optional cpu limit for proxy |
 | postgres.credentialsSecret | string | `nil` | Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`. |
 | postgres.enabled | bool | false | Enable or disable the proxy |
+| postgres.instances | list | [] | List of Secret Manager keys containing Cloud SQL instance connection names. Supports multiple databases. Each key is mapped to `CSQL_PROXY_INSTANCE_CONNECTION_NAME_N` for the v2 proxy. The secret keys match those created by the `entur/terraform-google-sql-db` module (e.g. `PGINSTANCES`). |
 | postgres.memory | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
-| postgres.memoryLimit | int | 16 | Configure memoryLimit for proxy without units, `Mi` inferred |
+| postgres.memoryLimit | float | `nil` | @deprecated memoryLimit is deprecated and will cause a deploy failure if set. Memory limit is now always equal to memory request. Use `postgres.memory` instead. |
 | releaseName | string | `nil` | Override release name, useful for multiple deployments |
 | secrets | object | `{}` | Add externalSecret to sync secrets from secret manager |
 | service.annotations | object | `{}` | Optionally set annotations for the service |
 | service.enabled | bool | `true` | Enable or disable the service |
 | service.externalPort | int | 80 | Set the external port for your service |
 | service.internalPort | int | 8080 | Set the internal port for your service |
-| shortname | string | `nil` | `id` for GCP 2.0, typically on the form `theapp`. Max 10 characters |
 | team | string | `nil` | Your team name, without a `team-` prefix |
 | vpa.enabled | bool | `true` | Enable Vertical Pod Autoscaler to get resource requirement and limit recommendations |
 
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
