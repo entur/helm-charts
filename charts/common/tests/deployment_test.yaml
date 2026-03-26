@@ -79,7 +79,7 @@ tests:
       - notExists:
           path: spec.template.spec.containers[0].resources.limits.cpu
   # #TODO mem req/limit should be equal
-  - it: memory limit is 120 percent of request
+  - it: memory limit equals memory request
     set:
       containers:
         - name: test
@@ -90,23 +90,7 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
-          value: 307Mi
-      - equal:
-          path: spec.template.spec.containers[0].resources.requests.memory
           value: 256Mi
-  - it: memory limit can be overridden
-    set:
-      containers:
-        - name: test
-          image: img
-          memory: 256
-          memoryLimit: 1024
-          probes:
-            enabled: false
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].resources.limits.memory
-          value: 1024Mi
       - equal:
           path: spec.template.spec.containers[0].resources.requests.memory
           value: 256Mi

@@ -27,7 +27,6 @@ container:
     version: v1.2.3
   cpu: 0.2
   memory: 64
-  memoryLimit: 64
   envFrom: []
   probes:
     liveness:

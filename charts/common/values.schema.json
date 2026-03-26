@@ -294,7 +294,7 @@
           "type": "integer"
         },
         "memoryLimit": {
-          "description": "Set memory limit without any unit, Mi is inferred",
+          "description": "Deprecated. Memory limit is now always equal to memory request. Use container.memory instead.",
           "type": ["integer", "null"]
         },
         "uid": {

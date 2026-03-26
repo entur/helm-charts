@@ -203,8 +203,7 @@ container:
   # -- Set memory without any unit, `Mi` is inferred
   # @default -- 16
   memory: 16
-  # -- Set memory limit without any unit, `Mi` is inferred
-  # @default -- `1.2 * memory`
+  # -- @deprecated memoryLimit is removed. Memory limit is now always equal to memory request. Use `container.memory` instead.
   memoryLimit:
   # -- Set the uid that your user runs with
   # @default -- 1000

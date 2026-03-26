@@ -61,11 +61,7 @@ resources:
     {{- /* When CPU boost is enabled, set limit to 1.3x request so the boost operator has a ceiling to work within */}}
     cpu: "{{ printf "%.2f" (divf (mulf .cpu 13) 10) }}"
     {{- end }}
-    {{- if .memoryLimit }}
-    memory: "{{ .memoryLimit }}Mi"
-    {{- else }}
-    memory: "{{ (div (mul .memory 6) 5) }}Mi"
-    {{- end }}
+    memory: "{{ .memory }}Mi"
     {{- if .ephemeralStorageLimit }}
     ephemeral-storage: "{{ .ephemeralStorageLimit }}"
     {{- end }}
