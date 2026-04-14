@@ -18,13 +18,7 @@ updates:
   open-pull-requests-limit: 2
 - package-ecosystem: "helm"
   directories:
-  - /charts/common
-  - /examples/common/grpc-app
-  - /examples/common/multi-container
-  - /examples/common/multi-deploy
-  - /examples/common/simple-app
-  - /examples/common/typical-backend
-  - /examples/common/typical-frontend
+  - /examples/common/*
   groups:
     minor-and-patch:
       applies-to: version-updates
@@ -37,3 +31,20 @@ updates:
     timezone: "Europe/Oslo"
     day: "monday"
   open-pull-requests-limit: 2
+- package-ecosystem: "helm"
+  directories:
+  - /charts/*
+  groups:
+    minor-and-patch:
+      applies-to: version-updates
+      update-types:
+      - "minor"
+      - "patch"
+  schedule:
+    interval: "weekly"
+    time: "09:00"
+    timezone: "Europe/Oslo"
+    day: "monday"
+  open-pull-requests-limit: 2
+  commit-message:
+    prefix: "fix(deps):" # trigger new release when updating user-facing charts
