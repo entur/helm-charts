@@ -275,6 +275,11 @@ postgres:
   connectionConfig:
   # -- Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`.
   credentialsSecret:
+  # -- Override the term_timeout for the Cloud SQL Proxy. Controls how long the proxy waits for
+  # existing connections to close after receiving SIGTERM before force-closing them.
+  # Increase this if your app runs long-lived jobs that need the database during pod termination.
+  # @default -- 30s
+  termTimeout:
 
 configmap:
   # -- Enable or disable the configmap

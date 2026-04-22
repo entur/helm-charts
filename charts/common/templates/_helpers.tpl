@@ -176,7 +176,7 @@ livenessProbe:
     - "-verbose=false"
     - "-log_debug_stdout=true"
     - "-structured_logs=true"
-    - "-term_timeout=30s"
+    - "-term_timeout={{ .postgres.termTimeout | default "30s" }}"
   envFrom:
   - configMapRef:
   {{- if .postgres.connectionConfig }}
