@@ -10,6 +10,7 @@
 {{- $postgres := .Values.postgres -}}
 {{- $secrets := .Values.secrets -}}
 {{- $cronjob := .Values.cron -}}
+{{- $globalPullPolicy := .Values.imagePullPolicy | default "Always" -}}
 {{- if $cronjob.enabled -}}
 {{- /* YAML Spec */}}
 
@@ -57,7 +58,7 @@ spec:
             {{- printf "\n            " -}}
             - name: {{ .name | default $app }}
               image: {{ $image }}
-              imagePullPolicy: Always
+              imagePullPolicy: {{ .pullPolicy | default $globalPullPolicy }}
               {{- if .command }}
               command: {{ .command }}
               {{- end }}

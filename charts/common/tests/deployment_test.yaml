@@ -592,6 +592,41 @@ tests:
       - equal:
           path: spec.minReadySeconds
           value: 10
+  - it: imagePullPolicy defaults to Always
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+  - it: imagePullPolicy can be overridden globally
+    set:
+      imagePullPolicy: Never
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Never
+  - it: imagePullPolicy can be overridden per container
+    set:
+      containers:
+        - image: img
+          pullPolicy: IfNotPresent
+          probes:
+            enabled: false
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+  - it: per-container pullPolicy takes precedence over global imagePullPolicy
+    set:
+      imagePullPolicy: Never
+      containers:
+        - image: img
+          pullPolicy: Always
+          probes:
+            enabled: false
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
   - it: can set initContainers
     set:
       initContainers:

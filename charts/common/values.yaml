@@ -13,6 +13,10 @@ releaseName:
 # @default -- `{ app shortname team common:version environment }`
 labels: {}
 
+# -- Override image pull policy for all containers. Useful for local cluster testing (kind/k3s) where images are loaded directly. Valid values: Always, IfNotPresent, Never
+# @default -- Always
+imagePullPolicy:
+
 ingress:
   # -- Enable or disable the ingress
   enabled: true
@@ -139,6 +143,8 @@ container:
   # -- Name of container
   # @default -- .app
   name:
+  # -- Override image pull policy for this container. Overrides the global `imagePullPolicy`. Valid values: Always, IfNotPresent, Never
+  pullPolicy:
   # -- Add labels to your pods
   labels: {}
   # -- Optionally set the command that will run in the pod. If not set, the entrypoint for the container-image is used (recommended for most Java-apps).

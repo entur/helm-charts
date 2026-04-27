@@ -240,3 +240,27 @@ tests:
       - equal:
           path: spec.jobTemplate.spec.activeDeadlineSeconds
           value: 1200
+  - it: imagePullPolicy defaults to Always
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+  - it: imagePullPolicy can be overridden globally
+    set:
+      imagePullPolicy: Never
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].imagePullPolicy
+          value: Never
+  - it: per-container pullPolicy takes precedence over global imagePullPolicy
+    set:
+      imagePullPolicy: Never
+      containers:
+        - image: img
+          pullPolicy: IfNotPresent
+          probes:
+            enabled: false
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent

@@ -23,6 +23,7 @@
 {{- $maxSurge := .Values.deployment.maxSurge | default "25%" }}
 {{- $maxUnavailable := .Values.deployment.maxUnavailable | default "25%" }}
 {{- $hpa := .Values.hpa | default dict }}
+{{- $globalPullPolicy := .Values.imagePullPolicy | default "Always" }}
 {{- if $enabled }}
 {{- /* YAML Spec */}}
 apiVersion: apps/v1
@@ -82,7 +83,7 @@ spec:
         {{- printf "\n        " -}}
         - name: {{ .name | default $app }}
           image: {{ $image }}
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .pullPolicy | default $globalPullPolicy }}
           {{- if .command }}
           command: {{ .command }}
           {{- end }}
