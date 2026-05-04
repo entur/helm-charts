@@ -46,6 +46,7 @@ helm template charts/common -f fixture/helm/values-minimal.yaml
 helm template charts/common -f fixture/helm/values-cron.yaml
 helm template charts/common -f fixture/helm/values-secrets.yaml
 helm template charts/common -f fixture/helm/values-postgres.yaml
+helm template charts/common -f fixture/helm/values-postgres-multi.yaml
 
 # Render a single template
 helm template test charts/common -f fixture/helm/values-minimal.yaml --show-only templates/pdb.yaml
@@ -71,7 +72,7 @@ gh issue view <number> --repo entur/helm-charts --comments
 - **Shared test values**: `charts/common/tests/values/common-test-values.yaml`
 - **Snapshots**: `charts/common/tests/__snapshot__/`
 - **Always run `helm unittest ./charts/common` after modifying any template or values**
-- Tests cover: deployment, service, ingress, HPA, PDB, VPA, configmap, secrets, cron, and v1 backward compatibility
+- Tests cover: deployment, service, ingress, HPA, PDB, VPA, configmap, secrets, cron, sql-proxy, sql-credentials
 
 ## Key Conventions
 
@@ -98,7 +99,7 @@ Uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 - Single container: use `container:` key
 - Multiple containers: use `containers:` list
 - Environment-specific overrides go in `env/values-kub-ent-{dev,tst,prd}.yaml`
-- Postgres/Cloud SQL: use `postgres.instances` with Secret Manager keys via External Secrets
+- Postgres/Cloud SQL: `postgres.enabled: true` defaults to `secretKeyPrefix: PG`. For multiple instances use `postgres.instances: [{secretKeyPrefix: PG}, {secretKeyPrefix: ANALYTICS_PG}]`. The `secretKeyPrefix` is the contract with the `entur/terraform-google-sql-db` Terraform module — it derives Secret Manager keys `{prefix}INSTANCES`, `{prefix}USER`, `{prefix}PASSWORD`
 - gRPC: set `grpc: true` — native K8s gRPC probes are used automatically with `service.internalPort`
 - Custom HPA metrics: use `hpa.metrics` list to add Pods/External/Object metrics alongside default CPU
 
@@ -122,7 +123,8 @@ Uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 - The chart supports both Deployment and CronJob workloads (mutually exclusive via `deployment.enabled` / `cron.enabled`)
 - Fixture values in `fixture/helm/` are used for CI template rendering validation
 - `shortname` is removed — use `appId` (matches GoogleCloudApplication `metadata.id`)
-- `postgres.connectionConfig` is removed — use `postgres.instances` with Secret Manager keys
+- `postgres.connectionConfig` is removed — use `postgres.enabled: true` (defaults to `secretKeyPrefix: PG`)
+- `postgres.termTimeout` is removed — use `postgres.maxSigtermDelay`
 - `deployment.replicas` is removed — use `deployment.minReplicas` (HPA controls pod count)
 - `container.memoryLimit` is removed — memory limit always equals memory request
 - `pdb.minAvailable` is removed — use `deployment.minAvailable`
