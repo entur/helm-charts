@@ -220,9 +220,17 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 - [ ] Run `helm lint . -f env/values-kub-ent-dev.yaml` to catch unknown properties and schema errors
 - [ ] Run `helm template . -f env/values-kub-ent-dev.yaml` to verify rendered output
 
-## Using an AI agent to upgrade
+## Using Claude Code to upgrade
 
-If you use an AI coding agent (Claude Code, Copilot, Cursor, etc.), you can paste the following prompt to have it perform the migration for you:
+This repo includes a [Claude Code skill](https://docs.anthropic.com/en/docs/claude-code/skills) that automates the migration. Add `entur/helm-charts` as a dependency source and run:
+
+```
+/upgrade-common-chart
+```
+
+Or simply ask Claude Code to upgrade your chart — the skill triggers automatically when it detects common chart v1 values or deprecated fields.
+
+If you use a different AI coding agent (Copilot, Cursor, etc.), you can paste the following prompt instead:
 
 ```
 Upgrade the Entur common Helm chart dependency from v1 to v2.
