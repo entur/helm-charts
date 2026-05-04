@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.0](https://github.com/entur/helm-charts/compare/common-v1.21.1...common-v1.22.0) (2026-04-22)
+
+
+### Features
+
+* ETU-70853 Make Cloud SQL Proxy term_timeout configurable ([#245](https://github.com/entur/helm-charts/issues/245)) ([c3bd117](https://github.com/entur/helm-charts/commit/c3bd1171d1f9aa8a2860f193f8e8b68e1968175f))
+
 ## [1.21.1](https://github.com/entur/helm-charts/compare/common-v1.21.0...common-v1.21.1) (2025-11-24)
 
 

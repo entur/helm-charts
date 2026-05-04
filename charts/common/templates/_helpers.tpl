@@ -157,17 +157,15 @@ livenessProbe:
   timeoutSeconds: 5
 {{- end }}
 {{- define "gcloud_sql_proxy" }}
-{{- if .postgres.connectionConfig }}
-  {{- fail "postgres.connectionConfig is deprecated. Use postgres.instances instead. See migration guide for Cloud SQL Proxy v2." }}
-{{- end }}
 - name: "{{ .app }}-sql-proxy"
   image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.21.2
   command:
     - "/cloud-sql-proxy"
     - "--structured-logs"
-    - "--max-sigterm-delay=30s"
+    - "--max-sigterm-delay={{ .postgres.termTimeout | default "30s" }}"
     - "--http-port=9801"
     - "--prometheus"
+    - "--port=5432"
   ports:
     - name: metrics
       containerPort: 9801
