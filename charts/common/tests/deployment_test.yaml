@@ -259,22 +259,12 @@ tests:
       postgres:
         enabled: true
         instances:
-          - PGINSTANCES
+          - secretKeyPrefix: PG
         credentialsSecret: my-secret
     asserts:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].secretRef.name
           value: my-secret
-  - it: connectionConfig is deprecated
-    set:
-      postgres:
-        enabled: true
-        instances:
-          - PGINSTANCES
-        connectionConfig: my-config
-    asserts:
-      - failedTemplate:
-          errorMessage: "postgres.connectionConfig is deprecated. Use postgres.instances instead. See migration guide for Cloud SQL Proxy v2."
   - it: command use correct value
     set:
       containers:
@@ -447,7 +437,7 @@ tests:
       postgres:
         enabled: true
         instances:
-          - PGINSTANCES
+          - secretKeyPrefix: PG
         cpu: 0.1
     asserts:
       - notExists:
@@ -521,18 +511,14 @@ tests:
     set:
       postgres:
         enabled: true
-        instances:
-          - PGINSTANCES
     asserts:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].secretRef.name
-          value: rudder-test-psql-credentials
+          value: rudder-test-sql-credentials
   - it: must enable sidecar if postgres enabled
     set:
       postgres:
         enabled: true
-        instances:
-          - PGINSTANCES
     asserts:
       - isNotEmpty:
           path: spec.template.spec.containers[1]
@@ -553,8 +539,6 @@ tests:
             enabled: false
       postgres:
         enabled: true
-        instances:
-          - PGINSTANCES
     asserts:
       - isNotEmpty:
           path: spec.template.spec.containers[2]
@@ -569,7 +553,7 @@ tests:
       postgres:
         enabled: true
         instances:
-          - PGINSTANCES
+          - secretKeyPrefix: PG
         cpu: 0.1
         cpuLimit: 1
     asserts:
@@ -579,6 +563,101 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: "0.1"
+  - it: generates PGHOST and PGPORT env vars for default instance
+    set:
+      postgres:
+        enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: PGHOST
+            value: "localhost"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: PGPORT
+            value: "5432"
+  - it: generates sequential ports for multiple instances
+    set:
+      postgres:
+        enabled: true
+        instances:
+          - secretKeyPrefix: PG
+          - secretKeyPrefix: ANALYTICS_PG
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: PGPORT
+            value: "5432"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: ANALYTICS_PGPORT
+            value: "5433"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: ANALYTICS_PGHOST
+            value: "localhost"
+  - it: port override works for same-instance additional user
+    set:
+      postgres:
+        enabled: true
+        instances:
+          - secretKeyPrefix: PG
+          - secretKeyPrefix: READONLY_PG
+            port: 5432
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: PGPORT
+            value: "5432"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: READONLY_PGPORT
+            value: "5432"
+  - it: proxy command includes --port=5432
+    set:
+      postgres:
+        enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].command
+          content: "--port=5432"
+  - it: prometheus sql-proxy annotations when postgres enabled
+    set:
+      postgres:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/scrape-sql-proxy"]
+          value: "true"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/sql-proxy-port"]
+          value: "9801"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/sql-proxy-path"]
+          value: "/metrics"
+  - it: no prometheus sql-proxy annotations when postgres disabled
+    asserts:
+      - notExists:
+          path: spec.template.metadata.annotations["prometheus.io/scrape-sql-proxy"]
+  - it: no PGHOST or PGPORT env vars when postgres disabled
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGHOST
+          any: true
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGPORT
+          any: true
   - it: has common runtime env set from env label
     asserts:
       - equal:

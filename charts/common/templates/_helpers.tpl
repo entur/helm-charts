@@ -74,13 +74,26 @@ resources:
 {{- end }}
 
 {{- define "environment" }}
+{{- $postgresInstances := list }}
+{{- if .postgres.enabled }}
+  {{- $postgresInstances = .postgres.instances | default list }}
+  {{- if eq (len $postgresInstances) 0 }}
+    {{- $postgresInstances = list (dict "secretKeyPrefix" "PG") }}
+  {{- end }}
+{{- end }}
 env:
   - name: COMMON_ENV
     value: {{ .envLabel }}
+  {{- range $i, $inst := $postgresInstances }}
+  - name: {{ $inst.secretKeyPrefix }}HOST
+    value: "localhost"
+  - name: {{ $inst.secretKeyPrefix }}PORT
+    value: "{{ $inst.port | default (add 5432 $i) }}"
+  {{- end }}
   {{- if .env }}
   {{- toYaml .env | nindent 2 }}
   {{ end }}
-{{- if or .envFrom .configmap.enabled .postgres.enabled .secrets}}
+{{- if or .envFrom .configmap.enabled (gt (len $postgresInstances) 0) .secrets}}
 envFrom:
   {{- if .envFrom }}
   {{- toYaml .envFrom | nindent 2 }}
@@ -89,12 +102,12 @@ envFrom:
   - configMapRef:
       name: {{ .releaseName }}
   {{- end }}
-  {{- if .postgres.enabled }}
+  {{- if gt (len $postgresInstances) 0 }}
   - secretRef:
   {{- if .postgres.credentialsSecret }}
       name: {{ .postgres.credentialsSecret }}
   {{- else }}
-      name: {{ .app }}-psql-credentials
+      name: {{ .releaseName }}-sql-credentials
   {{- end }}
   {{- end }}
   {{- if .secrets }}
@@ -162,7 +175,7 @@ livenessProbe:
   command:
     - "/cloud-sql-proxy"
     - "--structured-logs"
-    - "--max-sigterm-delay={{ .postgres.termTimeout | default "30s" }}"
+    - "--max-sigterm-delay={{ .postgres.maxSigtermDelay | default "30s" }}"
     - "--http-port=9801"
     - "--prometheus"
     - "--port=5432"
@@ -180,9 +193,6 @@ livenessProbe:
       drop: ["ALL"]
     seccompProfile:
       type: RuntimeDefault
-  {{- if .postgres.memoryLimit }}
-    {{- fail "postgres.memoryLimit is deprecated. Memory limit is now always equal to memory request. Remove memoryLimit and use postgres.memory instead." }}
-  {{- end }}
   resources:
     limits:
       {{- if .postgres.cpuLimit }}

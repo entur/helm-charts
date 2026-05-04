@@ -237,3 +237,49 @@ tests:
       - equal:
           path: spec.jobTemplate.spec.activeDeadlineSeconds
           value: 1200
+  - it: must enable sidecar if postgres enabled
+    set:
+      postgres:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].name
+          value: rudder-test-sql-proxy
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: rudder-test-sql-proxy
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].command
+          content: "--port=5432"
+  - it: must mount sql-credentials envFrom if postgres enabled
+    set:
+      postgres:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[1].envFrom[0].secretRef.name
+          value: rudder-test-sql-credentials
+  - it: generates PGHOST and PGPORT env vars in cronjob
+    set:
+      postgres:
+        enabled: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[1].env
+          content:
+            name: PGHOST
+            value: "localhost"
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[1].env
+          content:
+            name: PGPORT
+            value: "5432"
+  - it: credentialsSecret override works in cronjob
+    set:
+      postgres:
+        enabled: true
+        credentialsSecret: my-cron-creds
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[1].envFrom[0].secretRef.name
+          value: my-cron-creds

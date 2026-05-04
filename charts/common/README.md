@@ -152,14 +152,13 @@ common:
 | initContainers | list | `[]` | See: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/ |
 | labels | object | `{ app shortname team common:version environment }` | Specify additional labels for every resource |
 | pdb | object | `{}` |  |
-| postgres.connectionConfig | string | `nil` | @deprecated connectionConfig is deprecated. Use `postgres.instances` instead to source connection names from Secret Manager via External Secrets. |
 | postgres.cpu | float | 0.05 | Configure cpu request for proxy |
 | postgres.cpuLimit | float | `nil` | Configure optional cpu limit for proxy |
-| postgres.credentialsSecret | string | `nil` | Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`. |
-| postgres.enabled | bool | false | Enable or disable the proxy |
-| postgres.instances | list | [] | List of Secret Manager keys containing Cloud SQL instance connection names. Supports multiple databases. Each key is mapped to `CSQL_PROXY_INSTANCE_CONNECTION_NAME_N` for the v2 proxy. The secret keys match those created by the `entur/terraform-google-sql-db` module (e.g. `PGINSTANCES`). |
+| postgres.credentialsSecret | string | `nil` | Override the Kubernetes secret name for credentials. Bypasses the ExternalSecret for credentials; the proxy ExternalSecret is still created. The secret must contain the expected env vars (e.g. `PGUSER`, `PGPASSWORD`). |
+| postgres.enabled | bool | false | Enable or disable the Cloud SQL proxy v2 sidecar |
+| postgres.instances | list | [] | List of database connections keyed by Terraform `secret_key_prefix`. Each entry derives Secret Manager keys: `{prefix}INSTANCES`, `{prefix}USER`, `{prefix}PASSWORD`. The chart generates `{prefix}HOST=localhost` and `{prefix}PORT=5432+index`. When empty and `enabled: true`, defaults to `[{secretKeyPrefix: PG}]`. |
+| postgres.maxSigtermDelay | string | 30s | Override the max-sigterm-delay for the Cloud SQL Proxy. Adds a delay before the proxy begins shutdown after receiving SIGTERM, useful for allowing load balancers to deregister the pod. |
 | postgres.memory | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
-| postgres.memoryLimit | float | `nil` | @deprecated memoryLimit is deprecated and will cause a deploy failure if set. Memory limit is now always equal to memory request. Use `postgres.memory` instead. |
 | releaseName | string | `nil` | Override release name, useful for multiple deployments |
 | secrets | object | `{}` | Add externalSecret to sync secrets from secret manager |
 | service.annotations | object | `{}` | Optionally set annotations for the service |

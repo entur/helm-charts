@@ -14,9 +14,7 @@ common:
     image: <+artifacts.primary.image>  # The CD tool will replace this value with the actual image
     cpu: 0.3 # Adjust this to your application needs
     memory: 512 # Adjust this to your application needs, a java application might need more memory to start like 1024 or 2048 or +++
-  postgres: # sets up a postgres proxy so you can connect to your postgresql instance via localhost on the pod
-    enabled: true
-    instances:
-      - PGINSTANCES  # Secret Manager key from entur/terraform-google-sql-db containing the instance connection name
+  postgres: # sets up a Cloud SQL proxy sidecar so you can connect to your postgresql instance via localhost on the pod
+    enabled: true  # defaults to secretKeyPrefix: PG, matching entur/terraform-google-sql-db's default secret_key_prefix
     cpu: 0.1  # PostgreSQL Proxy setting, this usually is enough for most applications
     memory: 32  # PostgreSQL Proxy setting, this usually is enough for most applications

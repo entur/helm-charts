@@ -442,21 +442,31 @@
           "description": "Configure memory request for proxy without units, Mi inferred",
           "type": "integer"
         },
-        "memoryLimit": {
-          "description": "Deprecated. Will cause a deploy failure if set.",
-          "type": ["integer", "null"]
-        },
         "instances": {
-          "description": "List of Secret Manager keys containing Cloud SQL instance connection names",
-          "items": { "type": "string" },
+          "description": "List of database connections keyed by Terraform secret_key_prefix",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["secretKeyPrefix"],
+            "properties": {
+              "secretKeyPrefix": {
+                "description": "Terraform secret_key_prefix. Derives keys: {prefix}INSTANCES, {prefix}USER, {prefix}PASSWORD",
+                "type": "string"
+              },
+              "port": {
+                "description": "Override auto-assigned proxy listen port (default: 5432 + index)",
+                "type": "integer"
+              }
+            }
+          },
           "type": "array"
         },
-        "connectionConfig": {
-          "description": "Deprecated. Use postgres.instances instead.",
+        "credentialsSecret": {
+          "description": "Override K8s secret for credentials. Bypasses ExternalSecret for credentials.",
           "type": ["string", "null"]
         },
-        "credentialsSecret": {
-          "description": "Override name for credentials secret. Must contain PGUSER and PGPASSWORD.",
+        "maxSigtermDelay": {
+          "description": "Override the max-sigterm-delay for the Cloud SQL Proxy (e.g. 30s, 5m).",
           "type": ["string", "null"]
         }
       },

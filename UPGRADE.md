@@ -84,36 +84,56 @@ common:
     memory: 1024  # sets both request and limit
 ```
 
-### 4. Cloud SQL Proxy upgraded to v2
+### 4. Cloud SQL Proxy — `secretKeyPrefix` integration
 
-The Cloud SQL Auth Proxy has been upgraded from v1 (1.33.16) to v2 (2.21.2). This changes how database connections are configured.
+The postgres integration now uses `secretKeyPrefix` as the single contract with the `entur/terraform-google-sql-db` Terraform module. Given a prefix, the chart derives all Secret Manager key names and fetches everything via External Secrets. Terraform-created Kubernetes secrets are no longer needed.
 
-**`postgres.connectionConfig` is removed.** Use `postgres.instances` instead, which sources instance connection names from Google Secret Manager via External Secrets.
+**`postgres.instances` format changed.** Items are now objects with `secretKeyPrefix` instead of raw Secret Manager key names. When `enabled: true` with no `instances`, the chart defaults to `[{secretKeyPrefix: PG}]`.
+
+**`postgres.connectionConfig`, `postgres.memoryLimit`, and `postgres.termTimeout` are removed.** The `termTimeout` field is replaced by `postgres.maxSigtermDelay` to match the Cloud SQL Proxy v2 flag name.
 
 ```yaml
 # v1
 common:
   postgres:
     enabled: true
-    connectionConfig: my-app-psql-connection  # Kubernetes ConfigMap with INSTANCES env var
+    connectionConfig: my-app-psql-connection
 
-# v2
+# v2 (simplest — uses default PG prefix)
+common:
+  postgres:
+    enabled: true
+
+# v2 (explicit prefix)
 common:
   postgres:
     enabled: true
     instances:
-      - PGINSTANCES  # Secret Manager key from entur/terraform-google-sql-db
+      - secretKeyPrefix: PG
+
+# v2 (multiple instances)
+common:
+  postgres:
+    enabled: true
+    instances:
+      - secretKeyPrefix: PG
+      - secretKeyPrefix: ANALYTICS_PG
 ```
+
+**What changed:**
+
+- Credentials (`{prefix}USER`, `{prefix}PASSWORD`) are now fetched from Secret Manager via External Secrets, not from a Terraform-created Kubernetes secret.
+- The chart generates `{prefix}HOST=localhost` and `{prefix}PORT=5432+index` as environment variables.
+- A new `sql-credentials` ExternalSecret is created alongside the existing `sql-proxy` ExternalSecret.
+- `credentialsSecret` still works as an escape hatch for custom credential sources.
+- `postgres.maxSigtermDelay` replaces `postgres.termTimeout` — controls the delay before the proxy begins shutdown after SIGTERM (default `30s`).
 
 **Migration steps:**
 
-1. The `entur/terraform-google-sql-db` Terraform module already stores `PGINSTANCES` in Secret Manager. Verify it exists.
-2. Replace `connectionConfig` with `instances: [PGINSTANCES]` in your values.
-3. For multiple databases, list all instance keys: `instances: [PGINSTANCES, ANALYTICS_PGINSTANCES]`.
-4. Remove any manual Kubernetes ConfigMaps that were providing the `INSTANCES` env var.
-5. Optionally set `create_kubernetes_resources: false` in your Terraform module to stop creating the now-unused ConfigMap.
-
-**`postgres.memoryLimit` is removed.** Memory limit is now always equal to memory request. Use `postgres.memory` to set both.
+1. Replace `instances: [PGINSTANCES]` with `instances: [{secretKeyPrefix: PG}]`, or simply use `enabled: true` for the default `PG` prefix.
+2. Ensure `{prefix}USER`, `{prefix}PASSWORD`, and `{prefix}INSTANCES` exist in Secret Manager (the `entur/terraform-google-sql-db` module creates these).
+3. Optionally set `create_kubernetes_resources: false` in your Terraform module — the chart no longer uses Terraform-created Kubernetes secrets.
+4. For multiple databases, list each Terraform module's `secret_key_prefix` as a separate entry in `instances`.
 
 ### 5. `ingress.class` annotation replaced with `spec.ingressClassName`
 
@@ -181,6 +201,7 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 ### Cloud SQL Proxy v2 features
 - Prometheus metrics exposed on port 9801 (`/metrics`).
 - Support for multiple databases via `postgres.instances` list.
+- `postgres.maxSigtermDelay` — configurable shutdown delay (default `30s`).
 
 ## Quick Migration Checklist
 
@@ -191,7 +212,8 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 - [ ] Replace `container.minAvailable` → `deployment.minAvailable`
 - [ ] Replace `container.terminationGracePeriodSeconds` → `deployment.terminationGracePeriodSeconds`
 - [ ] Remove `container.memoryLimit` / `postgres.memoryLimit` — set `memory` to the value you need
-- [ ] Replace `postgres.connectionConfig` with `postgres.instances: [PGINSTANCES]` (if using postgres)
+- [ ] Replace `postgres.connectionConfig` with `postgres.enabled: true` or `postgres.instances: [{secretKeyPrefix: PG}]`
+- [ ] Replace `postgres.termTimeout` with `postgres.maxSigtermDelay` (if set)
 - [ ] If using gRPC: remove explicit `probes.*.grpc.port` settings (now defaults to `service.internalPort`)
 - [ ] Update `Chart.yaml` dependency version to v2
 - [ ] Run `helm dependency update`

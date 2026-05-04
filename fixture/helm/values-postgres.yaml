@@ -14,4 +14,4 @@ container:
 postgres:
   enabled: true
   instances:
-    - PGINSTANCES
+    - secretKeyPrefix: PG

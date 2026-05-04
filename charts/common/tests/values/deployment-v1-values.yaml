@@ -1,9 +1,0 @@
-env: dev
-app: testsuite
-appId: tstsut
-team: common
-ingress:
-  host: test.dev.entur.io
-  trafficType: public
-container:
-  image: img
