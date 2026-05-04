@@ -220,37 +220,16 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 - [ ] Run `helm lint . -f env/values-kub-ent-dev.yaml` to catch unknown properties and schema errors
 - [ ] Run `helm template . -f env/values-kub-ent-dev.yaml` to verify rendered output
 
-## Automated upgrade with Claude Code
+## Automated upgrade with an AI coding agent
 
-We provide a [Claude Code skill](https://docs.anthropic.com/en/docs/claude-code/skills) that automates the migration. Run this in **your application's repo** (not in `helm-charts`):
-
-### Option 1: Copy the skill into your repo
-
-```bash
-# From your application repo
-mkdir -p .claude/skills
-curl -sL https://raw.githubusercontent.com/entur/helm-charts/main/.claude/skills/upgrade-common-chart/SKILL.md \
-  -o .claude/skills/upgrade-common-chart.md
-```
-
-Then ask Claude Code to upgrade:
-
-```
-Upgrade my common chart dependency to v2
-```
-
-The skill triggers automatically and walks through all migration steps. You can delete the skill file after the upgrade is complete.
-
-### Option 2: Paste the migration prompt
-
-If you prefer not to install the skill, paste this into Claude Code (or any AI coding agent):
+Paste this prompt into Claude Code, Copilot, Cursor, or any AI coding agent from **your application's repo**:
 
 ```
 Upgrade the Entur common Helm chart dependency from v1 to v2.
 
-First, read the migration guide:
-  https://raw.githubusercontent.com/entur/helm-charts/main/UPGRADE.md
+Read the upgrade skill and follow its instructions:
+  https://raw.githubusercontent.com/entur/helm-charts/main/.claude/skills/upgrade-common-chart/SKILL.md
 
-Then apply the "Quick Migration Checklist" to all values files in this repository.
+Apply all migration steps to every values file in this repository.
 Run `helm dependency update` and `helm lint` to verify.
 ```
