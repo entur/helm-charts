@@ -1,0 +1,28 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.versionBadge" . }} {{ template "chart.appVersionBadge" . }}
+
+A pod with multiple containers running side by side. Same pod, same lifecycle, shared network namespace.
+
+## What this example shows
+
+- `containers:` (plural list) instead of `container:` (single map). Each entry in the list becomes one container in the pod.
+- Custom probe paths and a long startup timeout (`startup.failureThreshold: 300`).
+- Multiple service ports targeting different containers (`service.ports`).
+- Prometheus scraping on a non-default path and port.
+
+## When to use this
+
+Only put two containers in one pod when they genuinely need to share a lifecycle — typical sidecars are logging shippers, config reloaders, or proxies (e.g. Envoy). If the two processes can run as separate Deployments, prefer that instead (see the `multi-deploy` example) — separate Deployments scale and fail independently.
+
+## Key values to know
+
+- `containers:` (list) — each entry follows the same shape as the single `container:` map.
+- `service.ports` — list of TCP ports the service exposes. Each port's `targetPort` can route to a different container's `containerPort`.
+- `deployment.prometheus.path` / `port` — override scrape config when your metrics endpoint isn't the default `/actuator/prometheus`.
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}

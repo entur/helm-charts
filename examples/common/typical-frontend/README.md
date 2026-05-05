@@ -1,8 +1,30 @@
 # typical-frontend
 
-![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square)  ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
-A Helm chart for basic Entur deployments
+A typical frontend or BFF (backend-for-frontend) web app: public ingress, a ConfigMap for non-secret runtime config, and Secret Manager-backed secrets.
+
+## What this example shows
+
+- `ingress.trafficType: public` — accepts end-user traffic directly (not behind Apigee). An **ingress** is the Kubernetes resource that routes external HTTP traffic into your service.
+- `configmap` — non-sensitive runtime config (e.g. a timezone) baked into env vars.
+- `secrets.auth-credentials` — Secret Manager keys pulled into a Kubernetes Secret named `<app>-auth-credentials` via External Secrets.
+- `deployment.prometheus.enabled: true` — scrapes `/actuator/prometheus` by default.
+
+## When to use this
+
+Use this for any frontend or BFF that:
+
+- Serves end users directly over HTTPS.
+- Needs both runtime config (ConfigMap) and secrets (External Secrets).
+- Is not a JVM app — otherwise bump `container.memory` higher.
+
+## Key values to know
+
+- `ingress.trafficType: public` — exposes the service to the public internet via the Entur ingress controller.
+- `configmap.data` — keys here become env vars in the container.
+- `secrets.auth-credentials` — list of Secret Manager keys; the chart turns them into Kubernetes Secret entries with the same names.
+- `deployment.minReplicas: 2` — minimum pod count when HPA scales down.
 
 ## Requirements
 
@@ -16,7 +38,7 @@ A Helm chart for basic Entur deployments
 |-----|------|---------|-------------|
 | common.app | string | `"typical-frontend"` |  |
 | common.appId | string | `"typfro"` |  |
-| common.configmap.data.TZx | string | `"Europe/Oslo"` |  |
+| common.configmap.data.TZ | string | `"Europe/Oslo"` |  |
 | common.configmap.enabled | bool | `true` |  |
 | common.container.cpu | float | `0.3` |  |
 | common.container.image | string | `"<+artifacts.primary.image>"` |  |

@@ -1,8 +1,25 @@
 # cronjob
 
-![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square)  ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
-A Helm chart for Entur CronJob workloads
+A scheduled job (Kubernetes `CronJob`) instead of a long-running `Deployment`. No service, no ingress, no HPA — just a container that runs on a schedule.
+
+## What this example shows
+
+- `deployment.enabled: false` — turn off the long-running deployment.
+- `cron.enabled: true` — turn on the CronJob workload (mutually exclusive with `deployment.enabled`).
+- `cron.schedule` — standard 5-field cron expression (this example: every 6 hours, in cluster timezone / UTC).
+- `container.command` and `container.args` — what the job actually runs.
+
+## When to use this
+
+Use this for time-driven work: nightly imports, periodic cleanups, batch processing. If the work is event-driven instead, use a regular `Deployment` with a queue consumer (see the `multi-deploy` example).
+
+## Key values to know
+
+- `cron.schedule` — standard cron syntax.
+- `container.image` — the same `<+artifacts.primary.image>` placeholder as deployments. The CronJob pulls this image each invocation.
+- `container.command` / `container.args` — what to run. If your image already has the right entrypoint, you can omit both.
 
 ## Requirements
 

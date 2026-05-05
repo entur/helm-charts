@@ -18,7 +18,7 @@ common:
   configmap:
     enabled: true
     data:
-      TZx: "Europe/Oslo"
+      TZ: "Europe/Oslo"
   secrets:
     auth-credentials: # k8s secret name "typical-frontend-auth-credentials"
       - MNG_AUTH0_INT_CLIENT_ID
