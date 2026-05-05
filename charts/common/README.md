@@ -77,13 +77,13 @@ common:
 | configmap.enabled | bool | false | Enable or disable the configmap |
 | container.args | string | `nil` | Optionally set the arguments that will be passed to the command, e.g. ["arg1","arg2"]. |
 | container.command | string | `nil` | Optionally set the command that will run in the pod. If not set, the entrypoint for the container-image is used (recommended for most Java-apps). |
-| container.cpu | float | 0.1 | Set CPU without any unit. 100m is 0.1 |
+| container.cpu | float | 0.3 | Set CPU request without any unit. 100m is 0.1. Default is sized for JVM/Spring Boot apps; lighter workloads (sidecars, small Go services, static frontends) should override down. |
 | container.cpuLimit | float | `5 x cpu` | Set CPU limit without any unit. 100m is 0.1 |
 | container.env | list | `[]` | Specify `env` entries for your container |
 | container.envFrom | list | `[]` | Attach secrets and configmaps to your `env` |
 | container.labels | object | `{}` | Add labels to your pods |
 | container.lifecycle | object | `{}` | Set pod lifecycle handlers |
-| container.memory | int | 16 | Set memory without any unit, `Mi` is inferred |
+| container.memory | int | 512 | Set memory request without any unit, `Mi` is inferred. Memory limit always equals request. Default is sized for JVM/Spring Boot apps (the JVM alone needs ~150–250 MiB before app code runs); lighter workloads should override down. |
 | container.memoryLimit | string | `nil` | @deprecated memoryLimit is removed. Memory limit is now always equal to memory request. Use `container.memory` instead. |
 | container.name | string | .app | Name of container |
 | container.probes.enabled | bool | `true` | Enable or disable probes |

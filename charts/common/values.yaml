@@ -191,15 +191,15 @@ container:
   command:
   # -- Optionally set the arguments that will be passed to the command, e.g. ["arg1","arg2"].
   args:
-  # -- Set CPU without any unit. 100m is 0.1
-  # @default -- 0.1
-  cpu: 0.1
+  # -- Set CPU request without any unit. 100m is 0.1. Default is sized for JVM/Spring Boot apps; lighter workloads (sidecars, small Go services, static frontends) should override down.
+  # @default -- 0.3
+  cpu: 0.3
   # -- (float) Set CPU limit without any unit. 100m is 0.1
   # @default -- `5 x cpu`
   cpuLimit:
-  # -- Set memory without any unit, `Mi` is inferred
-  # @default -- 16
-  memory: 16
+  # -- Set memory request without any unit, `Mi` is inferred. Memory limit always equals request. Default is sized for JVM/Spring Boot apps (the JVM alone needs ~150–250 MiB before app code runs); lighter workloads should override down.
+  # @default -- 512
+  memory: 512
   # -- @deprecated memoryLimit is removed. Memory limit is now always equal to memory request. Use `container.memory` instead.
   memoryLimit:
   # -- Set the uid that your user runs with
