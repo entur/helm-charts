@@ -8,6 +8,25 @@ This guide covers all breaking changes and required migration steps when upgradi
 - External Secrets Operator installed (required if using `postgres` or `secrets`)
 - Optionally: [kube-startup-cpu-boost](https://github.com/google/kube-startup-cpu-boost) operator for CPU boost feature
 
+## Installing the Release Candidate
+
+v2 is currently available as a release candidate. To test it before the final release, manually set the version in your `Chart.yaml`:
+
+```yaml
+dependencies:
+  - name: common
+    version: 2.0.0-rc.1
+    repository: https://entur.github.io/helm-charts
+```
+
+Then run:
+
+```bash
+helm dependency update
+```
+
+Once v2 is officially released, update the version to `2.0.0` (or use a range like `~2`).
+
 ## Breaking Changes
 
 ### 1. `shortname` renamed to `appId`
@@ -32,16 +51,17 @@ Scaling fields have been removed from `container.*` and consolidated under `depl
 
 **HPA is now always enabled** (unless `forceReplicas` is set). The Deployment spec never emits `replicas` — HPA controls the pod count in all environments. This prevents the v1 bug where `helm upgrade` would reset HPA-managed replica counts.
 
-| Removed (v1) | Replacement (v2) |
-|---|---|
-| `container.replicas` | `deployment.minReplicas` |
-| `deployment.replicas` | `deployment.minReplicas` |
-| `container.maxReplicas` | `deployment.maxReplicas` |
-| `container.forceReplicas` | `deployment.forceReplicas` |
-| `container.minAvailable` | `deployment.minAvailable` |
+| Removed (v1)                              | Replacement (v2)                           |
+| ----------------------------------------- | ------------------------------------------ |
+| `container.replicas`                      | `deployment.minReplicas`                   |
+| `deployment.replicas`                     | `deployment.minReplicas`                   |
+| `container.maxReplicas`                   | `deployment.maxReplicas`                   |
+| `container.forceReplicas`                 | `deployment.forceReplicas`                 |
+| `container.minAvailable`                  | `deployment.minAvailable`                  |
 | `container.terminationGracePeriodSeconds` | `deployment.terminationGracePeriodSeconds` |
 
 Default `minReplicas` by environment:
+
 - `sbx`/`dev`/`tst`: **1** (scales down to single pod in low traffic)
 - `prd`: **2** (HA by default)
 
@@ -64,7 +84,7 @@ To disable HPA and fix a specific replica count, use `forceReplicas`:
 ```yaml
 common:
   deployment:
-    forceReplicas: 3  # disables HPA, fixed at 3 pods
+    forceReplicas: 3 # disables HPA, fixed at 3 pods
 ```
 
 ### 3. `container.memoryLimit` removed
@@ -169,36 +189,44 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 ## New Features (no action required)
 
 ### HPA always enabled
+
 - HPA is now enabled in all environments, not just `prd`. Default `minReplicas` is 1 for sbx/dev/tst and 2 for prd.
 - When `startupCPUBoost` is disabled, a 120s scaleUp stabilization window prevents startup CPU spikes from triggering unnecessary scale-ups. Tune via `hpa.stabilizationWindowSeconds` to match your app's startup time.
 
 ### PDB improvements
+
 - `unhealthyPodEvictionPolicy: AlwaysAllow` prevents unhealthy pods from blocking cluster upgrades.
 - PDB now correctly protects pods when `forceReplicas > 1` (was incorrectly set to 0%).
 
 ### GKE Startup CPU Boost
+
 - Disabled by default. Enable with `deployment.startupCPUBoost.enabled: true` (requires the operator installed in the cluster).
 - Temporarily increases CPU by 50% during startup, reverts when pod becomes Ready.
 - When enabled, a CPU limit of 1.3x the CPU request is automatically set.
 - HPA default `cpuUtilization` lowered from 100% to 70%.
 
 ### gRPC native probes
+
 - Setting `grpc: true` now uses native Kubernetes gRPC probes by default, using `service.internalPort`.
 - No longer requires the `/bin/grpc_health_probe` binary in your container image.
 - No need to set `probes.liveness.grpc.port` etc. — ports default to `service.internalPort`.
 
 ### Startup probe path
+
 - `container.probes.startup.path` — when set, the startup probe switches from `tcpSocket` to `httpGet`.
 
 ### Custom HPA metrics
+
 - `hpa.metrics` — append custom metrics (Pods, External, Object) alongside default CPU scaling.
 - `deployment.cpuUtilization` — set HPA CPU target (default 70%).
 - `hpa.stabilizationWindowSeconds` — tune scaleUp delay (default 120s when CPU boost is disabled).
 
 ### Per-ingress annotations and ingressClassName
+
 - Each entry in `ingresses` list can now have its own `annotations` and `ingressClassName`.
 
 ### Cloud SQL Proxy v2 features
+
 - Prometheus metrics exposed on port 9801 (`/metrics`).
 - Support for multiple databases via `postgres.instances` list.
 - `postgres.maxSigtermDelay` — configurable shutdown delay (default `30s`).
@@ -224,7 +252,7 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 
 Paste this prompt into Claude Code, Copilot, Cursor, or any AI coding agent from **your application's repo**:
 
-```
+```text
 Upgrade the Entur common Helm chart dependency from v1 to v2.
 
 Read the upgrade skill and follow its instructions:

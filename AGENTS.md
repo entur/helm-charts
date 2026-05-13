@@ -119,6 +119,7 @@ Uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 ## Important Notes
 
 - `README.md` files in charts are **auto-generated** by helm-docs — do not edit them manually; edit `values.yaml` comments or `Chart.yaml` description instead
+- The chart repository is hosted on GitHub Pages at `https://entur.github.io/helm-charts` — never use OCI or other registry URLs
 - Example charts pin their dependency on `common` — update both `Chart.yaml` version and run `helm dependency update` when changing
 - The chart supports both Deployment and CronJob workloads (mutually exclusive via `deployment.enabled` / `cron.enabled`)
 - Fixture values in `fixture/helm/` are used for CI template rendering validation
