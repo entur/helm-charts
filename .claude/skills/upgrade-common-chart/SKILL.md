@@ -24,12 +24,12 @@ Read each file before making changes. The common chart is typically referenced a
 
 ## Step 2: Update Chart.yaml
 
-Bump the common chart dependency version to `2.0.0`:
+Bump the common chart dependency version to `2.0.0-rc.1`:
 
 ```yaml
 dependencies:
   - name: common
-    version: 2.0.0
+    version: 2.0.0-rc.1
     repository: "https://entur.github.io/helm-charts"
 ```
 
