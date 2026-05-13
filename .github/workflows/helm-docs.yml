@@ -13,7 +13,6 @@ concurrency:
 jobs:
   helm-doc-example-update:
     name: Update helm chart versions in examples and docs
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'release-please--branches--')
     runs-on: ubuntu-24.04
     permissions:
       contents: write
