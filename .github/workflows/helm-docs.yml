@@ -2,7 +2,8 @@ name: helm-docs-and-examples-update
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - "release-please--branches--**"
   workflow_dispatch:
 
 concurrency:
