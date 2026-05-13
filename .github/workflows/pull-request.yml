@@ -99,11 +99,11 @@ jobs:
       - name: Helm verify examples
         working-directory: examples/common/${{ matrix.example }}
         run: |
+          # Package the common chart (required for aliased dependencies like multi-deploy)
           mkdir -p charts
-          cp -r ../../../charts/common charts/common
-	  # multi-deploy is excluded because helm lint fails with
-          # "key 'common' is not set in this configuration"
-	  if [ "multi-deploy" != ${{ matrix.example }} ]; then
-	          helm lint . -f env/values-kub-ent-${{ matrix.env }}.yaml
-	  fi
+          helm package ../../../charts/common -d charts/
+          # Update dependency versions in Chart.yaml to match the local chart
+          CHART_VERSION=$(yq '.version' ../../../charts/common/Chart.yaml)
+          yq -i ".dependencies[].version = \"${CHART_VERSION}\"" Chart.yaml
+          helm lint . -f env/values-kub-ent-${{ matrix.env }}.yaml
           helm template . -f env/values-kub-ent-${{ matrix.env }}.yaml
