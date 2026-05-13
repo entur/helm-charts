@@ -1,16 +1,16 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 {{- $releaseName := include "name" . -}}
-{{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
-{{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
-{{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas }}
+{{- $minReplicas := .Values.deployment.minReplicas }}
+{{- $forceReplicas := .Values.deployment.forceReplicas }}
+{{- $maxReplicas := .Values.deployment.maxReplicas }}
 {{- $hpa := .Values.hpa | default dict }}
-{{- $cpuUtilization := .Values.cpuUtilization | default 100 }}
+{{- $cpuUtilization := .Values.deployment.cpuUtilization | default 70 }}
 
-{{- if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true"  }}
+{{- if eq (include "hpa.enabled" (dict "forceReplicas" $forceReplicas)) "true"  }}
   {{- /* Rules */}}
   {{- if (eq 1 (int $maxReplicas)) }}
-    {{- required ".Values.common.container.maxReplicas must be more than 1." .Values.error -}}
+    {{- required ".Values.common.deployment.maxReplicas must be more than 1." .Values.error -}}
   {{- else }}
 
 {{- /* YAML Spec */}}
@@ -34,8 +34,16 @@ spec:
       target:
         type: Utilization
         averageUtilization: {{ $cpuUtilization }}
+  {{- range ((.Values.hpa).metrics) }}
+  - {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if not ((.Values.deployment).startupCPUBoost).enabled }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: {{ ((.Values.hpa).stabilizationWindowSeconds) | default 120 }}
+  {{- end }}
   maxReplicas: {{ $maxReplicas | default 10 }}
-  minReplicas: {{ max 2 $replicas }}
+  minReplicas: {{ include "hpa.minReplicas" (dict "replicas" $minReplicas) }}
   {{- end }}
   scaleTargetRef:
     apiVersion: apps/v1

@@ -34,38 +34,60 @@ tests:
       - equal:
           path: metadata.annotations["meta.helm.sh/release-namespace"]
           value: NAMESPACE
-  - it: must use default with 2 replicas or more
+  - it: must always have unhealthyPodEvictionPolicy AlwaysAllow
     set:
       env: prd
-      container:
-        replicas: 2
+    asserts:
+      - equal:
+          path: spec.unhealthyPodEvictionPolicy
+          value: AlwaysAllow
+  - it: must have unhealthyPodEvictionPolicy in all environments
+    set:
+      env: dev
+    asserts:
+      - equal:
+          path: spec.unhealthyPodEvictionPolicy
+          value: AlwaysAllow
+  # default minReplicas=2 means PDB is always 50% by default
+  - it: default minAvailable is 50% with default minReplicas 2
+    set:
+      env: prd
+      deployment:
+        minReplicas: 2
     asserts:
       - equal:
           path: spec.minAvailable
           value: "50%"
-  - it: must use default with 2 maxreplicas or more in prod
+  - it: default minAvailable is 50% in dev (minReplicas defaults to 2)
     set:
-      env: prd
-      maxReplicas: 3
+      env: dev
     asserts:
       - equal:
           path: spec.minAvailable
           value: "50%"
-  - it: use minAvailable from container if not set on pdb
+  - it: default minAvailable is 50% in tst (minReplicas defaults to 2)
+    set:
+      env: tst
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  # deployment.minAvailable overrides the default
+  - it: deployment.minAvailable overrides default 50%
     set:
       env: prd
-      container:
-        replicas: 2
+      deployment:
+        minReplicas: 2
         minAvailable: 27%
     asserts:
       - equal:
           path: spec.minAvailable
           value: "27%"
-  - it: use minAvailable from deployment if not set on pdb or container
+  - it: deployment.minAvailable works with containers list
     set:
       env: prd
       deployment:
-        replicas: 2
+        minReplicas: 2
         minAvailable: 26%
       containers:
         - image: app
@@ -73,107 +95,75 @@ tests:
       - equal:
           path: spec.minAvailable
           value: "26%"
-  - it: check for minAvailable on deployment before container
+  - it: deployment.minAvailable 25% with containers list
     set:
       env: prd
       deployment:
-        replicas: 2
-        minAvailable: 30%
-      container:
-        replicas: 2
-        minAvailable: 50%
-      containers:
-        - image: app
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "30%"
-  - it: use minAvailable from pdb if not set on pdb or container
-    set:
-      env: prd
-      pdb:
+        minReplicas: 2
         minAvailable: 25%
-      container:
-        replicas: 2
       containers:
         - image: app
     asserts:
       - equal:
           path: spec.minAvailable
           value: "25%"
-  - it: if container Replicas is set to 1, minAvailable must be 0%
-    set:
-      env: prd
-      container:
-        image: some
-        replicas: 1
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "0%"
-  - it: if deployment Replicas is set to 1, minAvailable must be 0%
+  - it: deployment.minAvailable 30% with containers list
     set:
       env: prd
       deployment:
-        replicas: 1
-      container:
-        image: some
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "0%"
-  - it: if container forceReplicas is set to 1, minAvailable must be 0%
-    set:
-      env: prd
-      container:
-        image: some
-        forceReplicas: 1
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "0%"
-  - it: if deployment forceReplicas is set to 1, minAvailable must be 0%
-    set:
-      env: prd
-      deployment:
-        forceReplicas: 1
+        minReplicas: 2
+        minAvailable: 30%
       containers:
-        - image: some
+        - image: app
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "30%"
+  # minReplicas=1: single pod, PDB should be 0%
+  - it: minAvailable is 0% when minReplicas is 1 in prd
+    set:
+      env: prd
+      deployment:
+        minReplicas: 1
+      container:
+        image: some
     asserts:
       - equal:
           path: spec.minAvailable
           value: "0%"
-  - it: must use pdb if forceReplicas is set to more than 1
+  - it: minAvailable is 0% when minReplicas is 1 in dev
     set:
-      env: prd
+      env: dev
+      deployment:
+        minReplicas: 1
       container:
         image: some
-        forceReplicas: 2
-        replicas: 2
     asserts:
-      - hasDocuments:
-          count: 1
-  - it: must use pdb if forceReplicas is set to more than 1
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  - it: minAvailable is 0% when minReplicas is 1 in tst
     set:
-      env: prd
-      container:
-        image: some
-        forceReplicas: 2
-        replicas: 2
+      env: tst
+      deployment:
+        minReplicas: 1
     asserts:
-      - hasDocuments:
-          count: 1
-  - it: must use pdb if forceReplicas is set to more than 1 on deployment
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  # forceReplicas=1: single pod, PDB should be 0%
+  - it: forceReplicas 1 means minAvailable 0%
     set:
       env: prd
       deployment:
-        forceReplicas: 2
-      containers:
-        - image: some
+        forceReplicas: 1
+      container:
+        image: some
     asserts:
-      - hasDocuments:
-          count: 1
-  - it: must use pdb if forceReplicas is set to 1 on deployment
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  - it: forceReplicas 1 with containers list means minAvailable 0%
     set:
       env: prd
       deployment:
@@ -181,15 +171,71 @@ tests:
       containers:
         - image: some
     asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "0%"
+  # forceReplicas > 1: multiple pods, PDB should protect
+  - it: forceReplicas 2 means minAvailable 50%
+    set:
+      env: prd
+      deployment:
+        forceReplicas: 2
+      container:
+        image: some
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: forceReplicas 2 with containers list means minAvailable 50%
+    set:
+      env: prd
+      deployment:
+        forceReplicas: 2
+      containers:
+        - image: some
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: forceReplicas 3 means minAvailable 50%
+    set:
+      env: prd
+      deployment:
+        forceReplicas: 3
+      container:
+        image: some
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: forceReplicas 3 with custom deployment.minAvailable
+    set:
+      env: prd
+      deployment:
+        forceReplicas: 3
+        minAvailable: 33%
+      containers:
+        - image: some
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "33%"
+  # PDB document always exists (helm can't delete previous config)
+  - it: PDB document exists even when forceReplicas is 1
+    set:
+      env: prd
+      deployment:
+        forceReplicas: 1
+      containers:
+        - image: some
+    asserts:
       - hasDocuments:
           count: 1
-  - it: must use pdb when replicas not set
+  - it: PDB document exists with custom deployment.minAvailable
     set:
       env: prd
       deployment:
         minAvailable: 4
-      container:
-        image: some
     asserts:
       - hasDocuments:
           count: 1
@@ -204,69 +250,63 @@ tests:
       - equal:
           path: metadata.name
           value: override
-  # test env
-  - it: must use default with 2 maxReplicas or more
+  # deployment.minAvailable works across environments
+  - it: deployment.minAvailable overrides default in tst
     set:
       env: tst
-      container:
+      deployment:
         maxReplicas: 5
     asserts:
       - equal:
           path: spec.minAvailable
           value: "50%"
-  - it: must use default with 2 maxreplicas or more in tst
+  - it: deployment.minAvailable custom value in tst
     set:
       env: tst
-      container:
-        maxReplicas: 3
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "50%"
-  - it: use minAvailable from container if not set on pdb in tst
-    set:
-      env: tst
-      container:
+      deployment:
         maxReplicas: 2
         minAvailable: 27%
     asserts:
       - equal:
           path: spec.minAvailable
           value: "27%"
-  - it: minAvailable equals zero even if minAvailable is set on container if only one pod in tst
-    set:
-      env: tst
-      container:
-        minAvailable: 24%
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "0%"
-  - it: minAvailable equals zero even if minAvailable is set on container if only one pod in tst
+  - it: default minReplicas 2 means PDB is 50% without explicit config in tst
     set:
       env: tst
       deployment:
+        minReplicas: null
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"
+  - it: deployment.minAvailable custom value in dev
+    set:
+      env: dev
+      deployment:
+        minReplicas: 2
         minAvailable: 24%
     asserts:
       - equal:
           path: spec.minAvailable
-          value: "0%"
-  - it: minAvailable equals zero even if minAvailable is set on container if only one pod in dev
+          value: "24%"
+  - it: deployment.minAvailable custom value in dev with maxReplicas
     set:
       env: dev
-      container:
-        minAvailable: 24%
-    asserts:
-      - equal:
-          path: spec.minAvailable
-          value: "0%"
-  - it: use minAvailable from container if not set on pdb in dev
-    set:
-      env: dev
-      container:
+      deployment:
         maxReplicas: 2
         minAvailable: 29%
     asserts:
       - equal:
           path: spec.minAvailable
           value: "29%"
+  - it: minReplicas 2 in dev means minAvailable 50%
+    set:
+      env: dev
+      deployment:
+        minReplicas: 2
+      container:
+        image: some
+    asserts:
+      - equal:
+          path: spec.minAvailable
+          value: "50%"

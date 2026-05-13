@@ -4,7 +4,11 @@
 
 {{- define "labels" }}
 app: {{ empty .Values.releaseName | ternary .Release.Name .Values.releaseName }}
-shortname: {{ .Values.shortname }}
+{{- if and (not .Values.appId) .Values.shortname }}
+  {{- fail "shortname is deprecated. Use appId instead." }}
+{{- end }}
+appId: {{ .Values.appId }}
+shortname: {{ .Values.appId }}
 team: {{ .Values.team }}
 common: {{ .Chart.Version }}
 environment: {{ .Values.env }}
@@ -53,12 +57,11 @@ resources:
   limits:
     {{- if .cpuLimit }}
     cpu: "{{ .cpuLimit| float64 }}"
+    {{- else if .startupCPUBoostEnabled }}
+    {{- /* When CPU boost is enabled, set limit to 1.3x request so the boost operator has a ceiling to work within */}}
+    cpu: "{{ printf "%.2f" (divf (mulf .cpu 13) 10) }}"
     {{- end }}
-    {{- if .memoryLimit }}
-    memory: "{{ .memoryLimit }}Mi"
-    {{- else }}
-    memory: "{{ (div (mul .memory 6) 5) }}Mi"
-    {{- end }}
+    memory: "{{ .memory }}Mi"
     {{- if .ephemeralStorageLimit }}
     ephemeral-storage: "{{ .ephemeralStorageLimit }}"
     {{- end }}
@@ -71,13 +74,26 @@ resources:
 {{- end }}
 
 {{- define "environment" }}
+{{- $postgresInstances := list }}
+{{- if .postgres.enabled }}
+  {{- $postgresInstances = .postgres.instances | default list }}
+  {{- if eq (len $postgresInstances) 0 }}
+    {{- $postgresInstances = list (dict "secretKeyPrefix" "PG") }}
+  {{- end }}
+{{- end }}
 env:
   - name: COMMON_ENV
     value: {{ .envLabel }}
+  {{- range $i, $inst := $postgresInstances }}
+  - name: {{ $inst.secretKeyPrefix }}HOST
+    value: "localhost"
+  - name: {{ $inst.secretKeyPrefix }}PORT
+    value: "{{ $inst.port | default (add 5432 $i) }}"
+  {{- end }}
   {{- if .env }}
   {{- toYaml .env | nindent 2 }}
   {{ end }}
-{{- if or .envFrom .configmap.enabled .postgres.enabled .secrets}}
+{{- if or .envFrom .configmap.enabled (gt (len $postgresInstances) 0) .secrets}}
 envFrom:
   {{- if .envFrom }}
   {{- toYaml .envFrom | nindent 2 }}
@@ -86,12 +102,12 @@ envFrom:
   - configMapRef:
       name: {{ .releaseName }}
   {{- end }}
-  {{- if .postgres.enabled }}
+  {{- if gt (len $postgresInstances) 0 }}
   - secretRef:
   {{- if .postgres.credentialsSecret }}
       name: {{ .postgres.credentialsSecret }}
   {{- else }}
-      name: {{ .app }}-psql-credentials
+      name: {{ .releaseName }}-sql-credentials
   {{- end }}
   {{- end }}
   {{- if .secrets }}
@@ -121,8 +137,14 @@ readinessProbe:
   failureThreshold: {{ .probes.readiness.failureThreshold | default 6 }}
   periodSeconds: {{ .probes.readiness.periodSeconds | default 5 }}
 startupProbe:
+  {{- if .probes.startup.path }}
+  httpGet:
+    path: {{ .probes.startup.path }}
+    port: {{ .probes.startup.port | default .internalPort }}
+  {{- else }}
   tcpSocket:
     port: {{ .probes.startup.port | default .internalPort }}
+  {{- end }}
   failureThreshold: {{ .probes.startup.failureThreshold | default 300  }}
   periodSeconds: {{ .probes.startup.periodSeconds | default 1 }}
 {{- end }}
@@ -130,60 +152,40 @@ startupProbe:
 {{- define "grpcprobes" }}
 startupProbe:
   grpc:
-    port: {{ .probes.startup.grpc.port | default .internalPort }}
+    port: {{ ((.probes.startup).grpc).port | default .internalPort }}
   initialDelaySeconds: 10
   failureThreshold: 30
   periodSeconds: 10
 readinessProbe:
   grpc:
-    port: {{ .probes.readiness.grpc.port | default .internalPort }}
+    port: {{ ((.probes.readiness).grpc).port | default .internalPort }}
   initialDelaySeconds: 10
   periodSeconds: 10
   timeoutSeconds: 5
 livenessProbe:
   grpc:
-    port: {{ .probes.liveness.grpc.port | default .internalPort }}
+    port: {{ ((.probes.liveness).grpc).port | default .internalPort }}
   initialDelaySeconds: 10
   periodSeconds: 10
   timeoutSeconds: 5
 {{- end }}
-{{- define "grpcexecprobes" }}
-startupProbe:
-  exec:
-    command: ["/bin/grpc_health_probe", "-addr=:{{ .internalPort }}", "-service=ready"]
-  initialDelaySeconds: 10
-  failureThreshold: 30
-  periodSeconds: 10
-readinessProbe:
-  exec:
-    command: ["/bin/grpc_health_probe", "-addr=:{{ .internalPort }}", "-service=ready"]
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  timeoutSeconds: 5
-livenessProbe:
-  exec:
-    command: ["/bin/grpc_health_probe", "-addr=:{{ .internalPort }}", "-service=health"]
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  timeoutSeconds: 5
-{{- end }}
-
 {{- define "gcloud_sql_proxy" }}
 - name: "{{ .app }}-sql-proxy"
-  image: eu.gcr.io/cloudsql-docker/gce-proxy:1.33.16
+  image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.21.2
   command:
-    - "/cloud_sql_proxy"
-    - "-verbose=false"
-    - "-log_debug_stdout=true"
-    - "-structured_logs=true"
-    - "-term_timeout={{ .postgres.termTimeout | default "30s" }}"
+    - "/cloud-sql-proxy"
+    - "--structured-logs"
+    - "--max-sigterm-delay={{ .postgres.maxSigtermDelay | default "30s" }}"
+    - "--http-port=9801"
+    - "--prometheus"
+    - "--port=5432"
+  ports:
+    - name: metrics
+      containerPort: 9801
+      protocol: TCP
   envFrom:
-  - configMapRef:
-  {{- if .postgres.connectionConfig }}
-      name: {{ .postgres.connectionConfig }}
-  {{- else }}
-      name: {{ .app }}-psql-connection
-  {{- end }}
+  - secretRef:
+      name: {{ .releaseName }}-sql-proxy
   securityContext:
     runAsNonRoot: true
     allowPrivilegeEscalation: false
@@ -196,21 +198,21 @@ livenessProbe:
       {{- if .postgres.cpuLimit }}
       cpu: "{{ .postgres.cpuLimit }}"
       {{- end }}
-      {{- if .postgres.memoryLimt }}
-      memory: "{{ .postgres.memoryLimit }}Mi"
-      {{- else }}
       memory: "{{ .postgres.memory }}Mi"
-      {{- end }}
     requests:
       cpu: "{{ .postgres.cpu }}"
       memory: "{{ .postgres.memory }}Mi"
 {{- end }}
 
 {{- define "hpa.enabled" -}}
-  {{- if and (not .forceReplicas) (or (eq "prd" .env) .maxReplicas .hpa.spec.minReplicas) -}}
-    {{- printf "true" -}}
-  {{- else -}}
+  {{- if .forceReplicas -}}
     {{- printf "false" -}}
+  {{- else -}}
+    {{- printf "true" -}}
   {{- end -}}
+{{- end -}}
+
+{{- define "hpa.minReplicas" -}}
+  {{- .replicas | default 2 -}}
 {{- end -}}
 

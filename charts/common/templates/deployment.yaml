@@ -1,7 +1,7 @@
 {{- /* Rules */}}
 {{- $env := .Values.env | required ".Values.common.env is required." -}}
 {{- $app := .Values.app | required ".Values.common.app is required." -}}
-{{- $shortname := .Values.shortname | required ".Values.common.shortname is required." -}}
+{{- $appId := .Values.appId | required ".Values.common.appId is required." -}}
 {{- $team := .Values.team | required ".Values.common.team is required." -}}
 
 {{- $releaseName := include "name" . -}}
@@ -11,18 +11,16 @@
 {{- $secrets := .Values.secrets -}}
 {{- $internalPort := .Values.service.internalPort -}}
 {{- $grpc := .Values.grpc -}}
-{{- $labels := .Values.deployment.labels | default .Values.container.labels }}
-{{- $volumes := .Values.deployment.volumes | default .Values.container.volumes }}
-{{- $enabled := .Values.deployment.enabled | default .Values.container.enabled }}
+{{- $labels := .Values.deployment.labels }}
+{{- $volumes := .Values.deployment.volumes }}
+{{- $enabled := .Values.deployment.enabled }}
 {{- $prometheus := .Values.deployment.prometheus | default .Values.container.prometheus }}
-{{- $prometheusPath := (.Values.deployment.prometheus).path | default .Values.container.prometheus.path }}
-{{- $replicas := .Values.deployment.replicas | default .Values.container.replicas }}
-{{- $forceReplicas := .Values.deployment.forceReplicas | default .Values.container.forceReplicas }}
-{{- $maxReplicas := .Values.deployment.maxReplicas | default .Values.container.maxReplicas }}
-{{- $terminationGracePeriodSeconds := .Values.deployment.terminationGracePeriodSeconds | default .Values.container.terminationGracePeriodSeconds }}
-{{- $maxSurge := .Values.deployment.maxSurge | default "25%" }}
-{{- $maxUnavailable := .Values.deployment.maxUnavailable | default "25%" }}
-{{- $hpa := .Values.hpa | default dict }}
+{{- $prometheusPath := (.Values.deployment.prometheus).path | default .Values.container.prometheus.path | default "/actuator/prometheus" }}
+{{- $forceReplicas := .Values.deployment.forceReplicas }}
+{{- $terminationGracePeriodSeconds := .Values.deployment.terminationGracePeriodSeconds }}
+{{- $maxSurge := .Values.deployment.maxSurge | default 1 }}
+{{- $maxUnavailable := .Values.deployment.maxUnavailable | default 1 }}
+{{- $startupCPUBoostEnabled := ((.Values.deployment).startupCPUBoost).enabled }}
 {{- if $enabled }}
 {{- /* YAML Spec */}}
 apiVersion: apps/v1
@@ -41,11 +39,8 @@ spec:
   minReadySeconds: {{ .Values.deployment.minReadySeconds }}
   {{- if $forceReplicas }}
   replicas: {{ $forceReplicas }}
-  {{- else if eq (include "hpa.enabled" (dict "env" $env "forceReplicas" $forceReplicas "maxReplicas" $maxReplicas "hpa" $hpa)) "true" }}
-  # intentionally skip replicas
-  {{- else }}
-  replicas: {{ $replicas }}
   {{- end }}
+  {{- /* When HPA is enabled (no forceReplicas), replicas is omitted so HPA controls the pod count */}}
   strategy:
     {{- if (eq (int $forceReplicas) 1) }}
     type: Recreate
@@ -65,6 +60,11 @@ spec:
         prometheus.io/path: "{{ $prometheusPath }}"
         prometheus.io/port: "{{ $prometheus.port | default .Values.service.internalPort | required "Must set deployment.prometheus.port" }}"
         {{- end }}
+        {{- if $postgres.enabled }}
+        prometheus.io/scrape-sql-proxy: "true"
+        prometheus.io/sql-proxy-port: "9801"
+        prometheus.io/sql-proxy-path: "/metrics"
+        {{- end }}
       labels:
         {{- include "labels" . |trim| nindent 8 }}
         {{- if $labels }}
@@ -75,7 +75,7 @@ spec:
 
       containers:
       {{- if $postgres.enabled }}
-        {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app) | indent 8 }}
+        {{- include "gcloud_sql_proxy" (dict "postgres" $postgres "app" $app "releaseName" $releaseName) | indent 8 }}
       {{- end }}
       {{ range $containers }}
         {{- $image := .image | required ".Values.common.container.image is required." -}}
@@ -97,14 +97,10 @@ spec:
             - containerPort: {{ $internalPort }}
               protocol: TCP
             {{- end }}
-          {{- include "resources" . | nindent 10 }}
+          {{- include "resources" (merge (dict "startupCPUBoostEnabled" $startupCPUBoostEnabled) .) | nindent 10 }}
           {{- include "securitycontext" . | nindent 10 }}
           {{- if or $grpc .grpc }}
-            {{- if .probes.liveness.grpc }}
-              {{- include "grpcprobes" (dict "internalPort" $internalPort "probes" .probes) | nindent 10 -}}
-            {{- else }}
-              {{- include "grpcexecprobes" (dict "internalPort" $internalPort) | nindent 10 -}}
-            {{- end }}
+            {{- include "grpcprobes" (dict "internalPort" $internalPort "probes" .probes) | nindent 10 -}}
           {{- else if (and (ne .probes.enabled false) .probes.spec) }}
             {{ toYaml .probes.spec | nindent 10 }}
           {{- else if ne .probes.enabled false }}

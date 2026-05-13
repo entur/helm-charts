@@ -1,7 +1,7 @@
 # -- Application name, typically on the form `the-application`
 app:
-# -- `id` for GCP 2.0, typically on the form `theapp`. Max 10 characters
-shortname:
+# -- App ID from GoogleCloudApplication `metadata.id`. Max 10 alphanumeric characters. See https://github.com/entur/tf-gcp-apps/blob/main/docs/manifests/GoogleCloudApplication.md
+appId:
 # -- Your team name, without a `team-` prefix
 team:
 # -- The current env, override in your `values-kub-ent-$env.yaml` files to `dev`, `tst` or `prd`
@@ -18,8 +18,11 @@ ingress:
   enabled: true
   # -- Set the host name, do this in your `values-kub-ent-$env.yaml` files
   host:
-  # -- Set the traffic type (`api`,`public` or `http2` for gRPC)
+  # -- Set the traffic type (`api`,`public` or `http2` for gRPC). Note: changing this value will cause a couple of minutes of downtime while the ingress controller reconciles.
   trafficType:
+  # -- Set the IngressClass name. Uses `spec.ingressClassName` (replaces the deprecated `kubernetes.io/ingress.class` annotation).
+  # @default -- traefik
+  ingressClassName:
   # -- Optionally set annotations for the ingress
   annotations: {}
   # rules: # k8s spec for ingress rules
@@ -39,28 +42,37 @@ deployment:
   volumes: []
   # -- Prometheus
   #prometheus: same as container.prometheus stanza
-  # -- Set the target replica count
-  # @default -- container.replicas
-  replicas:
-  # -- Set the max replica count
+  # -- (int) Set the minimum replica count for HPA.
+  # @default -- 2
+  minReplicas:
+  # -- (int) Set the max replica count for HPA
   # @default -- 10
   maxReplicas:
-  # -- (int) Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy
+  # -- (int) Force a fixed replica count, disables HPA and PDB. If set to 1 it will use Recreate strategy.
   forceReplicas:
   # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
   terminationGracePeriodSeconds:
-  # -- (string) Set minimum available %
+  # -- (string) Set minimum available % for PDB
   # @default -- 50%
   minAvailable:
-  # -- Limit max surge for rolling updates (default 25%). Not in use when using forceReplicas.
-  # @default -- 25%
+  # -- Limit max surge for rolling updates. Accepts an integer (pod count) or a string percentage (e.g. "25%"). Not in use when using forceReplicas.
+  # @default -- 1
   maxSurge:
-  # -- Limit max unavailable for rolling updates (default 25%). Not in use when using forceReplicas.
-  # @default -- 25%
+  # -- Limit max unavailable for rolling updates. Accepts an integer (pod count) or a string percentage (e.g. "25%"). Not in use when using forceReplicas.
+  # @default -- 1
   maxUnavailable:
   # -- Override pod serviceAccountName (default application).
   # @default -- application
   serviceAccountName:
+  # -- Set the target CPU average utilization (%) for HPA scaling. With startupCPUBoost enabled, 70% is a good default. Without it, 100% may be needed for Java apps with heavy startup CPU usage.
+  # @default -- 70
+  cpuUtilization:
+  startupCPUBoost:
+    # -- Enable GKE Startup CPU Boost to temporarily increase CPU during pod startup. Requires the kube-startup-cpu-boost operator installed in the cluster. Boost is reverted when the pod becomes Ready. When enabled, a CPU limit of 1.3x the CPU request is automatically set (unless `container.cpuLimit` is explicitly configured).
+    enabled: false
+    # -- (int) Percentage to increase CPU requests during startup
+    # @default -- 50
+    percentageIncrease: 50
   # -- See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
   # @default -- 0
   minReadySeconds: 0
@@ -98,10 +110,47 @@ cron:
   # -- (int) Active deadline seconds for the job, default 24 hours (86300s)
   activeDeadlineSeconds:
 hpa:
-  # -- Custom spec for HPA, inherits `scaleTargetRef` and min/max replicas.
-  # ps: Reason why we have set 100% cpu as default is because the java applications are resource hogs during startup.
-  #     If you have good startupProbe/readinessProbes in place you can lower the cpu average utilization to ie 50/60%.
-  #     - Or scale on other (custom) metrics.
+  # -- Additional HPA metrics appended alongside the default CPU metric. Accepts standard `autoscaling/v2` metric entries (Pods, Object, External).
+  # Use for scaling on custom metrics from Cloud Monitoring, Prometheus (GMP), or Pub/Sub. When multiple metrics are specified, HPA picks the one demanding the most replicas.
+  # @default -- []
+  metrics: []
+    # Pods type (per-pod custom metric, averaged across pods — supports AverageValue only):
+    # - type: Pods
+    #   pods:
+    #     metric:
+    #       name: prometheus.googleapis.com|http_requests_total|gauge
+    #     target:
+    #       type: AverageValue
+    #       averageValue: 100
+    #
+    # External type (e.g. Pub/Sub queue depth — supports Value and AverageValue):
+    # - type: External
+    #   external:
+    #     metric:
+    #       name: pubsub.googleapis.com|subscription|num_undelivered_messages
+    #       selector:
+    #         matchLabels:
+    #           resource.labels.subscription_id: my-subscription
+    #     target:
+    #       type: AverageValue
+    #       averageValue: 5
+    #
+    # Object type (metric from another K8s object — supports Value and AverageValue):
+    # - type: Object
+    #   object:
+    #     metric:
+    #       name: requests-per-second
+    #     describedObject:
+    #       apiVersion: networking.k8s.io/v1
+    #       kind: Ingress
+    #       name: main-route
+    #     target:
+    #       type: Value
+    #       value: 10k
+  # -- (int) Seconds to wait before scaling up after a metric spike. Only applied when startupCPUBoost is disabled, to avoid scaling on startup CPU spikes. Tune this to match your application's typical startup time (e.g. 60s for a fast app, 300s for a heavy Spring Boot app with cache warming).
+  # @default -- 120
+  stabilizationWindowSeconds:
+  # -- Full custom spec for HPA, replaces default metrics and min/max replicas. Inherits `scaleTargetRef`.
   spec:
     {}
     # Example for custom spec where cpu scaling is set to 60%:
@@ -115,10 +164,7 @@ hpa:
     #   maxReplicas: 10
     #   minReplicas: 2
 
-pdb:
-  # -- (string) Set minimum available %, this overrides pdb setting minAvailable in deployment/container
-  # @default -- 50%
-  minAvailable:
+pdb: {}
 
 service:
   # -- Enable or disable the service
@@ -145,30 +191,20 @@ container:
   command:
   # -- Optionally set the arguments that will be passed to the command, e.g. ["arg1","arg2"].
   args:
-  # -- Set CPU without any unit. 100m is 0.1
-  # @default -- 0.1
-  cpu: 0.1
+  # -- Set CPU request without any unit. 100m is 0.1. Default is sized for JVM/Spring Boot apps; lighter workloads (sidecars, small Go services, static frontends) should override down.
+  # @default -- 0.3
+  cpu: 0.3
   # -- (float) Set CPU limit without any unit. 100m is 0.1
   # @default -- `5 x cpu`
   cpuLimit:
-  # -- Set memory without any unit, `Mi` is inferred
-  # @default -- 16
-  memory: 16
-  # -- Set memory limit without any unit, `Mi` is inferred
-  # @default -- `1.2 * memory`
+  # -- Set memory request without any unit, `Mi` is inferred. Memory limit always equals request. Default is sized for JVM/Spring Boot apps (the JVM alone needs ~150–250 MiB before app code runs); lighter workloads should override down.
+  # @default -- 512
+  memory: 512
+  # -- @deprecated memoryLimit is removed. Memory limit is now always equal to memory request. Use `container.memory` instead.
   memoryLimit:
   # -- Set the uid that your user runs with
   # @default -- 1000
   uid: 1000
-  # -- (int) Set the target replica count, if equal to 1 the PDB minAvailable will be set to 100%
-  replicas:
-  # -- (int) Force replicas disables autoscaling and PDB, if set to 1 it will use Recreate strategy
-  forceReplicas:
-  # -- (string) Set the minimal available replicas, used by PDB
-  # @default -- 50%
-  minAvailable:
-  # -- (int) Set the maxReplicas for your HPA
-  maxReplicas:
   # -- Attach secrets and configmaps to your `env`
   envFrom:
     []
@@ -216,7 +252,7 @@ container:
       grpc:
         # port: 8080
     readiness:
-      # -- Set the path for liveness probe
+      # -- Set the path for readiness probe
       # @default -- /actuator/health/readiness
       path: "/actuator/health/readiness"
       # -- Set the initial delay for the probe
@@ -234,6 +270,8 @@ container:
       grpc:
         # port: 8080
     startup:
+      # -- Set the path for startup probe. If set, uses httpGet instead of tcpSocket. Useful when startup includes long-running tasks like cache warming.
+      path:
       # -- Set the failure threshold
       # @default -- 300
       failureThreshold: 300
@@ -247,8 +285,6 @@ container:
   volumeMounts: []
   # -- Configure volume, accepts kubernetes syntax
   volumes: []
-  # -- (int) Override pod terminationGracePeriodSeconds (default 30s).
-  terminationGracePeriodSeconds:
   # -- Set pod lifecycle handlers
   lifecycle: {}
 
@@ -257,7 +293,7 @@ container:
 initContainers: []
 
 postgres:
-  # -- Enable or disable the proxy
+  # -- Enable or disable the Cloud SQL proxy v2 sidecar
   # @default -- false
   enabled: false
   # -- Configure cpu request for proxy
@@ -268,18 +304,17 @@ postgres:
   # -- Configure memory request for proxy without units, `Mi` inferred
   # @default -- 16
   memory: 16
-  # -- Configure memoryLimit for proxy without units, `Mi` inferred
-  # @default -- 16
-  memoryLimit: 16
-  # -- Override name for connection configmap. This must at least contain `INSTANCES`.
-  connectionConfig:
-  # -- Override name for credentials secret. This must at least contain `PGUSER` and `PGPASSWORD`.
+  # -- List of database connections keyed by Terraform `secret_key_prefix`. Each entry derives Secret Manager keys: `{prefix}INSTANCES`, `{prefix}USER`, `{prefix}PASSWORD`. The chart generates `{prefix}HOST=localhost` and `{prefix}PORT=5432+index`. When empty and `enabled: true`, defaults to `[{secretKeyPrefix: PG}]`.
+  # @default -- []
+  instances: []
+    # - secretKeyPrefix: PG
+    # - secretKeyPrefix: ANALYTICS_PG
+    #   port: 6000
+  # -- Override the Kubernetes secret name for credentials. Bypasses the ExternalSecret for credentials; the proxy ExternalSecret is still created. The secret must contain the expected env vars (e.g. `PGUSER`, `PGPASSWORD`).
   credentialsSecret:
-  # -- Override the term_timeout for the Cloud SQL Proxy. Controls how long the proxy waits for
-  # existing connections to close after receiving SIGTERM before force-closing them.
-  # Increase this if your app runs long-lived jobs that need the database during pod termination.
+  # -- Override the max-sigterm-delay for the Cloud SQL Proxy. Adds a delay before the proxy begins shutdown after receiving SIGTERM, useful for allowing load balancers to deregister the pod.
   # @default -- 30s
-  termTimeout:
+  maxSigtermDelay:
 
 configmap:
   # -- Enable or disable the configmap

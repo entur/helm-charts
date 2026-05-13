@@ -1,0 +1,42 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.versionBadge" . }} {{ template "chart.appVersionBadge" . }}
+
+A single chart that produces two separate Deployments (and Services, ingresses, etc.) from one container image. The image is the same; what differs is which `CONTAINER_ROLE` env var each Deployment gets.
+
+## What this example shows
+
+- `multi-1` is a REST API — gets `CONTAINER_ROLE=rest-api` and an **ingress** (the Kubernetes resource that routes external HTTP traffic into your service).
+- `multi-2` is a Kafka consumer — gets `CONTAINER_ROLE=kafka-consumer` and **no** ingress (workers don't accept inbound traffic).
+
+The application code reads `CONTAINER_ROLE` at startup and decides which mode to run in. The two deployments scale independently.
+
+## When to use this
+
+Use this when one codebase legitimately serves two roles (typically: web API + async worker) and you want to deploy them as separate, independently-scaling workloads — without maintaining two repos or two charts.
+
+## GitHub Actions CD
+
+When using Entur's shared [gha-helm](https://github.com/entur/gha-helm/blob/main/README-deploy.md) reusable workflow we also need to define the `image:` path being replaced during deploy.
+
+```yaml
+helm-deploy:
+  uses: entur/gha-helm/.github/workflows/deploy.yml@v1
+  with:
+    environment: dev
+    image: amazing-app:2.3.1
+    image_set_path: "multi-1.container.image,multi-2.container.image"
+  secrets: inherit
+```
+
+## Key values to know
+
+- `multi-1` / `multi-2` — top-level keys must match the `alias` fields in `Chart.yaml` dependencies. Each key configures one deployment.
+- `releaseName` (per alias) — gives each deployment its own Helm release-style name. This is the secret sauce that splits them apart.
+- `appId` — typically the **same** for both halves, since they belong to the same logical app.
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}

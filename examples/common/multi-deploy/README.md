@@ -1,16 +1,23 @@
 # multi-deploy
 
-![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square)  ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
-A Helm Common Chart example where we deploy the same container image to two different deployments with different environment variables.
+A single chart that produces two separate Deployments (and Services, ingresses, etc.) from one container image. The image is the same; what differs is which `CONTAINER_ROLE` env var each Deployment gets.
 
-This way the application code can pick up the environment variable (CONTAINER_ROLE) and act accordingly.
+## What this example shows
 
-In the example - one is a basic rest api, and the other is a kafka queue consumer.
+- `multi-1` is a REST API — gets `CONTAINER_ROLE=rest-api` and an **ingress** (the Kubernetes resource that routes external HTTP traffic into your service).
+- `multi-2` is a Kafka consumer — gets `CONTAINER_ROLE=kafka-consumer` and **no** ingress (workers don't accept inbound traffic).
+
+The application code reads `CONTAINER_ROLE` at startup and decides which mode to run in. The two deployments scale independently.
+
+## When to use this
+
+Use this when one codebase legitimately serves two roles (typically: web API + async worker) and you want to deploy them as separate, independently-scaling workloads — without maintaining two repos or two charts.
 
 ## GitHub Actions CD
 
-When using Enturs shared [gha-helm](https://github.com/entur/gha-helm/blob/main/README-deploy.md) reusable workflow we also need define the `image:` path being replaced during deploy.
+When using Entur's shared [gha-helm](https://github.com/entur/gha-helm/blob/main/README-deploy.md) reusable workflow we also need to define the `image:` path being replaced during deploy.
 
 ```yaml
 helm-deploy:
@@ -22,38 +29,43 @@ helm-deploy:
   secrets: inherit
 ```
 
+## Key values to know
+
+- `multi-1` / `multi-2` — top-level keys must match the `alias` fields in `Chart.yaml` dependencies. Each key configures one deployment.
+- `releaseName` (per alias) — gives each deployment its own Helm release-style name. This is the secret sauce that splits them apart.
+- `appId` — typically the **same** for both halves, since they belong to the same logical app.
+
 ## Requirements
 
-| Repository                          | Name            | Version |
-| ----------------------------------- | --------------- | ------- |
-| https://entur.github.io/helm-charts | multi-1(common) | 1.21.1  |
-| https://entur.github.io/helm-charts | multi-2(common) | 1.21.1  |
+| Repository | Name | Version |
+|------------|------|---------|
+| https://entur.github.io/helm-charts | multi-1(common) | 2.0.0 |
+| https://entur.github.io/helm-charts | multi-2(common) | 2.0.0 |
 
 ## Values
 
-| Key                                 | Type   | Default                         | Description |
-| ----------------------------------- | ------ | ------------------------------- | ----------- |
-| multi-1.app                         | string | `"multi-1"`                     |             |
-| multi-1.configmap.data.APP1CONF     | string | `"yes"`                         |             |
-| multi-1.configmap.enabled           | bool   | `true`                          |             |
-| multi-1.container.image             | string | `"<+artifacts.primary.image>"`  |             |
-| multi-1.env                         | string | `"dev"`                         |             |
-| multi-1.ingress.trafficType         | string | `"public"`                      |             |
-| multi-1.releaseName                 | string | `"multi1"`                      |             |
-| multi-1.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"`     |             |
-| multi-1.secrets.auth-credentials[1] | string | `"MNG_AUTH0_INT_CLIENT_SECRET"` |             |
-| multi-1.service.internalPort        | int    | `9000`                          |             |
-| multi-1.shortname                   | string | `"mult1"`                       |             |
-| multi-1.team                        | string | `"example"`                     |             |
-| multi-2.app                         | string | `"multi-2"`                     |             |
-| multi-2.configmap.data.APP2CONF     | string | `"yes"`                         |             |
-| multi-2.configmap.enabled           | bool   | `true`                          |             |
-| multi-2.container.image             | string | `"<+artifacts.primary.image>"`  |             |
-| multi-2.env                         | string | `"dev"`                         |             |
-| multi-2.ingress.trafficType         | string | `"public"`                      |             |
-| multi-2.releaseName                 | string | `"multi2"`                      |             |
-| multi-2.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"`     |             |
-| multi-2.secrets.auth-credentials[1] | string | `"MNG_AUTH0_INT_CLIENT_SECRET"` |             |
-| multi-2.service.internalPort        | int    | `9000`                          |             |
-| multi-2.shortname                   | string | `"mult2"`                       |             |
-| multi-2.team                        | string | `"example"`                     |             |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| multi-1.app | string | `"my-rest-api"` |  |
+| multi-1.appId | string | `"myappid1"` |  |
+| multi-1.container.env[0].name | string | `"CONTAINER_ROLE"` |  |
+| multi-1.container.env[0].value | string | `"rest-api"` |  |
+| multi-1.container.image | string | `"<+artifacts.primary.image>"` |  |
+| multi-1.ingress.trafficType | string | `"api"` |  |
+| multi-1.releaseName | string | `"my-rest-api"` |  |
+| multi-1.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"` |  |
+| multi-1.secrets.auth-credentials[1] | string | `"MNG_AUTH0_INT_CLIENT_SECRET"` |  |
+| multi-1.team | string | `"team-excellence"` |  |
+| multi-2.app | string | `"my-kafka-consumer"` |  |
+| multi-2.appId | string | `"myappid1"` |  |
+| multi-2.container.env[0].name | string | `"CONTAINER_ROLE"` |  |
+| multi-2.container.env[0].value | string | `"kafka-consumer"` |  |
+| multi-2.container.image | string | `"<+artifacts.primary.image>"` |  |
+| multi-2.ingress.enabled | bool | `false` |  |
+| multi-2.releaseName | string | `"my-kafka-consumer"` |  |
+| multi-2.secrets.auth-credentials[0] | string | `"MNG_AUTH0_INT_CLIENT_ID"` |  |
+| multi-2.secrets.auth-credentials[1] | string | `"MNG_AUTH0_INT_CLIENT_SECRET"` |  |
+| multi-2.team | string | `"team-excellence"` |  |
+
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)

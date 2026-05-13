@@ -1,0 +1,32 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.versionBadge" . }} {{ template "chart.appVersionBadge" . }}
+
+The most common shape of a service at Entur: a Spring Boot backend that talks to a Cloud SQL Postgres database via a sidecar proxy, exposed through the Apigee API Gateway.
+
+## What this example shows
+
+- One container running your app.
+- A `cloud-sql-proxy` sidecar so your app reaches Postgres on `localhost:5432` instead of going over the public internet.
+- An **ingress** (the Kubernetes resource that routes external HTTP traffic into your service) with `trafficType: api` — the URL is only reachable behind the Apigee API Gateway at `https://api.entur.io/yourAPI`.
+
+## When to use this
+
+Use this when your service:
+
+- Is a Spring Boot or other JVM app.
+- Needs a Postgres database.
+- Exposes an HTTP API that goes through Apigee.
+
+## Key values to know
+
+- `container.cpu` / `container.memory` — sized for a JVM. The JVM alone needs ~150–250 MiB before app code runs, so 512 is a reasonable floor. Bump higher if your app needs more heap.
+- `postgres.enabled: true` — turns on the Cloud SQL proxy sidecar. The chart auto-derives Secret Manager keys (`PGINSTANCES`, `PGUSER`, `PGPASSWORD`) and exports `PGHOST=localhost`, `PGPORT=5432` to your app container, matching the defaults in [`entur/terraform-google-sql-db`](https://github.com/entur/terraform-google-sql-db).
+- `service.internalPort` — the port your app listens on inside the pod. Must match what your Dockerfile exposes.
+- `deployment.prometheus.enabled` — flip on once you have a `/actuator/prometheus` endpoint.
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}

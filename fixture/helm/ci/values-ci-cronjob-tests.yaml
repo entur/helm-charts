@@ -1,5 +1,5 @@
 app: mycronjobtest
-shortname: mycrntst
+appId: mycrntst
 team: team
 
 env: dev
@@ -16,14 +16,11 @@ service:
 
 container:
   image: nginxinc/nginx-unprivileged:latest
-  commmand: ["/bin/sh", "-c", "echo hello world"]
+  command: ["/bin/sh", "-c", "echo hello world"]
   labels:
     version: v1.2.3
   cpu: 0.2
   memory: 64
-  replicas: 1
-  maxReplicas: 2
-  memoryLimit: 64
   envFrom: []
   probes:
     liveness:

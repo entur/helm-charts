@@ -13,39 +13,62 @@ jobs:
     uses: entur/gha-meta/.github/workflows/verify-pr.yml@v1
 
   unittest-common-chart:
-    uses: entur/gha-helm/.github/workflows/unittest.yml@v1
-    with:
-      chart: charts/common
-
-  helm-install-test:
-    name: helm install
+    name: unittest (helm ${{ matrix.helm-version }})
     runs-on: ubuntu-24.04
-    needs: unittest-common-chart
+    strategy:
+      matrix:
+        helm-version: [v3.20.0, v4.1.3]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Set up Helm
         uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
+        with:
+          version: ${{ matrix.helm-version }}
+
+      - name: Install helm-unittest plugin
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git || helm plugin install --verify=false https://github.com/helm-unittest/helm-unittest.git
+
+      - name: Run unit tests
+        run: helm unittest ./charts/common
+
+  helm-install-test:
+    name: helm install (helm ${{ matrix.helm-version }})
+    runs-on: ubuntu-24.04
+    needs: unittest-common-chart
+    strategy:
+      matrix:
+        helm-version: [v3.20.0, v4.1.3]
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Helm
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
+        with:
+          version: ${{ matrix.helm-version }}
 
       - name: Create kind cluster
         uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
         with:
-          node_image: kindest/node:v1.32.3
+          node_image: kindest/node:v1.35.1
 
-      - name: Configure metrics and VPA
+      - name: Configure metrics, VPA and StartupCPUBoost
         run: |
           helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+          helm repo add cowboysysop https://cowboysysop.github.io/charts/
+          helm repo add kube-startup-cpu-boost https://google.github.io/kube-startup-cpu-boost
           helm repo update
           helm install --set args={--kubelet-insecure-tls} metrics-server metrics-server/metrics-server --namespace kube-system
-          helm repo add cowboysysop https://cowboysysop.github.io/charts/
           helm -n kube-system install vertical-pod-autoscaler cowboysysop/vertical-pod-autoscaler
+          helm install kube-startup-cpu-boost kube-startup-cpu-boost/kube-startup-cpu-boost --namespace kube-startup-cpu-boost-system --create-namespace --wait --timeout 5m0s
 
       - name: Install helm chart
         run: |
-          helm install --generate-name --dependency-update --wait --timeout 5m0s charts/common --values fixture/helm/ci/values-ci-tests.yaml
-          helm install --generate-name --dependency-update --wait --timeout 5m0s charts/common --values fixture/helm/ci/values-ci-cronjob-tests.yaml
+          helm install ci-deployment --dependency-update --wait --timeout 5m0s charts/common --values fixture/helm/ci/values-ci-tests.yaml
+          helm install ci-cronjob --dependency-update --wait --timeout 5m0s charts/common --values fixture/helm/ci/values-ci-cronjob-tests.yaml
 
   validate-examples:
+    name: examples (${{ matrix.example }}/${{ matrix.env }}/helm ${{ matrix.helm-version }})
     runs-on: ubuntu-24.04
     strategy:
       matrix:
@@ -56,8 +79,11 @@ jobs:
             typical-frontend,
             multi-container,
             multi-deploy,
+            cronjob,
+            grpc-app,
           ]
         env: [dev, tst, prd]
+        helm-version: [v3.20.0, v4.1.3]
     steps:
       - name: Check out the repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -67,8 +93,17 @@ jobs:
 
       - name: Set up Helm
         uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
+        with:
+          version: ${{ matrix.helm-version }}
 
       - name: Helm verify examples
         working-directory: examples/common/${{ matrix.example }}
         run: |
-          helm template --dependency-update . -f env/values-kub-ent-${{ matrix.env }}.yaml
+          # Package the common chart (required for aliased dependencies like multi-deploy)
+          mkdir -p charts
+          helm package ../../../charts/common -d charts/
+          # Update dependency versions in Chart.yaml to match the local chart
+          CHART_VERSION=$(yq '.version' ../../../charts/common/Chart.yaml)
+          yq -i ".dependencies[].version = \"${CHART_VERSION}\"" Chart.yaml
+          helm lint . -f env/values-kub-ent-${{ matrix.env }}.yaml
+          helm template . -f env/values-kub-ent-${{ matrix.env }}.yaml

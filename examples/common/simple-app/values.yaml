@@ -1,6 +1,6 @@
 common:
   app: simple-app
-  shortname: simapp
+  appId: simapp
   team: example
   ingress:
     trafficType: public

@@ -1,0 +1,18 @@
+app: my-app
+appId: myapp
+team: mat
+env: dev
+
+ingress:
+  trafficType: api
+  host: test.dev.entur.io
+
+container:
+  name: my-app
+  image: theimage
+
+postgres:
+  enabled: true
+  instances:
+    - secretKeyPrefix: PG
+    - secretKeyPrefix: ANALYTICS_PG

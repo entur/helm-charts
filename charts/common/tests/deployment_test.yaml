@@ -48,8 +48,38 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
           value: "1"
+  - it: CPU limit is auto-set to 1.3x request when startupCPUBoost is enabled
+    set:
+      deployment:
+        startupCPUBoost:
+          enabled: true
+      container:
+        cpu: 0.5
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: "0.65"
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: "0.5"
+  - it: explicit cpuLimit takes precedence over startupCPUBoost auto-limit
+    set:
+      deployment:
+        startupCPUBoost:
+          enabled: true
+      container:
+        cpu: 0.5
+        cpuLimit: 2
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: "2"
+  - it: no CPU limit when startupCPUBoost is disabled and no cpuLimit set
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].resources.limits.cpu
   # #TODO mem req/limit should be equal
-  - it: memory limit is 120 percent of request
+  - it: memory limit equals memory request
     set:
       containers:
         - name: test
@@ -60,23 +90,7 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
-          value: 307Mi
-      - equal:
-          path: spec.template.spec.containers[0].resources.requests.memory
           value: 256Mi
-  - it: memory limit can be overridden
-    set:
-      containers:
-        - name: test
-          image: img
-          memory: 256
-          memoryLimit: 1024
-          probes:
-            enabled: false
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].resources.limits.memory
-          value: 1024Mi
       - equal:
           path: spec.template.spec.containers[0].resources.requests.memory
           value: 256Mi
@@ -111,15 +125,14 @@ tests:
       - equal:
           path: spec.template.metadata.annotations["prometheus.io/port"]
           value: "8080"
-  - it: must use 3 replicas if replicas is 3
+  - it: replicas field is skipped when HPA is enabled
     set:
       env: dev
       deployment:
-        replicas: 3
+        minReplicas: 3
     asserts:
-      - equal:
+      - notExists:
           path: spec.replicas
-          value: 3
       - equal:
           path: spec.strategy.type
           value: RollingUpdate
@@ -127,7 +140,7 @@ tests:
     set:
       env: prd
       deployment:
-        replicas: 3
+        minReplicas: 3
         maxReplicas: 8
     asserts:
       - notExists:
@@ -156,7 +169,7 @@ tests:
       - equal:
           path: spec.strategy.type
           value: RollingUpdate
-  - it: must adopt for gRPC
+  - it: must adopt for gRPC with native probes
     set:
       containers:
         - name: test
@@ -172,7 +185,7 @@ tests:
               periodSeconds: 1
     asserts:
       - isNotEmpty:
-          path: spec.template.spec.containers[0].livenessProbe.exec.command
+          path: spec.template.spec.containers[0].livenessProbe.grpc
   - it: must adopt for new gRPC probes 1.24
     set:
       containers:
@@ -245,20 +258,13 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - secretKeyPrefix: PG
         credentialsSecret: my-secret
     asserts:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].secretRef.name
           value: my-secret
-  - it: override connectionConfig
-    set:
-      postgres:
-        enabled: true
-        connectionConfig: my-config
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
-          value: my-config
   - it: command use correct value
     set:
       containers:
@@ -409,18 +415,17 @@ tests:
     asserts:
       - notExists:
           path: spec.template.spec.terminationGracePeriodSeconds
-  - it: must adopt for gRPC
+  - it: must adopt for gRPC with native probes using internalPort
     set:
       grpc: true
       container:
         image: img
     asserts:
       - isNotEmpty:
-          path: spec.template.spec.containers[0].livenessProbe.exec.command
-  - it: terminationGracePeriodSeconds use correct value
+          path: spec.template.spec.containers[0].livenessProbe.grpc
+  - it: terminationGracePeriodSeconds use correct value from container
     set:
-      container:
-        image: img
+      deployment:
         terminationGracePeriodSeconds: 60
     asserts:
       - equal:
@@ -431,29 +436,32 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - secretKeyPrefix: PG
         cpu: 0.1
     asserts:
       - notExists:
           path: spec.template.spec.containers[1].resources.limits.cpu
-  - it: must use 3 replicas if replicas is 3
+  - it: replicas field is skipped when HPA is enabled (v1 compat)
     set:
       env: dev
+      deployment:
+        minReplicas: 3
       container:
         image: testimg
-        replicas: 3
     asserts:
-      - equal:
+      - notExists:
           path: spec.replicas
-          value: 3
       - equal:
           path: spec.strategy.type
           value: RollingUpdate
   - it: must use 1 replica if forceReplicas is 1 and recreate
     set:
       env: prd
+      deployment:
+        forceReplicas: 1
       container:
         image: some
-        forceReplicas: 1
     asserts:
       - equal:
           path: spec.replicas
@@ -464,9 +472,10 @@ tests:
   - it: must use 3 replica if forceReplicas is 3
     set:
       env: prd
+      deployment:
+        forceReplicas: 3
       container:
         image: some
-        forceReplicas: 3
     asserts:
       - equal:
           path: spec.replicas
@@ -505,7 +514,7 @@ tests:
     asserts:
       - equal:
           path: spec.template.spec.containers[1].envFrom[0].secretRef.name
-          value: rudder-test-psql-credentials
+          value: rudder-test-sql-credentials
   - it: must enable sidecar if postgres enabled
     set:
       postgres:
@@ -514,8 +523,8 @@ tests:
       - isNotEmpty:
           path: spec.template.spec.containers[1]
       - equal:
-          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
-          value: rudder-test-psql-connection
+          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: rudder-test-sql-proxy
   - it: must enable only one sidecar if postgres enabled for multiple containers
     set:
       container: {}
@@ -534,8 +543,8 @@ tests:
       - isNotEmpty:
           path: spec.template.spec.containers[2]
       - equal:
-          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
-          value: rudder-test-psql-connection
+          path: spec.template.spec.containers[0].envFrom[0].secretRef.name
+          value: rudder-test-sql-proxy
       - notExists:
           path: spec.template.spec.containers[3]
   - it: postgres cpu limit can be overridden
@@ -543,6 +552,8 @@ tests:
     set:
       postgres:
         enabled: true
+        instances:
+          - secretKeyPrefix: PG
         cpu: 0.1
         cpuLimit: 1
     asserts:
@@ -552,6 +563,101 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: "0.1"
+  - it: generates PGHOST and PGPORT env vars for default instance
+    set:
+      postgres:
+        enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: PGHOST
+            value: "localhost"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: PGPORT
+            value: "5432"
+  - it: generates sequential ports for multiple instances
+    set:
+      postgres:
+        enabled: true
+        instances:
+          - secretKeyPrefix: PG
+          - secretKeyPrefix: ANALYTICS_PG
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: PGPORT
+            value: "5432"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: ANALYTICS_PGPORT
+            value: "5433"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: ANALYTICS_PGHOST
+            value: "localhost"
+  - it: port override works for same-instance additional user
+    set:
+      postgres:
+        enabled: true
+        instances:
+          - secretKeyPrefix: PG
+          - secretKeyPrefix: READONLY_PG
+            port: 5432
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: PGPORT
+            value: "5432"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: READONLY_PGPORT
+            value: "5432"
+  - it: proxy command includes --port=5432
+    set:
+      postgres:
+        enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].command
+          content: "--port=5432"
+  - it: prometheus sql-proxy annotations when postgres enabled
+    set:
+      postgres:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/scrape-sql-proxy"]
+          value: "true"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/sql-proxy-port"]
+          value: "9801"
+      - equal:
+          path: spec.template.metadata.annotations["prometheus.io/sql-proxy-path"]
+          value: "/metrics"
+  - it: no prometheus sql-proxy annotations when postgres disabled
+    asserts:
+      - notExists:
+          path: spec.template.metadata.annotations["prometheus.io/scrape-sql-proxy"]
+  - it: no PGHOST or PGPORT env vars when postgres disabled
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGHOST
+          any: true
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PGPORT
+          any: true
   - it: has common runtime env set from env label
     asserts:
       - equal:

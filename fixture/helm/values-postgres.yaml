@@ -1,5 +1,5 @@
 app: my-app
-shortname: myapp
+appId: myapp
 team: mat
 env: dev
 
@@ -13,3 +13,5 @@ container:
 
 postgres:
   enabled: true
+  instances:
+    - secretKeyPrefix: PG

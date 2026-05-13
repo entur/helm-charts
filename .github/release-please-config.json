@@ -10,7 +10,9 @@
       "labels": ["helm-chart: common"],
       "release-type": "helm",
       "pull-request-title-pattern": "chore(common): release v${version}",
-      "extra-files": ["README.md"]
+      "extra-files": ["README.md"],
+      "release-as": "2.0.0-rc-1",
+      "prerelease": true
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
