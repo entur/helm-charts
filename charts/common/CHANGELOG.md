@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0-rc-1](https://github.com/entur/helm-charts/compare/common-v1.22.0...common-v2.0.0-rc-1) (2026-05-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* common chart v2.0.0-rc.1 ([#242](https://github.com/entur/helm-charts/issues/242))
+
+### Features
+
+* common chart v2.0.0-rc.1 ([#242](https://github.com/entur/helm-charts/issues/242)) ([cbe0e11](https://github.com/entur/helm-charts/commit/cbe0e110d7a996680a50adc54428f26ef2c0e702))
+
 ## [1.22.0](https://github.com/entur/helm-charts/compare/common-v1.21.1...common-v1.22.0) (2026-04-22)
 
 
