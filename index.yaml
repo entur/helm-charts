@@ -3,35 +3,6 @@ entries:
   common:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2026-05-13T13:15:06.133450655Z"
-    description: 'A Helm chart for Entur''s Kubernetes workloads  ## Highlighted features  *
-      Defaults typically match a properly configured Spring Boot project * Automatic
-      HA with HPA and PDB in all environments (minReplicas: 2 by default) * Enforces
-      explicit setting of important aspects such as traffic type * Rule based safety
-      net, a chart that breaks business rules will fail with a helpful message * JSON
-      Schema validation catches typos and unknown properties on `helm lint` * Compatible
-      with Helm 3 and Helm 4  ## Take full control  * Most properties can be overridden
-      to your specific needs. * Read the values.yaml file to get template documentation.
-      * See [UPGRADE.md](../../UPGRADE.md) for migration guides between major versions.
-      ### Fully customize `container.probes.spec` and `hpa.spec` with literal Kubernetes
-      configuration <details>    <summary>Example container.probes.spec</summary>  ```yaml
-      common:   container:     probes:       enabled: true       spec:         startupProbe:           tcpSocket:             port:
-      3000           periodSeconds: 1           timeoutSeconds: 1           failureThreshold:
-      300         livenessProbe: ...         readinessProbe: ... ``` </details> <details>    <summary>Example
-      hpa.spec</summary>  ```yaml common:   hpa:     spec:       metrics:         -
-      type: Resource           resource:             name: cpu             target:               type:
-      Utilization               averageUtilization: 60       behavior:         scaleUp:           stabilizationWindowSeconds:
-      60           policies:             - type: Pods               value: 1               periodSeconds:
-      60       maxReplicas: 7       minReplicas: 2  ``` </details> '
-    digest: 9ce2a3754df9b8dc830b43b62ff4cff3f5393c9ede9a967d6d09786ee0b70dd6
-    icon: https://avatars.githubusercontent.com/u/23213604?s=96&v=4
-    name: common
-    type: application
-    urls:
-    - https://entur.github.io/helm-charts/archive/common-2.0.0.tgz
-    version: 2.0.0
-  - apiVersion: v2
-    appVersion: 0.0.1
     created: "2026-05-13T13:17:09.858255348Z"
     description: 'A Helm chart for Entur''s Kubernetes workloads  ## Highlighted features  *
       Defaults typically match a properly configured Spring Boot project * Automatic
