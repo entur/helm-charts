@@ -15,7 +15,7 @@ v2 is currently available as a release candidate. To test it before the final re
 ```yaml
 dependencies:
   - name: common
-    version: 2.0.0-rc.1
+    version: 2.0.0-rc-1
     repository: https://entur.github.io/helm-charts
 ```
 
