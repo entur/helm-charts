@@ -202,7 +202,7 @@ container:
   memory: 512
   # -- @deprecated memoryLimit is removed. Memory limit is now always equal to memory request. Use `container.memory` instead.
   memoryLimit:
-  # -- Set the uid that your user runs with
+  # -- Set the uid that your user runs with. Must be non-root, since `runAsNonRoot` is always true.
   # @default -- 1000
   uid: 1000
   # -- Attach secrets and configmaps to your `env`

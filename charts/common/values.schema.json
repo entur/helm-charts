@@ -292,8 +292,9 @@
           "type": ["integer", "null"]
         },
         "uid": {
-          "description": "Set the uid that your user runs with",
-          "type": "integer"
+          "description": "Set the uid that your user runs with. Must be non-root, since runAsNonRoot is always true.",
+          "type": "integer",
+          "minimum": 1
         },
         "image": {
           "description": "Set the image for your container",
