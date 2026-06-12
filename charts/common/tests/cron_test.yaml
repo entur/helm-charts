@@ -283,3 +283,29 @@ tests:
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[1].envFrom[0].secretRef.name
           value: my-cron-creds
+  - it: honors uid per entry in the containers list
+    set:
+      containers:
+        - name: app
+          uid: 101
+          image: img
+          probes:
+            enabled: false
+        - name: sidecar
+          uid: 2000
+          image: img
+          probes:
+            enabled: false
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.securityContext.runAsUser
+          value: 101
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.securityContext.fsGroup
+          value: 101
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].securityContext.runAsUser
+          value: 101
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[1].securityContext.runAsUser
+          value: 2000

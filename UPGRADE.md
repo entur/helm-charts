@@ -194,6 +194,12 @@ common:
 
 Note: The configmap is automatically mounted via `envFrom` when `configmap.enabled: true`. You only need explicit `envFrom` if you renamed the configmap or need additional control.
 
+### 7. `uid` on `containers` entries is now honored
+
+v1 ignored `uid` on `containers` entries and ran every container as `1000`. v2 renders it as `runAsUser`/`runAsGroup` on that container, and pod-level `runAsUser`/`runAsGroup`/`fsGroup` follows the first entry's `uid`, falling back to `container.uid` (default `1000`).
+
+Containers with a `uid` set change uid on upgrade: check the image can run as it and check volume ownership. `fsGroup` follows the first entry only, so volumes shared across differing uids may need `supplementalGroups`. With `postgres.enabled` the sql-proxy sidecar inherits the pod-level uid. Single-container charts are unaffected.
+
 ## New Features (no action required)
 
 ### HPA always enabled
@@ -251,6 +257,7 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 - [ ] Replace `postgres.connectionConfig` with `postgres.enabled: true` or `postgres.instances: [{secretKeyPrefix: PG}]`
 - [ ] Replace `postgres.termTimeout` with `postgres.maxSigtermDelay` (if set)
 - [ ] If using gRPC: remove explicit `probes.*.grpc.port` settings (now defaults to `service.internalPort`)
+- [ ] If setting `uid` on `containers` entries: v1 ignored it, v2 honors it
 - [ ] Update `Chart.yaml` dependency version to v2
 - [ ] Run `helm dependency update`
 - [ ] Run `helm lint . -f env/values-kub-ent-dev.yaml` to catch unknown properties and schema errors

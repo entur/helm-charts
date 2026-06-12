@@ -366,6 +366,70 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
           value: false
+  - it: uses container uid in pod and container security context
+    set:
+      container:
+        uid: 101
+        image: img
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 101
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 101
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 101
+  - it: honors uid per entry in the containers list
+    set:
+      containers:
+        - name: app
+          uid: 101
+          image: img
+          probes:
+            enabled: false
+        - name: sidecar
+          uid: 2000
+          image: img
+          probes:
+            enabled: false
+        - name: nouid
+          image: img
+          probes:
+            enabled: false
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 101
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 101
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 101
+      - equal:
+          path: spec.template.spec.containers[1].securityContext.runAsUser
+          value: 2000
+      - equal:
+          path: spec.template.spec.containers[1].securityContext.runAsGroup
+          value: 2000
+      - notExists:
+          path: spec.template.spec.containers[2].securityContext.runAsUser
+  - it: defaults pod security context to uid 1000 when containers list sets no uid
+    set:
+      containers:
+        - name: app
+          image: img
+          probes:
+            enabled: false
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 1000
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 1000
   - it: has envFrom secrets in all containers
     set:
       containers:
