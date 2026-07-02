@@ -179,6 +179,9 @@ livenessProbe:
     - "--http-port=9801"
     - "--prometheus"
     - "--port=5432"
+    {{- if .postgres.iamAuth }}
+    - "--auto-iam-authn"
+    {{- end }}
   ports:
     - name: metrics
       containerPort: 9801

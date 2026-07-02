@@ -315,6 +315,9 @@ postgres:
   # -- Override the max-sigterm-delay for the Cloud SQL Proxy. Adds a delay before the proxy begins shutdown after receiving SIGTERM, useful for allowing load balancers to deregister the pod.
   # @default -- 30s
   maxSigtermDelay:
+  # -- Enable IAM authentication for Cloud SQL Proxy. Requires additional database setup; see https://github.com/entur/terraform-google-sql-db for details.
+  # @default -- false
+  iamAuth: false
 
 configmap:
   # -- Enable or disable the configmap

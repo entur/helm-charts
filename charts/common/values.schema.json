@@ -468,6 +468,10 @@
         "maxSigtermDelay": {
           "description": "Override the max-sigterm-delay for the Cloud SQL Proxy (e.g. 30s, 5m).",
           "type": ["string", "null"]
+        },
+        "iamAuth": {
+          "description": "Enable IAM authentication for Cloud SQL Proxy.",
+          "type": ["boolean", "null"]
         }
       },
       "type": "object"
