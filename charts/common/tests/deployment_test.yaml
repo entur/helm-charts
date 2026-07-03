@@ -628,6 +628,15 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].command
           content: "--port=5432"
+  - it: proxy command includes --auto-iam-authn when IAM auth is enabled
+    set:
+      postgres:
+        enabled: true
+        iamAuth: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].command
+          content: "--auto-iam-authn"
   - it: prometheus sql-proxy annotations when postgres enabled
     set:
       postgres:
