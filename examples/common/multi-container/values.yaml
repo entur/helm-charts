@@ -65,7 +65,7 @@ common:
   configmap:
     enabled: true
     data:
-      APP1CONF: "yes"
+      "APP1CONF": "yes"
 
   secrets:
     auth-credentials: # k8s secret name "multi-container-auth-credentials"

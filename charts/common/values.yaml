@@ -320,10 +320,10 @@ configmap:
   # -- Enable or disable the configmap
   # @default -- false
   enabled: false
-  # -- Set data for configmap using string values
+  # -- Set data for configmap using string keys and values
   data:
     {}
-    # MY_CONFIG: "yes"
+    # "MY_CONFIG": "yes"
 
 # -- Add externalSecret to sync secrets from secret manager
 secrets:
