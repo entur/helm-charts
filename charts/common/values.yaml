@@ -323,7 +323,7 @@ configmap:
   # -- Set data for configmap using string values
   data:
     {}
-    # MY_CONFIG: yes
+    # MY_CONFIG: "yes"
 
 # -- Add externalSecret to sync secrets from secret manager
 secrets:

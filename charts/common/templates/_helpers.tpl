@@ -87,7 +87,7 @@ env:
   - name: OTEL_TRACES_EXPORTER
     value: "otlp"
   - name: OTEL_EXPORTER_OTLP_ENDPOINT
-    value: "telemetry.googleapis.com"
+    value: "https://telemetry.googleapis.com"
   - name: OTEL_EXPORTER_OTLP_PROTOCOL
     value: "grpc"
   - name: OTEL_METRICS_EXPORTER
@@ -97,8 +97,8 @@ env:
   - name: OTEL_RESOURCE_ATTRIBUTES
     value: "gcp.project_id=ent-kub-{{ .envLabel }}"
   - name: GOOGLE_CLOUD_PROJECT
-    value: "ent-{{ .releaseName }}-{{ .envLabel }}"
-  - name : OTEL_SERVICE_NAME
+    value: "ent-{{ .appId}}-{{ .envLabel }}"
+  - name: OTEL_SERVICE_NAME
     value: "{{ .app }}"
   {{- range $i, $inst := $postgresInstances }}
   - name: {{ $inst.secretKeyPrefix }}HOST

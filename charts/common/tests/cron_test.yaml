@@ -52,7 +52,7 @@ tests:
               value: bar
     asserts:
       - equal:
-          path: spec.jobTemplate.spec.template.spec.containers[0].env[1].value
+          path: spec.jobTemplate.spec.template.spec.containers[0].env[9].value
           value: bar
   - it: cpu limit can be set
     release: {}
