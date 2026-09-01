@@ -672,7 +672,7 @@ tests:
             value: bar
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].env[9].value
+          path: spec.template.spec.containers[0].env[-1].value
           value: bar
   - it: must mount envFrom if configmap is enabled
     release:
