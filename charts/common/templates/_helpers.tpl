@@ -94,10 +94,6 @@ env:
     value: "none"
   - name: OTEL_LOGS_EXPORTER
     value: "none"
-  - name: OTEL_RESOURCE_ATTRIBUTES
-    value: "gcp.project_id=ent-kub-{{ .envLabel }}"
-  - name: GOOGLE_CLOUD_PROJECT
-    value: "ent-{{ .appId}}-{{ .envLabel }}"
   - name: OTEL_SERVICE_NAME
     value: "{{ .app }}"
   {{- range $i, $inst := $postgresInstances }}
