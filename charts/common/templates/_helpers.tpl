@@ -177,6 +177,7 @@ livenessProbe:
     - "--structured-logs"
     - "--max-sigterm-delay={{ .postgres.maxSigtermDelay | default "30s" }}"
     - "--http-port=9801"
+    - "--http-address=0.0.0.0"
     - "--prometheus"
     - "--port=5432"
   ports:

@@ -6,16 +6,26 @@ This guide covers all breaking changes and required migration steps when upgradi
 
 - Helm 3.x or Helm 4.x
 - External Secrets Operator installed (required if using `postgres` or `secrets`)
+- `entur/terraform-google-sql-db` module version `v1.7.0` or newer (required if using `postgres` — this is the version that started writing credentials to Secret Manager instead of only creating Kubernetes secrets)
 - Optionally: [kube-startup-cpu-boost](https://github.com/google/kube-startup-cpu-boost) operator for CPU boost feature
 
-## Installing the Release Candidate
+## Installing v2
 
-v2 is currently available as a release candidate. To test it before the final release, manually set the version in your `Chart.yaml`:
+Set the dependency version in your `Chart.yaml`:
 
 ```yaml
 dependencies:
   - name: common
-    version: 2.0.0-rc-1
+    version: "2.0.0"
+    repository: https://entur.github.io/helm-charts
+```
+
+Or use a range to pick up future minor and patch releases automatically:
+
+```yaml
+dependencies:
+  - name: common
+    version: "~2"
     repository: https://entur.github.io/helm-charts
 ```
 
@@ -24,8 +34,6 @@ Then run:
 ```bash
 helm dependency update
 ```
-
-Once v2 is officially released, update the version to `2.0.0` (or use a range like `~2`).
 
 ## Breaking Changes
 
@@ -151,7 +159,7 @@ common:
 **Migration steps:**
 
 1. Replace `instances: [PGINSTANCES]` with `instances: [{secretKeyPrefix: PG}]`, or simply use `enabled: true` for the default `PG` prefix.
-2. Ensure `{prefix}USER`, `{prefix}PASSWORD`, and `{prefix}INSTANCES` exist in Secret Manager (the `entur/terraform-google-sql-db` module creates these).
+2. Ensure `{prefix}USER`, `{prefix}PASSWORD`, and `{prefix}INSTANCES` exist in Secret Manager (the `entur/terraform-google-sql-db` module creates these from `v1.7.0` onward). If your Terraform module is pinned to an older version, bump it first, or the ExternalSecrets will have nothing to sync.
 3. Optionally set `create_kubernetes_resources: false` in your Terraform module — the chart no longer uses Terraform-created Kubernetes secrets.
 4. For multiple databases, list each Terraform module's `secret_key_prefix` as a separate entry in `instances`.
 
