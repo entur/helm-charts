@@ -30,6 +30,10 @@ meta.helm.sh/release-namespace: {{ empty .Release.Namespace| ternary .Release.Na
 securityContext:
   allowPrivilegeEscalation: false
   runAsNonRoot: true
+  {{- with .uid }}
+  runAsUser: {{ . }}
+  runAsGroup: {{ . }}
+  {{- end }}
   capabilities:
     drop: ["ALL"]
   seccompProfile:

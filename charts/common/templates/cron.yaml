@@ -6,6 +6,7 @@
 
 {{- $releaseName := include "name" . -}}
 {{- $containers := .Values.containers | default (list .Values.container) -}}
+{{- $podUid := (first $containers).uid | default .Values.container.uid -}}
 {{- $configmap := .Values.configmap -}}
 {{- $postgres := .Values.postgres -}}
 {{- $secrets := .Values.secrets -}}
@@ -89,10 +90,10 @@ spec:
           {{- end }}
           restartPolicy: {{ .Values.cron.restartPolicy | default "OnFailure" }}
           securityContext:
-            runAsGroup: {{ .Values.container.uid }}
+            runAsGroup: {{ $podUid }}
             runAsNonRoot: true
-            runAsUser: {{ .Values.container.uid }}
-            fsGroup: {{ .Values.container.uid }}
+            runAsUser: {{ $podUid }}
+            fsGroup: {{ $podUid }}
             seccompProfile:
               type: RuntimeDefault
 {{- end -}}

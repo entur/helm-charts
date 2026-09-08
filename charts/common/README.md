@@ -1,6 +1,6 @@
 # common
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 2.0.0-rc-1](https://img.shields.io/badge/Version-2.0.0--rc--1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 A Helm chart for Entur's Kubernetes workloads
 
@@ -107,7 +107,7 @@ common:
 | container.prometheus.enabled | bool | `false` | Enable or disable Prometheus |
 | container.prometheus.path | string | /actuator/prometheus | Set the path for scraping metrics |
 | container.prometheus.port | int | service.internalPort | Set the port for prometheus scraping |
-| container.uid | int | 1000 | Set the uid that your user runs with |
+| container.uid | int | 1000 | Set the uid that your user runs with. Must be non-root, since `runAsNonRoot` is always true. |
 | container.volumeMounts | list | `[]` | Configure volume mounts, accepts kubernetes syntax |
 | container.volumes | list | `[]` | Configure volume, accepts kubernetes syntax |
 | containers | list | `[]` | Takes a list of `container` entries, you must add a `name` field for each entry |
