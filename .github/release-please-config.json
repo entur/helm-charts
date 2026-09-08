@@ -11,7 +11,6 @@
       "release-type": "helm",
       "pull-request-title-pattern": "chore(common): release v${version}",
       "extra-files": ["README.md"],
-      "release-as": "2.0.0"
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
