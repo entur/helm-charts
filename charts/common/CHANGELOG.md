@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/entur/helm-charts/compare/common-v2.0.0...common-v2.0.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* **common:** allow integer for deployment.maxUnavailable in schema ([#273](https://github.com/entur/helm-charts/issues/273)) ([97d867e](https://github.com/entur/helm-charts/commit/97d867e34f0d4d56ed5243dc4b2e839d4bf982f9))
+
 ## [2.0.0](https://github.com/entur/helm-charts/compare/common-v2.0.0...common-v2.0.0) (2026-09-01)
 
 ### ⚠ BREAKING CHANGES
