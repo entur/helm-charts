@@ -113,12 +113,12 @@
           "type": ["string", "integer", "null"]
         },
         "maxSurge": {
-          "description": "Limit max surge for rolling updates (default 25%)",
+          "description": "Limit max surge for rolling updates (default 1)",
           "type": ["integer", "string", "null"]
         },
         "maxUnavailable": {
-          "description": "Limit max unavailable for rolling updates (default 25%)",
-          "type": ["string", "null"]
+          "description": "Limit max unavailable for rolling updates (default 1)",
+          "type": ["integer", "string", "null"]
         },
         "serviceAccountName": {
           "description": "Override pod serviceAccountName (default application)",
