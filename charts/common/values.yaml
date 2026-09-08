@@ -320,7 +320,7 @@ configmap:
   # -- Enable or disable the configmap
   # @default -- false
   enabled: false
-  # -- Set data for configmap using string keys and values
+  # -- Set data for configmap
   data:
     {}
     # "MY_CONFIG": "yes"
