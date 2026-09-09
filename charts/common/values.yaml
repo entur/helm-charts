@@ -302,8 +302,8 @@ postgres:
   # -- (float) Configure optional cpu limit for proxy
   cpuLimit:
   # -- Configure memory request for proxy without units, `Mi` inferred
-  # @default -- 16
-  memory: 16
+  # @default -- 64
+  memory: 64
   # -- List of database connections keyed by Terraform `secret_key_prefix`. Each entry derives Secret Manager keys: `{prefix}INSTANCES`, `{prefix}USER`, `{prefix}PASSWORD`. The chart generates `{prefix}HOST=localhost` and `{prefix}PORT=5432+index`. When empty and `enabled: true`, defaults to `[{secretKeyPrefix: PG}]`.
   # @default -- []
   instances: []
