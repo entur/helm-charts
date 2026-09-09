@@ -239,8 +239,8 @@
           "type": "integer"
         },
         "internalPort": {
-          "description": "Set the internal port for your service",
-          "type": "integer"
+          "description": "Set the internal port for your service. Accepts a port number, or a port name matching a `name` set on `container.ports`/`containers[].ports` (used as the Service `targetPort` and as the default probe port).",
+          "type": ["integer", "string"]
         },
         "annotations": {
           "description": "Optionally set annotations for the service",
@@ -364,7 +364,7 @@
                 "successThreshold": { "type": "integer" },
                 "failureThreshold": { "type": "integer" },
                 "periodSeconds": { "type": "integer" },
-                "port": { "type": ["integer", "null"] },
+                "port": { "description": "Port number, or a port name matching a `name` set on `container.ports`. Not supported for `grpc` (gRPC probes require a numeric port).", "type": ["integer", "string", "null"] },
                 "grpc": { "type": ["object", "null"] }
               },
               "type": "object"
@@ -377,7 +377,7 @@
                 "successThreshold": { "type": "integer" },
                 "failureThreshold": { "type": "integer" },
                 "periodSeconds": { "type": "integer" },
-                "port": { "type": ["integer", "null"] },
+                "port": { "description": "Port number, or a port name matching a `name` set on `container.ports`. Not supported for `grpc` (gRPC probes require a numeric port).", "type": ["integer", "string", "null"] },
                 "grpc": { "type": ["object", "null"] }
               },
               "type": "object"
@@ -388,7 +388,7 @@
                 "path": { "description": "Set the path for startup probe. If set, uses httpGet instead of tcpSocket.", "type": ["string", "null"] },
                 "failureThreshold": { "type": "integer" },
                 "periodSeconds": { "type": "integer" },
-                "port": { "type": ["integer", "null"] },
+                "port": { "description": "Port number, or a port name matching a `name` set on `container.ports`. Not supported for `grpc` (gRPC probes require a numeric port).", "type": ["integer", "string", "null"] },
                 "grpc": { "type": ["object", "null"] }
               },
               "type": "object"
