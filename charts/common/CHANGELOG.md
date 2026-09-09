@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.0](https://github.com/entur/helm-charts/compare/common-v2.0.1...common-v2.1.0) (2026-09-09)
+
+
+### Features
+
+* opentelemetry tracing environment variables ([#267](https://github.com/entur/helm-charts/issues/267)) ([c534a99](https://github.com/entur/helm-charts/commit/c534a99e4c8f62db6b1fe9ace7547732a118b308))
+
+
+### Bug Fixes
+
+* increase default sql-proxy memory to 64Mi ([#279](https://github.com/entur/helm-charts/issues/279)) ([5d861dd](https://github.com/entur/helm-charts/commit/5d861ddab1badc2b57c4df5cfe8a0ab71b0a1c09))
+* Secure string values in configmap ([#277](https://github.com/entur/helm-charts/issues/277)) ([069dc12](https://github.com/entur/helm-charts/commit/069dc12cc9a0cbb799483a26aef380a666a5c00f))
+
 ## [2.0.1](https://github.com/entur/helm-charts/compare/common-v2.0.0...common-v2.0.1) (2026-09-08)
 
 
