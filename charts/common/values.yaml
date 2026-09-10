@@ -172,7 +172,7 @@ service:
   # -- Set the external port for your service
   # @default -- 80
   externalPort: 80
-  # -- Set the internal port for your service
+  # -- Set the internal port for your service. Accepts a port number, or a port name matching a `name` set on `container.ports`/`containers[].ports`. Used as the Service `targetPort` and as the default probe port.
   # @default -- 8080
   internalPort: 8080
   # -- Optionally set annotations for the service
@@ -248,7 +248,10 @@ container:
       # -- Set the period of checking
       # @default -- 5
       periodSeconds: 5
-      # -- Specify grpc probes for a port. Needs `port` child stanza
+      # -- Override the probe port. Accepts a port number, or a port name matching a `name` set on `container.ports`
+      # @default -- service.internalPort
+      port:
+      # -- Specify grpc probes for a port. Needs `port` child stanza. Note: gRPC probes require a numeric port, port names are not supported
       grpc:
         # port: 8080
     readiness:
@@ -266,7 +269,10 @@ container:
       # -- Set the period of checking
       # @default -- 5
       periodSeconds: 5
-      # -- Specify grpc probes for a port. Needs `port` child stanza
+      # -- Override the probe port. Accepts a port number, or a port name matching a `name` set on `container.ports`
+      # @default -- service.internalPort
+      port:
+      # -- Specify grpc probes for a port. Needs `port` child stanza. Note: gRPC probes require a numeric port, port names are not supported
       grpc:
         # port: 8080
     startup:
@@ -278,7 +284,10 @@ container:
       # -- Set the period of checking
       # @default -- 1
       periodSeconds: 1
-      # -- Specify grpc probes for a port. Needs `port` child stanza
+      # -- Override the probe port. Accepts a port number, or a port name matching a `name` set on `container.ports`
+      # @default -- service.internalPort
+      port:
+      # -- Specify grpc probes for a port. Needs `port` child stanza. Note: gRPC probes require a numeric port, port names are not supported
       grpc:
         # port: 8080
   # -- Configure volume mounts, accepts kubernetes syntax
