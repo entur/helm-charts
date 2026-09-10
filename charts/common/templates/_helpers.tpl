@@ -84,6 +84,18 @@ resources:
 env:
   - name: COMMON_ENV
     value: {{ .envLabel }}
+  - name: OTEL_TRACES_EXPORTER
+    value: "otlp"
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    value: "https://telemetry.googleapis.com"
+  - name: OTEL_EXPORTER_OTLP_PROTOCOL
+    value: "grpc"
+  - name: OTEL_METRICS_EXPORTER
+    value: "none"
+  - name: OTEL_LOGS_EXPORTER
+    value: "none"
+  - name: OTEL_SERVICE_NAME
+    value: "{{ .app }}"
   {{- range $i, $inst := $postgresInstances }}
   - name: {{ $inst.secretKeyPrefix }}HOST
     value: "localhost"
@@ -222,4 +234,3 @@ livenessProbe:
 {{- define "hpa.minReplicas" -}}
   {{- .replicas | default 2 -}}
 {{- end -}}
-

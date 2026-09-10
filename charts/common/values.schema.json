@@ -480,8 +480,9 @@
           "type": "boolean"
         },
         "data": {
-          "description": "Set data for configmap",
-          "type": "object"
+          "description": "Set data for configmap, use keys and values in string format",
+          "type": "object",
+          "additionalProperties": { "type": "string"}
         }
       },
       "type": "object"
