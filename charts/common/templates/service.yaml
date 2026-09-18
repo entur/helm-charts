@@ -28,6 +28,10 @@ spec:
     targetPort: {{ .Values.service.internalPort }}
   {{- end }}
   selector:
+  {{- if .Values.service.selector }}
+  {{- toYaml .Values.service.selector | nindent 4 }}
+  {{- else }}
     app: {{ $releaseName }}
+  {{- end }}
   type: ClusterIP
 {{- end }}

@@ -177,6 +177,8 @@ service:
   internalPort: 8080
   # -- Optionally set annotations for the service
   annotations: {}
+  # -- Optionally override the Service selector. Defaults to app: <release-name>
+  selector: {}
 
 # -- Takes a list of `container` entries, you must add a `name` field for each entry
 containers: []
