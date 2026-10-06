@@ -70,3 +70,14 @@ tests:
       - equal:
           path: metadata.name
           value: override
+  - it: can override selector
+    set:
+      service:
+        selector:
+          traffic-pool: override
+    asserts:
+      - equal:
+          path: spec.selector["traffic-pool"]
+          value: override
+      - isNull:
+          path: spec.selector.app
