@@ -187,6 +187,7 @@ livenessProbe:
   command:
     - "/cloud-sql-proxy"
     - "--structured-logs"
+    - "--quiet"
     - "--max-sigterm-delay={{ .postgres.maxSigtermDelay | default "30s" }}"
     - "--http-port=9801"
     - "--http-address=0.0.0.0"
