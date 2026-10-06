@@ -92,7 +92,48 @@ common:
     forceReplicas: 3 # disables HPA, fixed at 3 pods
 ```
 
-### 3. `container.memoryLimit` removed
+### 3. `deployment.*` no longer falls back to `container.*` for `labels`, `volumes`, `enabled`
+
+v1's Deployment template resolved three fields by falling back to the equivalent `container.*` value whenever the `deployment.*` field was unset. That fallback is removed in v2 — each field must be set explicitly under `deployment` (`cron` has its own independent `labels`/`volumes` fields and is not affected).
+
+| v1 fallback field    | Replacement                              | In v2              |
+| -------------------- |------------------------------------------|--------------------|
+| `container.labels`   | `deployment.labels`                      | Ignored            |
+| `container.volumes`  | `deployment.volumes` (or `cron.volumes`) | Ignored            |
+| `container.enabled`  | `deployment.enabled`                     | Rejected by schema |
+
+```yaml
+# v1
+common:
+  container:
+    enabled: true
+    labels:
+      team: my-team
+    volumes:
+      - name: config
+        configMap:
+          name: my-configmap
+    volumeMounts:
+      - name: config
+        mountPath: /etc/config
+
+# v2
+common:
+  deployment:
+    enabled: true
+    labels:
+      team: my-team
+    volumes:
+      - name: config
+        configMap:
+          name: my-configmap
+  container:
+    volumeMounts:
+      - name: config
+        mountPath: /etc/config
+```
+
+### 4. `container.memoryLimit` removed
 
 Memory limit is now always equal to memory request. The 1.2x multiplier and `memoryLimit` override are removed. Set `container.memory` to the value you need for both request and limit.
 
@@ -109,7 +150,7 @@ common:
     memory: 1024  # sets both request and limit
 ```
 
-### 4. Cloud SQL Proxy — `secretKeyPrefix` integration
+### 5. Cloud SQL Proxy — `secretKeyPrefix` integration
 
 The postgres integration now uses `secretKeyPrefix` as the single contract with the `entur/terraform-google-sql-db` Terraform module. Given a prefix, the chart derives all Secret Manager key names and fetches everything via External Secrets. Terraform-created Kubernetes secrets are no longer needed.
 
@@ -160,11 +201,11 @@ common:
 3. Optionally set `create_kubernetes_resources: false` in your Terraform module — the chart no longer uses Terraform-created Kubernetes secrets.
 4. For multiple databases, list each Terraform module's `secret_key_prefix` as a separate entry in `instances`.
 
-### 5. `ingress.class` annotation replaced with `spec.ingressClassName`
+### 6. `ingress.class` annotation replaced with `spec.ingressClassName`
 
 The deprecated `kubernetes.io/ingress.class` annotation is removed. Ingress now uses `spec.ingressClassName` (defaults to `traefik`).
 
-### 6. `configmap.toEnv` is removed
+### 7. `configmap.toEnv` is removed
 
 If you get a schema error like `configmap.toEnv is no longer valid in v2`, switch to `container.envFrom` to mount the configmap as environment variables:
 
@@ -245,6 +286,7 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 - [ ] Replace `container.minAvailable` → `deployment.minAvailable`
 - [ ] Replace `container.terminationGracePeriodSeconds` → `deployment.terminationGracePeriodSeconds`
 - [ ] Remove `container.memoryLimit` / `postgres.memoryLimit` — set `memory` to the value you need
+- [ ] Move `container.labels` / `container.volumes` / `container.enabled` → `deployment.labels` / `deployment.volumes` (or `cron.volumes`) / `deployment.enabled`
 - [ ] Replace `postgres.connectionConfig` with `postgres.enabled: true` or `postgres.instances: [{secretKeyPrefix: PG}]`
 - [ ] Replace `postgres.termTimeout` with `postgres.maxSigtermDelay` (if set)
 - [ ] If using gRPC: remove explicit `probes.*.grpc.port` settings (now defaults to `service.internalPort`)
