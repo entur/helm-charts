@@ -68,10 +68,7 @@ Scaling fields have been removed from `container.*` and consolidated under `depl
 | `container.minAvailable`                  | `deployment.minAvailable`                  |
 | `container.terminationGracePeriodSeconds` | `deployment.terminationGracePeriodSeconds` |
 
-Default `minReplicas` by environment:
-
-- `sbx`/`dev`/`tst`: **1** (scales down to single pod in low traffic)
-- `prd`: **2** (HA by default)
+Default `minReplicas` is **2** in all environments (HA by default).
 
 ```yaml
 # v1
@@ -198,7 +195,7 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 
 ### HPA always enabled
 
-- HPA is now enabled in all environments, not just `prd`. Default `minReplicas` is 1 for sbx/dev/tst and 2 for prd.
+- HPA is now enabled in all environments, not just `prd`. Default `minReplicas` is 2 in all environments.
 - When `startupCPUBoost` is disabled, a 120s scaleUp stabilization window prevents startup CPU spikes from triggering unnecessary scale-ups. Tune via `hpa.stabilizationWindowSeconds` to match your app's startup time.
 
 ### PDB improvements
