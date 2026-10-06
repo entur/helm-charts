@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/entur/helm-charts/compare/common-v2.1.0...common-v2.1.1) (2026-10-06)
+
+
+### Bug Fixes
+
+* run cloud-sql-proxy sidecar with --quiet ([#283](https://github.com/entur/helm-charts/issues/283)) ([907315e](https://github.com/entur/helm-charts/commit/907315e1e959ff68ffb14d43918669323c7f3ddf))
+
 ## [2.1.0](https://github.com/entur/helm-charts/compare/common-v2.0.1...common-v2.1.0) (2026-09-09)
 
 
