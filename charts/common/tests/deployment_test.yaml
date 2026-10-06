@@ -698,6 +698,119 @@ tests:
       - equal:
           path: spec.minReadySeconds
           value: 10
+  - it: supports a named internal port for containerPort and probes
+    set:
+      container:
+        image: img
+        ports:
+          - name: http
+            containerPort: 8080
+        prometheus:
+          port: 8080
+      service:
+        internalPort: http
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports[0].name
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.tcpSocket.port
+          value: http
+  - it: a probe port can be overridden independently of a named internal port
+    set:
+      container:
+        image: img
+        ports:
+          - name: http
+            containerPort: 8080
+          - name: admin
+            containerPort: 8081
+        prometheus:
+          port: 8080
+        probes:
+          liveness:
+            port: admin
+      service:
+        internalPort: http
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: admin
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: http
+  - it: fails when service.internalPort is a name but container.ports is not set
+    set:
+      container:
+        image: img
+        prometheus:
+          port: 8080
+      service:
+        internalPort: http
+    asserts:
+      - failedTemplate:
+          errorMessage: container.ports must be set explicitly (with a numeric containerPort and matching name) when service.internalPort is a port name
+  - it: fails when gRPC probes fall back to a named internal port without an explicit numeric override
+    set:
+      grpc: true
+      container:
+        image: img
+        ports:
+          - name: grpc
+            containerPort: 8080
+        prometheus:
+          port: 8080
+      service:
+        internalPort: grpc
+    asserts:
+      - failedTemplate:
+          errorMessage: gRPC probes require a numeric port; set probes.<startup|readiness|liveness>.grpc.port explicitly since service.internalPort is a port name
+  - it: gRPC probes can use a named internal port with an explicit numeric override
+    set:
+      grpc: true
+      container:
+        image: img
+        ports:
+          - name: grpc
+            containerPort: 8080
+        prometheus:
+          port: 8080
+        probes:
+          startup:
+            grpc:
+              port: 8080
+          readiness:
+            grpc:
+              port: 8080
+          liveness:
+            grpc:
+              port: 8080
+      service:
+        internalPort: grpc
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.grpc.port
+          value: 8080
+  - it: fails when prometheus scraping falls back to a named internal port
+    set:
+      container:
+        image: img
+        ports:
+          - name: http
+            containerPort: 8080
+        prometheus:
+          enabled: true
+      service:
+        internalPort: http
+    asserts:
+      - failedTemplate:
+          errorMessage: deployment.prometheus.port must be set explicitly to a number since service.internalPort is a port name; Prometheus scraping does not resolve named ports
   - it: can set initContainers
     set:
       initContainers:
