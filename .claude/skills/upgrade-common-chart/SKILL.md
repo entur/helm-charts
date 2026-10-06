@@ -13,6 +13,11 @@ description: >
 
 You are upgrading a Helm chart that depends on `entur/common` from v1 to v2. This is a breaking change that requires migrating values files and updating the chart dependency.
 
+## Prerequisites
+
+- External Secrets Operator installed (required if using `postgres` or `secrets`)
+- If using `postgres`: the `entur/terraform-google-sql-db` module must be `v1.7.0` or newer — this is the version that started writing credentials to Secret Manager instead of only creating Kubernetes secrets. If the app's Terraform is pinned to an older version, bump it before migrating, or the ExternalSecrets the v2 chart creates will have nothing to sync.
+
 ## Step 1: Understand the project
 
 Find all relevant files:
@@ -24,12 +29,12 @@ Read each file before making changes. The common chart is typically referenced a
 
 ## Step 2: Update Chart.yaml
 
-Bump the common chart dependency version to `2.0.0-rc-1`:
+Bump the common chart dependency version to `2.0.0`:
 
 ```yaml
 dependencies:
   - name: common
-    version: 2.0.0-rc-1
+    version: "2.0.0"
     repository: "https://entur.github.io/helm-charts"
 ```
 
@@ -73,6 +78,8 @@ This is the most significant change. The postgres integration now uses `secretKe
 **Remove deprecated fields:** `postgres.connectionConfig`, `postgres.memoryLimit`, `postgres.termTimeout`
 
 **Migrate `postgres.instances`:** Items changed from raw Secret Manager key names (strings) to objects with `secretKeyPrefix`. When `enabled: true` with no `instances`, the chart defaults to `[{secretKeyPrefix: PG}]`.
+
+Before migrating, confirm the app's `entur/terraform-google-sql-db` module is `v1.7.0` or newer (see Prerequisites) — older versions never wrote `{prefix}USER`/`{prefix}PASSWORD`/`{prefix}INSTANCES` to Secret Manager, so the v2 chart's ExternalSecrets would have nothing to sync.
 
 ```yaml
 # v1

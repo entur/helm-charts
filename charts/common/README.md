@@ -1,6 +1,6 @@
 # common
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 2.0.1](https://img.shields.io/badge/Version-2.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 A Helm chart for Entur's Kubernetes workloads
 
@@ -158,7 +158,7 @@ common:
 | postgres.enabled | bool | false | Enable or disable the Cloud SQL proxy v2 sidecar |
 | postgres.instances | list | [] | List of database connections keyed by Terraform `secret_key_prefix`. Each entry derives Secret Manager keys: `{prefix}INSTANCES`, `{prefix}USER`, `{prefix}PASSWORD`. The chart generates `{prefix}HOST=localhost` and `{prefix}PORT=5432+index`. When empty and `enabled: true`, defaults to `[{secretKeyPrefix: PG}]`. |
 | postgres.maxSigtermDelay | string | 30s | Override the max-sigterm-delay for the Cloud SQL Proxy. Adds a delay before the proxy begins shutdown after receiving SIGTERM, useful for allowing load balancers to deregister the pod. |
-| postgres.memory | int | 16 | Configure memory request for proxy without units, `Mi` inferred |
+| postgres.memory | int | 64 | Configure memory request for proxy without units, `Mi` inferred |
 | releaseName | string | `nil` | Override release name, useful for multiple deployments |
 | secrets | object | `{}` | Add externalSecret to sync secrets from secret manager |
 | service.annotations | object | `{}` | Optionally set annotations for the service |

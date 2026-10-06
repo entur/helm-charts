@@ -10,3 +10,8 @@ ingress:
 container:
   name: my-app
   image: theimage
+
+configmap:
+  enabled: true
+  data:
+    "APP1CONF": "yes"

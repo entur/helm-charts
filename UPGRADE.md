@@ -6,16 +6,26 @@ This guide covers all breaking changes and required migration steps when upgradi
 
 - Helm 3.x or Helm 4.x
 - External Secrets Operator installed (required if using `postgres` or `secrets`)
+- `entur/terraform-google-sql-db` module version `v1.7.0` or newer (required if using `postgres` — this is the version that started writing credentials to Secret Manager instead of only creating Kubernetes secrets)
 - Optionally: [kube-startup-cpu-boost](https://github.com/google/kube-startup-cpu-boost) operator for CPU boost feature
 
-## Installing the Release Candidate
+## Installing v2
 
-v2 is currently available as a release candidate. To test it before the final release, manually set the version in your `Chart.yaml`:
+Set the dependency version in your `Chart.yaml`:
 
 ```yaml
 dependencies:
   - name: common
-    version: 2.0.0-rc-1
+    version: "2.0.0"
+    repository: https://entur.github.io/helm-charts
+```
+
+Or use a range to pick up future minor and patch releases automatically:
+
+```yaml
+dependencies:
+  - name: common
+    version: "~2"
     repository: https://entur.github.io/helm-charts
 ```
 
@@ -24,8 +34,6 @@ Then run:
 ```bash
 helm dependency update
 ```
-
-Once v2 is officially released, update the version to `2.0.0` (or use a range like `~2`).
 
 ## Breaking Changes
 
@@ -60,10 +68,7 @@ Scaling fields have been removed from `container.*` and consolidated under `depl
 | `container.minAvailable`                  | `deployment.minAvailable`                  |
 | `container.terminationGracePeriodSeconds` | `deployment.terminationGracePeriodSeconds` |
 
-Default `minReplicas` by environment:
-
-- `sbx`/`dev`/`tst`: **1** (scales down to single pod in low traffic)
-- `prd`: **2** (HA by default)
+Default `minReplicas` is **2** in all environments (HA by default).
 
 ```yaml
 # v1
@@ -87,7 +92,48 @@ common:
     forceReplicas: 3 # disables HPA, fixed at 3 pods
 ```
 
-### 3. `container.memoryLimit` removed
+### 3. `deployment.*` no longer falls back to `container.*` for `labels`, `volumes`, `enabled`
+
+v1's Deployment template resolved three fields by falling back to the equivalent `container.*` value whenever the `deployment.*` field was unset. That fallback is removed in v2 — each field must be set explicitly under `deployment` (`cron` has its own independent `labels`/`volumes` fields and is not affected).
+
+| v1 fallback field    | Replacement                              | In v2              |
+| -------------------- |------------------------------------------|--------------------|
+| `container.labels`   | `deployment.labels`                      | Ignored            |
+| `container.volumes`  | `deployment.volumes` (or `cron.volumes`) | Ignored            |
+| `container.enabled`  | `deployment.enabled`                     | Rejected by schema |
+
+```yaml
+# v1
+common:
+  container:
+    enabled: true
+    labels:
+      team: my-team
+    volumes:
+      - name: config
+        configMap:
+          name: my-configmap
+    volumeMounts:
+      - name: config
+        mountPath: /etc/config
+
+# v2
+common:
+  deployment:
+    enabled: true
+    labels:
+      team: my-team
+    volumes:
+      - name: config
+        configMap:
+          name: my-configmap
+  container:
+    volumeMounts:
+      - name: config
+        mountPath: /etc/config
+```
+
+### 4. `container.memoryLimit` removed
 
 Memory limit is now always equal to memory request. The 1.2x multiplier and `memoryLimit` override are removed. Set `container.memory` to the value you need for both request and limit.
 
@@ -104,7 +150,7 @@ common:
     memory: 1024  # sets both request and limit
 ```
 
-### 4. Cloud SQL Proxy — `secretKeyPrefix` integration
+### 5. Cloud SQL Proxy — `secretKeyPrefix` integration
 
 The postgres integration now uses `secretKeyPrefix` as the single contract with the `entur/terraform-google-sql-db` Terraform module. Given a prefix, the chart derives all Secret Manager key names and fetches everything via External Secrets. Terraform-created Kubernetes secrets are no longer needed.
 
@@ -151,15 +197,15 @@ common:
 **Migration steps:**
 
 1. Replace `instances: [PGINSTANCES]` with `instances: [{secretKeyPrefix: PG}]`, or simply use `enabled: true` for the default `PG` prefix.
-2. Ensure `{prefix}USER`, `{prefix}PASSWORD`, and `{prefix}INSTANCES` exist in Secret Manager (the `entur/terraform-google-sql-db` module creates these).
+2. Ensure `{prefix}USER`, `{prefix}PASSWORD`, and `{prefix}INSTANCES` exist in Secret Manager (the `entur/terraform-google-sql-db` module creates these from `v1.7.0` onward). If your Terraform module is pinned to an older version, bump it first, or the ExternalSecrets will have nothing to sync.
 3. Optionally set `create_kubernetes_resources: false` in your Terraform module — the chart no longer uses Terraform-created Kubernetes secrets.
 4. For multiple databases, list each Terraform module's `secret_key_prefix` as a separate entry in `instances`.
 
-### 5. `ingress.class` annotation replaced with `spec.ingressClassName`
+### 6. `ingress.class` annotation replaced with `spec.ingressClassName`
 
 The deprecated `kubernetes.io/ingress.class` annotation is removed. Ingress now uses `spec.ingressClassName` (defaults to `traefik`).
 
-### 6. `configmap.toEnv` is removed
+### 7. `configmap.toEnv` is removed
 
 If you get a schema error like `configmap.toEnv is no longer valid in v2`, switch to `container.envFrom` to mount the configmap as environment variables:
 
@@ -190,7 +236,7 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 
 ### HPA always enabled
 
-- HPA is now enabled in all environments, not just `prd`. Default `minReplicas` is 1 for sbx/dev/tst and 2 for prd.
+- HPA is now enabled in all environments, not just `prd`. Default `minReplicas` is 2 in all environments.
 - When `startupCPUBoost` is disabled, a 120s scaleUp stabilization window prevents startup CPU spikes from triggering unnecessary scale-ups. Tune via `hpa.stabilizationWindowSeconds` to match your app's startup time.
 
 ### PDB improvements
@@ -240,6 +286,7 @@ Note: The configmap is automatically mounted via `envFrom` when `configmap.enabl
 - [ ] Replace `container.minAvailable` → `deployment.minAvailable`
 - [ ] Replace `container.terminationGracePeriodSeconds` → `deployment.terminationGracePeriodSeconds`
 - [ ] Remove `container.memoryLimit` / `postgres.memoryLimit` — set `memory` to the value you need
+- [ ] Move `container.labels` / `container.volumes` / `container.enabled` → `deployment.labels` / `deployment.volumes` (or `cron.volumes`) / `deployment.enabled`
 - [ ] Replace `postgres.connectionConfig` with `postgres.enabled: true` or `postgres.instances: [{secretKeyPrefix: PG}]`
 - [ ] Replace `postgres.termTimeout` with `postgres.maxSigtermDelay` (if set)
 - [ ] If using gRPC: remove explicit `probes.*.grpc.port` settings (now defaults to `service.internalPort`)
