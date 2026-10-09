@@ -113,11 +113,11 @@
           "type": ["string", "integer", "null"]
         },
         "maxSurge": {
-          "description": "Limit max surge for rolling updates (default 1)",
+          "description": "Limit max surge for rolling updates (default 25%)",
           "type": ["integer", "string", "null"]
         },
         "maxUnavailable": {
-          "description": "Limit max unavailable for rolling updates (default 1)",
+          "description": "Limit max unavailable for rolling updates (default 25%)",
           "type": ["integer", "string", "null"]
         },
         "serviceAccountName": {
