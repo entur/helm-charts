@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/entur/helm-charts/compare/common-v2.1.1...common-v2.2.0) (2026-10-13)
+
+
+### Features
+
+* **common:** change default maxSurge and maxUnavailable to kubernetes defaults ([#285](https://github.com/entur/helm-charts/issues/285)) ([f29ddd4](https://github.com/entur/helm-charts/commit/f29ddd48fd4e23c66ccc66632e5effa811b25878))
+
 ## [2.1.1](https://github.com/entur/helm-charts/compare/common-v2.1.0...common-v2.1.1) (2026-10-06)
 
 
