@@ -250,6 +250,10 @@
           "description": "Custom ports spec, overrides default port config",
           "items": { "type": "object" },
           "type": "array"
+        },
+        "selector": {
+          "description": "Optionally override the Service selector. Defaults to app: <release-name>",
+          "type": "object"
         }
       },
       "type": "object"
