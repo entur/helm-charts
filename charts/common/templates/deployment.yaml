@@ -56,9 +56,13 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         {{- include "annotations" . |trim| nindent 8 }}
         {{- if (($prometheus).enabled) }}
+        {{- $prometheusPort := $prometheus.port | default .Values.service.internalPort | required "Must set deployment.prometheus.port" }}
+        {{- if kindIs "string" $prometheusPort }}
+          {{- fail "deployment.prometheus.port must be set explicitly to a number since service.internalPort is a port name; Prometheus scraping does not resolve named ports" }}
+        {{- end }}
         prometheus.io/scrape: "true"
         prometheus.io/path: "{{ $prometheusPath }}"
-        prometheus.io/port: "{{ $prometheus.port | default .Values.service.internalPort | required "Must set deployment.prometheus.port" }}"
+        prometheus.io/port: "{{ $prometheusPort }}"
         {{- end }}
         {{- if $postgres.enabled }}
         prometheus.io/scrape-sql-proxy: "true"
@@ -93,6 +97,8 @@ spec:
           ports:
             {{- if .ports }}
               {{- toYaml .ports | nindent 12 }}
+            {{- else if kindIs "string" $internalPort }}
+              {{- fail "container.ports must be set explicitly (with a numeric containerPort and matching name) when service.internalPort is a port name" }}
             {{- else }}
             - containerPort: {{ $internalPort }}
               protocol: TCP
