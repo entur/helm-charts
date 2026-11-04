@@ -70,3 +70,16 @@ tests:
       - equal:
           path: metadata.name
           value: override
+  - it: supports a named internal port as targetPort
+    set:
+      container:
+        image: img
+        ports:
+          - name: http
+            containerPort: 8080
+      service:
+        internalPort: http
+    asserts:
+      - equal:
+          path: spec.ports[0].targetPort
+          value: http
